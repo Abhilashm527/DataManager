@@ -1,0 +1,212 @@
+{
+	"info": {
+		"name": "Dataloaders API Collection",
+		"description": "Complete API collection for Dataloaders application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Job Config APIs",
+			"item": [
+				{
+					"name": "Save Draft",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jobName\": \"Customer Data Migration\",\n  \"jobDescription\": \"Migrate customer data from MySQL to PostgreSQL\",\n  \"impacts\": \"Customer data will be migrated\",\n  \"jobSeverity\": \"HIGH\",\n  \"chunkSize\": 1000,\n  \"mappingId\": \"MAP-123\",\n  \"sourceConfig\": {\n    \"sourceId\": \"RES-001\",\n    \"configFields\": {\n      \"query\": \"SELECT * FROM customers\"\n    }\n  },\n  \"targetConfig\": {\n    \"targetId\": \"RES-002\",\n    \"configFields\": {\n      \"tableName\": \"customers_new\"\n    }\n  },\n  \"itemId\": \"ITEM-001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/draft",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "draft"]
+						}
+					}
+				},
+				{
+					"name": "Publish Job Config",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jobId\": \"JOB-123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/publish",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "publish"]
+						}
+					}
+				},
+				{
+					"name": "Deploy Job Config",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/deploy?parentJobId=JOB-123&version=v1.0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "deploy"],
+							"query": [
+								{
+									"key": "parentJobId",
+									"value": "JOB-123"
+								},
+								{
+									"key": "version",
+									"value": "v1.0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Job Config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/JOB-123",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "JOB-123"]
+						}
+					}
+				},
+				{
+					"name": "Get All Job Configs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job"]
+						}
+					}
+				},
+				{
+					"name": "Get Job Configs by Item ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/dataflow/ITEM-001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "dataflow", "ITEM-001"]
+						}
+					}
+				},
+				{
+					"name": "Update Job Config",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jobName\": \"Updated Job Name\",\n  \"jobDescription\": \"Updated description\",\n  \"jobSeverity\": \"MEDIUM\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/JOB-123",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "JOB-123"]
+						}
+					}
+				},
+				{
+					"name": "Delete Job Config",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/JOB-123",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "JOB-123"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Activity APIs",
+			"item": [
+				{
+					"name": "Test Activity Log",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/activities/test",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "activities", "test"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reader/Writer Config APIs",
+			"item": [
+				{
+					"name": "Get Reader Configs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/reader-configs",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "reader-configs"]
+						}
+					}
+				},
+				{
+					"name": "Get Writer Configs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/writer-configs",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "writer-configs"]
+						}
+					}
+				},
+				{
+					"name": "Get Reader Config by Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/dataloader/job/reader-configs/MySQL",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "dataloader", "job", "reader-configs", "MySQL"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8083",
+			"type": "string"
+		}
+	]
+}

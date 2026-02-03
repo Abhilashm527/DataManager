@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Activity Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    
+    <script>
+        console.log('Starting WebSocket connection...');
+
+        const socket = new WebSocket("ws://localhost:8083/ws");
+        const stompClient = Stomp.over(socket);
+
+        // Enable debug
+        stompClient.debug = function(str) {
+            console.log('STOMP: ' + str);
+        };
+        
+        stompClient.connect({}, 
+            function(frame) {
+                console.log('✅ Connected:', frame);
+                document.getElementById('status').innerHTML = '✅ Connected to WebSocket';
+                
+                stompClient.subscribe('/topic/activities', function(message) {
+                    console.log('📨 Message received:', message.body);
+                    const activity = JSON.parse(message.body);
+                    
+                    const messageDiv = document.createElement('div');
+                    messageDiv.innerHTML = `
+                        <p><strong>${activity.action}</strong> - ${activity.entityName}</p>
+                        <p>Time: ${new Date()}</p>
+                        <hr>
+                    `;
+                    document.getElementById('messages').appendChild(messageDiv);
+                });
+            },
+            function(error) {
+                console.error('❌ Connection error:', error);
+                document.getElementById('status').innerHTML = '❌ Connection failed: ' + error;
+            }
+        );
+    </script>
+</body>
+</html>

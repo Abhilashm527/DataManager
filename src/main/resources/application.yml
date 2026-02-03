@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mock-nexus-auth-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testingdb
+    username: nkharvi
+    password: 123
+    driver-class-name: org.postgresql.Driver
+server:
+  port: ${PORT:8080}

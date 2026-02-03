@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Activity Monitor</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+    <h1>Activity Monitor</h1>
+    <div id="status">Connecting...</div>
+    <div id="activities"></div>
+
+    <script>
+        const socket = new SockJS('http://localhost:8083/ws/activity');
+        const stompClient = Stomp.over(socket);
+        
+        stompClient.connect({}, function(frame) {
+            document.getElementById('status').innerHTML = 'Connected to WebSocket';
+            console.log('Connected: ' + frame);
+            
+            stompClient.subscribe('/topic/activities', function(message) {
+                const activity = JSON.parse(message.body);
+                console.log('Activity received:', activity);
+                
+                const activityDiv = document.createElement('div');
+                activityDiv.innerHTML = `
+                    <p><strong>${activity.action}</strong> ${activity.entityType}: ${activity.entityName}</p>
+                    <p>By: ${activity.userId} at ${new Date(activity.createdAt * 1000)}</p>
+                    <hr>
+                `;
+                document.getElementById('activities').prepend(activityDiv);
+            });
+        }, function(error) {
+            document.getElementById('status').innerHTML = 'Connection failed: ' + error;
+        });
+    </script>
+</body>
+</html>
