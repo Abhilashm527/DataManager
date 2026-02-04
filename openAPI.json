@@ -1,0 +1,3585 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Dataloaders API",
+        "description": "API documentation for Dataloaders application",
+        "contact": {
+            "name": "Dataloaders Team",
+            "email": "support@dataloaders.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8083",
+            "description": "Generated server url"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Mappings",
+            "description": "Data mapping management APIs"
+        },
+        {
+            "name": "Resources",
+            "description": "Resource management APIs"
+        },
+        {
+            "name": "Items",
+            "description": "Item/Folder management APIs"
+        },
+        {
+            "name": "Deploy",
+            "description": "Deployment management APIs"
+        },
+        {
+            "name": "Activities",
+            "description": "Activity log management APIs"
+        },
+        {
+            "name": "Datatable",
+            "description": "Datatable management APIs"
+        },
+        {
+            "name": "Dataloader",
+            "description": "Dataloader job management APIs"
+        },
+        {
+            "name": "Field Definitions",
+            "description": "Field Definition management APIs"
+        },
+        {
+            "name": "Job Config",
+            "description": "Job configuration management APIs"
+        },
+        {
+            "name": "Search",
+            "description": "Global search APIs"
+        }
+    ],
+    "paths": {
+        "/api/v1/dataloader/resource/{resourceId}": {
+            "get": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Get resource by ID",
+                "description": "Get resource by ID",
+                "operationId": "get",
+                "parameters": [
+                    {
+                        "name": "resourceId",
+                        "in": "path",
+                        "description": "Resource ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resource found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Update resource",
+                "description": "Update an existing resource",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "resourceId",
+                        "in": "path",
+                        "description": "Resource ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Resource"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resource updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Create resource",
+                "description": "Create a new resource",
+                "operationId": "create",
+                "parameters": [
+                    {
+                        "name": "resourceId",
+                        "in": "path",
+                        "description": "Resource ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Resource"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Resource created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Delete resource",
+                "description": "Delete a resource",
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "name": "resourceId",
+                        "in": "path",
+                        "description": "Resource ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resource deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/mappings/{mappingId}": {
+            "get": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Get mapping by ID",
+                "description": "Get mapping by ID",
+                "operationId": "get_1",
+                "parameters": [
+                    {
+                        "name": "mappingId",
+                        "in": "path",
+                        "description": "Mapping ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mapping found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mapping not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Update mapping",
+                "description": "Update an existing mapping",
+                "operationId": "update_1",
+                "parameters": [
+                    {
+                        "name": "mappingId",
+                        "in": "path",
+                        "description": "Mapping ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mappings"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mapping updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Mapping not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Create mapping",
+                "description": "Create a new data mapping",
+                "operationId": "create_1",
+                "parameters": [
+                    {
+                        "name": "mappingId",
+                        "in": "path",
+                        "description": "Mapping ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mappings"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Mapping created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Delete mapping",
+                "description": "Delete a mapping",
+                "operationId": "delete_1",
+                "parameters": [
+                    {
+                        "name": "mappingId",
+                        "in": "path",
+                        "description": "Mapping ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Mapping not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Mapping deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/{jobId}": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get job config",
+                "description": "Get job configuration by ID",
+                "operationId": "get_2",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job config found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Job config not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Update job config",
+                "description": "Update job configuration",
+                "operationId": "update_2",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobConfig"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job config updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Job config not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Delete job config",
+                "description": "Delete job configuration",
+                "operationId": "delete_2",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job config deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Job config not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/item/{itemId}": {
+            "get": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Get item by ID",
+                "description": "Get item/folder by ID",
+                "operationId": "get_3",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "description": "Item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Item found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Update item",
+                "description": "Update an existing item",
+                "operationId": "update_3",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "description": "Item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Item"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Item updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Delete item",
+                "description": "Delete item and all its children",
+                "operationId": "delete_3",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "description": "Item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Item deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/deploy/{deployId}": {
+            "get": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Get deployment",
+                "description": "Get deployment by ID",
+                "operationId": "getDeploy",
+                "parameters": [
+                    {
+                        "name": "deployId",
+                        "in": "path",
+                        "description": "Deploy ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deployment found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deploy"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deployment not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deploy"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Update deployment",
+                "description": "Update an existing deployment",
+                "operationId": "updateDeploy",
+                "parameters": [
+                    {
+                        "name": "deployId",
+                        "in": "path",
+                        "description": "Deploy ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Deploy"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deployment updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deploy"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deployment not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deploy"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Delete deployment",
+                "description": "Delete a deployment",
+                "operationId": "deleteDeploy",
+                "parameters": [
+                    {
+                        "name": "deployId",
+                        "in": "path",
+                        "description": "Deploy ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deployment deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deployment not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/{resourceTypeId}": {
+            "put": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Update field definition",
+                "description": "Update an existing field definition",
+                "operationId": "update_4",
+                "parameters": [
+                    {
+                        "name": "resourceTypeId",
+                        "in": "path",
+                        "description": "Field definition ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FieldDefinition"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Field definition updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Field definition not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Delete field definition",
+                "description": "Delete a field definition",
+                "operationId": "delete_4",
+                "parameters": [
+                    {
+                        "name": "resourceTypeId",
+                        "in": "path",
+                        "description": "Field definition ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Field definition not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Field definition deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/{resourceId}/test": {
+            "post": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Test resource connection",
+                "description": "Test connection to an existing resource",
+                "operationId": "testResource",
+                "parameters": [
+                    {
+                        "name": "resourceId",
+                        "in": "path",
+                        "description": "Resource ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Connection test result",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/test": {
+            "post": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Test new resource",
+                "description": "Test connection before saving resource",
+                "operationId": "testNewResource",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Resource"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection test result",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/reorder": {
+            "post": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Bulk reorder resources",
+                "description": "Reorder multiple resources",
+                "operationId": "bulkReorderResources",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Resource"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resources reordered successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/mappings/validate": {
+            "post": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Validate mapping",
+                "description": "Validate mapping configuration",
+                "operationId": "validateMapping",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mappings"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mapping validation result",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/publish": {
+            "post": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Publish job config",
+                "description": "Publish job configuration",
+                "operationId": "publish",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobConfig"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job config published successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/draft": {
+            "post": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Save draft",
+                "description": "Save job configuration as draft",
+                "operationId": "saveDraft",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobConfig"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Draft saved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/deploy/{jobId}": {
+            "post": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Deploy job",
+                "description": "Deploy a job configuration",
+                "operationId": "deploy",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job deployed successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Job not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/item": {
+            "get": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Get root items",
+                "description": "Get root level items/folders",
+                "operationId": "getRoot",
+                "parameters": [
+                    {
+                        "name": "root",
+                        "in": "query",
+                        "description": "Root filter",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Root items retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Create item",
+                "description": "Create a new item/folder",
+                "operationId": "create_2",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Item"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Item created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/deploy": {
+            "post": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Create deployment",
+                "description": "Create a new deployment",
+                "operationId": "createDeploy",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Deploy"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deployment created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deploy"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deploy"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/datatable": {
+            "post": {
+                "tags": [
+                    "Datatable"
+                ],
+                "summary": "Create datatable",
+                "description": "Create a new datatable",
+                "operationId": "create_3",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Datatable"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Datatable created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields": {
+            "get": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Get all field definitions",
+                "description": "Get all field definitions with optional provider filter",
+                "operationId": "getAll",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "query",
+                        "description": "Filter by provider",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "Provider type enum",
+                            "enum": [
+                                "CONNECTION",
+                                "SOURCE",
+                                "TARGET"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Field definitions retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Create field definition",
+                "description": "Create a new field definition",
+                "operationId": "create_4",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FieldDefinition"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Field definition created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/reorder": {
+            "post": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Bulk reorder field definitions",
+                "description": "Reorder multiple field definitions",
+                "operationId": "bulkReorder",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/FieldDefinition"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Field definitions reordered successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/{resourceId}/status": {
+            "patch": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Update resource status",
+                "description": "Activate or deactivate a resource",
+                "operationId": "updateStatus",
+                "parameters": [
+                    {
+                        "name": "resourceId",
+                        "in": "path",
+                        "description": "Resource ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "isActive",
+                        "in": "query",
+                        "description": "Active status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/mappings/{mappingId}/status": {
+            "patch": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Update mapping status",
+                "description": "Activate or deactivate a mapping",
+                "operationId": "updateStatus_1",
+                "parameters": [
+                    {
+                        "name": "mappingId",
+                        "in": "path",
+                        "description": "Mapping ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "isActive",
+                        "in": "query",
+                        "description": "Active status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/{jobId}/status": {
+            "patch": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Update job config status",
+                "description": "Update job configuration status",
+                "operationId": "updateStatus_2",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "isActive",
+                        "in": "query",
+                        "description": "Active status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/{resourceTypeId}/status": {
+            "patch": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Update field definition status",
+                "description": "Activate or deactivate a field definition",
+                "operationId": "updateStatus_3",
+                "parameters": [
+                    {
+                        "name": "resourceTypeId",
+                        "in": "path",
+                        "description": "Field definition ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "isActive",
+                        "in": "query",
+                        "description": "Active status",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Field definition not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/status/{runningId}": {
+            "get": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Get job status",
+                "description": "Get status of a running job",
+                "operationId": "getJobStatus",
+                "parameters": [
+                    {
+                        "name": "runningId",
+                        "in": "path",
+                        "description": "Running job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job status retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/statstab/{applicationId}": {
+            "get": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Get statistics",
+                "description": "Get statistics for an application",
+                "operationId": "getstats",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "Application ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Start date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "End date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/running/{applicationId}": {
+            "get": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Get running jobs",
+                "description": "Get all running jobs for an application",
+                "operationId": "getAllRunningJobs",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "Application ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Running jobs retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/run/{jobId}": {
+            "get": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Run job manually",
+                "description": "Manually trigger a job",
+                "operationId": "runJob",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job triggered successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource": {
+            "get": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Get all resources",
+                "description": "Get all resources",
+                "operationId": "getAll_1",
+                "responses": {
+                    "200": {
+                        "description": "Resources retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/types": {
+            "get": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Get resource types",
+                "description": "Get supported resource types",
+                "operationId": "getResourceTypes",
+                "responses": {
+                    "200": {
+                        "description": "Resource types retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/type/{resourceType}": {
+            "get": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Get resources by type",
+                "description": "Get resources by resource type",
+                "operationId": "getByResourceType",
+                "parameters": [
+                    {
+                        "name": "resourceType",
+                        "in": "path",
+                        "description": "Resource type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resources retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/resource/item/{itemId}": {
+            "get": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Get resources by item",
+                "description": "Get resources by item ID",
+                "operationId": "getByItemId",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "description": "Item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resources retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/mappings": {
+            "get": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Get all mappings",
+                "description": "Get all data mappings",
+                "operationId": "getAll_2",
+                "responses": {
+                    "200": {
+                        "description": "Mappings retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/mappings/item/{itemId}": {
+            "get": {
+                "tags": [
+                    "Mappings"
+                ],
+                "summary": "Get mappings by item",
+                "description": "Get mappings by item ID",
+                "operationId": "getByItemId_1",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "description": "Item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mappings retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get all job configs",
+                "description": "Get all job configurations",
+                "operationId": "getAll_3",
+                "responses": {
+                    "200": {
+                        "description": "Job configs retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/writer-configs": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get writer configs",
+                "description": "Get supported writer configurations",
+                "operationId": "getWriterConfigs",
+                "responses": {
+                    "200": {
+                        "description": "Writer configs retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/writer-configs/{resourceType}": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get writer config details",
+                "description": "Get writer configuration details by resource type",
+                "operationId": "getWriterConfigDetails",
+                "parameters": [
+                    {
+                        "name": "resourceType",
+                        "in": "path",
+                        "description": "Resource type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Writer config details retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/reader-configs": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get reader configs",
+                "description": "Get supported reader configurations",
+                "operationId": "getReaderConfigs",
+                "responses": {
+                    "200": {
+                        "description": "Reader configs retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/reader-configs/{resourceType}": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get reader config details",
+                "description": "Get reader configuration details by resource type",
+                "operationId": "getReaderConfigDetails",
+                "parameters": [
+                    {
+                        "name": "resourceType",
+                        "in": "path",
+                        "description": "Resource type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reader config details retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/parent/{jobId}": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get job configs by parent",
+                "description": "Get job configurations by parent job ID",
+                "operationId": "getByParent",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Parent Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job configs retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/dataflow/{itemId}": {
+            "get": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Get job configs by item",
+                "description": "Get all job configurations for an item",
+                "operationId": "getAllByItemId",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "description": "Item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job configs retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/history/{applicationId}": {
+            "get": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Get job history by date",
+                "description": "Get job history for a specific date",
+                "operationId": "getJobhistoryBydate",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "Application ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Date",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job history retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/history/{applicationId}/range": {
+            "get": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Get job history by date range",
+                "description": "Get job history for a date range",
+                "operationId": "getJobHistoryByDateRange",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "Application ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "description": "Start date",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "description": "End date",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job history retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/deploy/runningConfig/{jobId}": {
+            "get": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Get job config by job ID",
+                "description": "Get running job configuration by job ID",
+                "operationId": "getJobConfigById",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job config retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/deploy/runningConfig/scheduleId/{schedulerId}": {
+            "get": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Get job config by scheduler ID",
+                "description": "Get running job configuration by scheduler ID",
+                "operationId": "getJobConfigBySchedulerId",
+                "parameters": [
+                    {
+                        "name": "schedulerId",
+                        "in": "path",
+                        "description": "Scheduler ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job config retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/deploy/job/{jobId}": {
+            "get": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Get deployments by job ID",
+                "description": "Get all deployments for a job",
+                "operationId": "getDeploysByJobId",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deployments retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Deploy"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/deploy/app/{applicationId}": {
+            "get": {
+                "tags": [
+                    "Deploy"
+                ],
+                "summary": "Get deployments by application",
+                "description": "Get all deployments for an application",
+                "operationId": "getAllDeploys",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "Application ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deployments retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Deploy"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/datatable/{applicationId}": {
+            "get": {
+                "tags": [
+                    "Datatable"
+                ],
+                "summary": "Get datatables by application",
+                "description": "Get all datatables for an application",
+                "operationId": "getAll_4",
+                "parameters": [
+                    {
+                        "name": "applicationId",
+                        "in": "path",
+                        "description": "Application ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datatables retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/{configFieldId}": {
+            "get": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Get field definition by ID",
+                "description": "Retrieve a field definition by its ID",
+                "operationId": "get_4",
+                "parameters": [
+                    {
+                        "name": "configFieldId",
+                        "in": "path",
+                        "description": "Field definition ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Field definition not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Field definition found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/type/{typeName}": {
+            "get": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Get field definition by type name",
+                "description": "Retrieve a field definition by its type name",
+                "operationId": "getByTypeName",
+                "parameters": [
+                    {
+                        "name": "typeName",
+                        "in": "path",
+                        "description": "Type name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Field definition not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Field definition found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/provider": {
+            "get": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Get field definitions by provider",
+                "description": "Get all field definitions for a specific provider",
+                "operationId": "getByProvider",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "query",
+                        "description": "Provider type",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Provider type enum",
+                            "enum": [
+                                "CONNECTION",
+                                "SOURCE",
+                                "TARGET"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Field definitions retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid provider",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/name/{typeName}": {
+            "get": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "operationId": "getByTypeNameOld",
+                "parameters": [
+                    {
+                        "name": "typeName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/configFields/active": {
+            "get": {
+                "tags": [
+                    "Field Definitions"
+                ],
+                "summary": "Get active field definitions",
+                "description": "Get all active field definitions",
+                "operationId": "getAllActive",
+                "responses": {
+                    "200": {
+                        "description": "Active field definitions retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/activities/websocket-info": {
+            "get": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Get WebSocket info",
+                "description": "Get WebSocket connection information",
+                "operationId": "getWebSocketInfo",
+                "responses": {
+                    "200": {
+                        "description": "WebSocket info retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/activities/test": {
+            "get": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Test activity",
+                "description": "Test activity logging",
+                "operationId": "testActivity",
+                "responses": {
+                    "200": {
+                        "description": "Activity logged successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/activities/recent": {
+            "get": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Get recent activities",
+                "description": "Get recent activity logs",
+                "operationId": "getRecentActivities",
+                "responses": {
+                    "200": {
+                        "description": "Recent activities retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActivityLog"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/activities/all": {
+            "get": {
+                "tags": [
+                    "Activities"
+                ],
+                "summary": "Get all activities",
+                "description": "Get all activity logs",
+                "operationId": "getAllActivities",
+                "responses": {
+                    "200": {
+                        "description": "All activities retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActivityLog"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/search": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Global search",
+                "description": "Search across all entities",
+                "operationId": "globalSearch",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Search query (min 3 characters)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results retrieved",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Query too short",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/remove/{jobId}": {
+            "delete": {
+                "tags": [
+                    "Dataloader"
+                ],
+                "summary": "Remove scheduled job",
+                "description": "Remove a scheduled job",
+                "operationId": "RemoveJob",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job removed successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/job/dataflow/{parentId}": {
+            "delete": {
+                "tags": [
+                    "Job Config"
+                ],
+                "summary": "Delete item",
+                "description": "Delete item and associated job configs",
+                "operationId": "deleteInItemlist",
+                "parameters": [
+                    {
+                        "name": "parentId",
+                        "in": "path",
+                        "description": "Parent ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dataloader/datatable/{datatableId}": {
+            "delete": {
+                "tags": [
+                    "Datatable"
+                ],
+                "summary": "Delete datatable",
+                "description": "Delete a datatable by ID",
+                "operationId": "deleteById",
+                "parameters": [
+                    {
+                        "name": "datatableId",
+                        "in": "path",
+                        "description": "Datatable ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datatable deleted successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Datatable not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Resource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "resourceType": {
+                        "type": "string"
+                    },
+                    "resourceName": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "configuration": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object"
+                        }
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "lastTestedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "isActive": {
+                        "type": "boolean"
+                    },
+                    "displayOrder": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "itemId": {
+                        "type": "string"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "updatedBy": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "deletedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "ErrorDefinition": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "REQUEST",
+                            "BUSINESS",
+                            "SECURITY",
+                            "CONFLICT",
+                            "RESOURCE"
+                        ]
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "FATAL",
+                            "NONFATAL"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "httpStatus": {
+                        "type": "string",
+                        "enum": [
+                            "100 CONTINUE",
+                            "101 SWITCHING_PROTOCOLS",
+                            "102 PROCESSING",
+                            "103 EARLY_HINTS",
+                            "103 CHECKPOINT",
+                            "200 OK",
+                            "201 CREATED",
+                            "202 ACCEPTED",
+                            "203 NON_AUTHORITATIVE_INFORMATION",
+                            "204 NO_CONTENT",
+                            "205 RESET_CONTENT",
+                            "206 PARTIAL_CONTENT",
+                            "207 MULTI_STATUS",
+                            "208 ALREADY_REPORTED",
+                            "226 IM_USED",
+                            "300 MULTIPLE_CHOICES",
+                            "301 MOVED_PERMANENTLY",
+                            "302 FOUND",
+                            "302 MOVED_TEMPORARILY",
+                            "303 SEE_OTHER",
+                            "304 NOT_MODIFIED",
+                            "305 USE_PROXY",
+                            "307 TEMPORARY_REDIRECT",
+                            "308 PERMANENT_REDIRECT",
+                            "400 BAD_REQUEST",
+                            "401 UNAUTHORIZED",
+                            "402 PAYMENT_REQUIRED",
+                            "403 FORBIDDEN",
+                            "404 NOT_FOUND",
+                            "405 METHOD_NOT_ALLOWED",
+                            "406 NOT_ACCEPTABLE",
+                            "407 PROXY_AUTHENTICATION_REQUIRED",
+                            "408 REQUEST_TIMEOUT",
+                            "409 CONFLICT",
+                            "410 GONE",
+                            "411 LENGTH_REQUIRED",
+                            "412 PRECONDITION_FAILED",
+                            "413 PAYLOAD_TOO_LARGE",
+                            "413 REQUEST_ENTITY_TOO_LARGE",
+                            "414 URI_TOO_LONG",
+                            "414 REQUEST_URI_TOO_LONG",
+                            "415 UNSUPPORTED_MEDIA_TYPE",
+                            "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+                            "417 EXPECTATION_FAILED",
+                            "418 I_AM_A_TEAPOT",
+                            "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+                            "420 METHOD_FAILURE",
+                            "421 DESTINATION_LOCKED",
+                            "422 UNPROCESSABLE_ENTITY",
+                            "423 LOCKED",
+                            "424 FAILED_DEPENDENCY",
+                            "425 TOO_EARLY",
+                            "426 UPGRADE_REQUIRED",
+                            "428 PRECONDITION_REQUIRED",
+                            "429 TOO_MANY_REQUESTS",
+                            "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+                            "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+                            "500 INTERNAL_SERVER_ERROR",
+                            "501 NOT_IMPLEMENTED",
+                            "502 BAD_GATEWAY",
+                            "503 SERVICE_UNAVAILABLE",
+                            "504 GATEWAY_TIMEOUT",
+                            "505 HTTP_VERSION_NOT_SUPPORTED",
+                            "506 VARIANT_ALSO_NEGOTIATES",
+                            "507 INSUFFICIENT_STORAGE",
+                            "508 LOOP_DETECTED",
+                            "509 BANDWIDTH_LIMIT_EXCEEDED",
+                            "510 NOT_EXTENDED",
+                            "511 NETWORK_AUTHENTICATION_REQUIRED"
+                        ]
+                    },
+                    "sourceApplication": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Response": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object"
+                    },
+                    "causedBy": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ErrorDefinition"
+                        }
+                    }
+                }
+            },
+            "InputField": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "fieldLength": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "object"
+                    },
+                    "processors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "udtField": {
+                        "type": "string"
+                    },
+                    "rowCondenser": {
+                        "type": "string",
+                        "enum": [
+                            "FIRST",
+                            "LAST",
+                            "CONCATENATE"
+                        ]
+                    },
+                    "columnIndex": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "expectedValue": {
+                        "type": "string"
+                    },
+                    "documentPath": {
+                        "type": "string"
+                    },
+                    "jsonField": {
+                        "type": "boolean"
+                    },
+                    "keepJsonOuterObject": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "Mappings": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "updatedBy": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "mappingName": {
+                        "type": "string"
+                    },
+                    "mappings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InputField"
+                        }
+                    },
+                    "isActive": {
+                        "type": "boolean"
+                    },
+                    "itemId": {
+                        "type": "string"
+                    },
+                    "deletedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "JobConfig": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "updatedBy": {
+                        "type": "string"
+                    },
+                    "jobId": {
+                        "type": "string"
+                    },
+                    "parentJobId": {
+                        "type": "string"
+                    },
+                    "drafted": {
+                        "type": "boolean"
+                    },
+                    "jobName": {
+                        "type": "string"
+                    },
+                    "jobDescription": {
+                        "type": "string"
+                    },
+                    "impacts": {
+                        "type": "string"
+                    },
+                    "jobSeverity": {
+                        "type": "string"
+                    },
+                    "chunkSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "mappingId": {
+                        "type": "string"
+                    },
+                    "sourceConfig": {
+                        "$ref": "#/components/schemas/SourceConfig"
+                    },
+                    "targetConfig": {
+                        "$ref": "#/components/schemas/TargetConfig"
+                    },
+                    "scheduled": {
+                        "type": "boolean"
+                    },
+                    "schedule": {
+                        "type": "string"
+                    },
+                    "published": {
+                        "type": "boolean"
+                    },
+                    "publishedVersion": {
+                        "type": "string"
+                    },
+                    "deployedVersion": {
+                        "type": "string"
+                    },
+                    "deployed": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "isActive": {
+                        "type": "boolean"
+                    },
+                    "itemId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SourceConfig": {
+                "type": "object",
+                "properties": {
+                    "sourceId": {
+                        "type": "string"
+                    },
+                    "sourceType": {
+                        "type": "string"
+                    },
+                    "configFields": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object"
+                        }
+                    },
+                    "predefinedFields": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "TargetConfig": {
+                "type": "object",
+                "properties": {
+                    "targetId": {
+                        "type": "string"
+                    },
+                    "targetType": {
+                        "type": "string"
+                    },
+                    "configFields": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object"
+                        }
+                    },
+                    "predefinedFields": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "Item": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "updatedBy": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "parentId": {
+                        "type": "string"
+                    },
+                    "parentFolderId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "itemType": {
+                        "type": "string",
+                        "enum": [
+                            "APPLICATIONS",
+                            "RESOURCES",
+                            "DATAFLOWS",
+                            "STORAGE",
+                            "NOTIFICATION",
+                            "SCHEDULER",
+                            "API_ENDPOINT",
+                            "VARIABLES",
+                            "SECURITY",
+                            "AZURE_CONFIGS",
+                            "DATATABLES",
+                            "MAPPINGS"
+                        ]
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "itemReference": {
+                        "type": "string"
+                    },
+                    "deletable": {
+                        "type": "boolean"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "root": {
+                        "type": "boolean"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Item"
+                        }
+                    }
+                }
+            },
+            "Deploy": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "updatedBy": {
+                        "type": "string"
+                    },
+                    "deployId": {
+                        "type": "string"
+                    },
+                    "parentJobId": {
+                        "type": "string"
+                    },
+                    "jobId": {
+                        "type": "string"
+                    },
+                    "deployName": {
+                        "type": "string"
+                    },
+                    "manualRun": {
+                        "type": "boolean"
+                    },
+                    "schedule": {
+                        "type": "boolean"
+                    },
+                    "scheduleExpression": {
+                        "type": "string"
+                    },
+                    "schedulerId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "schedulerName": {
+                        "type": "string"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "deletedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "ConfigField": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "defaultValue": {
+                        "type": "object"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "helpText": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "options": {
+                        "type": "string"
+                    },
+                    "min": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "max": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pattern": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FieldDefinition": {
+                "type": "object",
+                "description": "Field definition entity",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier",
+                        "example": "Xkdsancksancsak-ds"
+                    },
+                    "typeName": {
+                        "type": "string",
+                        "description": "Type name",
+                        "example": "SQL Server"
+                    },
+                    "provider": {
+                        "type": "string",
+                        "description": "Provider type",
+                        "enum": [
+                            "CONNECTION",
+                            "SOURCE",
+                            "TARGET"
+                        ]
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Description"
+                    },
+                    "configFields": {
+                        "type": "array",
+                        "description": "Configuration fields",
+                        "items": {
+                            "$ref": "#/components/schemas/ConfigField"
+                        }
+                    },
+                    "displayOrder": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Display order"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "description": "Active status"
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "Created by"
+                    },
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Created timestamp"
+                    },
+                    "updatedBy": {
+                        "type": "string",
+                        "description": "Updated by"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Updated timestamp"
+                    },
+                    "deletedAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Deleted timestamp"
+                    }
+                }
+            },
+            "Datatable": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "updatedBy": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "datatableId": {
+                        "type": "string"
+                    },
+                    "applicationId": {
+                        "type": "string"
+                    },
+                    "deletedAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "ActivityLog": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "activityType": {
+                        "type": "string"
+                    },
+                    "entityType": {
+                        "type": "string"
+                    },
+                    "entityId": {
+                        "type": "string"
+                    },
+                    "entityName": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            }
+        }
+    }
+}

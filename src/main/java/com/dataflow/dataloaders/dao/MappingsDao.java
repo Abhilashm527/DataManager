@@ -28,7 +28,8 @@ public class MappingsDao extends GenericDaoImpl<Mappings, Identifier, String> {
     public static final String MAPPINGS_ID_PK = "mappings_pkey";
     public static final String UNIQUE_MAPPING_NAME = "unique_mapping_name_per_item";
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
@@ -61,8 +62,7 @@ public class MappingsDao extends GenericDaoImpl<Mappings, Identifier, String> {
     public String insertMapping(Mappings model, Identifier identifier) {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    getSql("Mappings.create")
-            );
+                    getSql("Mappings.create"));
             int idx = 1;
             ps.setObject(idx++, model.getId());
             ps.setObject(idx++, model.getMappingName());
@@ -104,8 +104,7 @@ public class MappingsDao extends GenericDaoImpl<Mappings, Identifier, String> {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("Mappings.getById"),
                     mappingsRowMapper,
-                    identifier.getWord()
-            ));
+                    identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -116,8 +115,7 @@ public class MappingsDao extends GenericDaoImpl<Mappings, Identifier, String> {
             return jdbcTemplate.query(
                     getSql("Mappings.getByItemId"),
                     mappingsRowMapper,
-                    itemId
-            );
+                    itemId);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -210,7 +208,8 @@ public class MappingsDao extends GenericDaoImpl<Mappings, Identifier, String> {
     }
 
     @Override
-    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues, String... delimitter) {
+    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues,
+            String... delimitter) {
         return super.setInvalues(query, replaceString, inValues, delimitter);
     }
 
@@ -277,8 +276,8 @@ public class MappingsDao extends GenericDaoImpl<Mappings, Identifier, String> {
     public List<java.util.Map<String, Object>> searchByDescription(String query, Identifier identifier) {
         try {
             String sql = "SELECT mapping_id, mapping_name FROM mappings " +
-                        "WHERE LOWER(mapping_name) LIKE LOWER(?) " +
-                        "AND deleted_at IS NULL ORDER BY mapping_name";
+                    "WHERE LOWER(mapping_name) LIKE LOWER(?) " +
+                    "AND deleted_at IS NULL ORDER BY mapping_name";
             String searchPattern = "%" + query + "%";
             return jdbcTemplate.queryForList(sql, searchPattern);
         } catch (Exception e) {

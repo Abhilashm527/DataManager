@@ -1,10 +1,12 @@
 package com.dataflow.dataloaders.dao;
 
 import com.dataflow.dataloaders.entity.ConfigField;
-import com.dataflow.dataloaders.entity.ResourceType;
+import com.dataflow.dataloaders.entity.FieldDefinition;
+import com.dataflow.dataloaders.enums.Provider;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
+import com.dataflow.dataloaders.util.IdGenerator;
 import com.dataflow.dataloaders.util.Identifier;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,26 +27,28 @@ import java.util.Set;
 
 @Slf4j
 @Repository
-public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, String> {
+public class FieldDefinitionDao extends GenericDaoImpl<FieldDefinition, Identifier, String> {
 
-    public static final String RESOURCE_TYPE_ID = "resource_type_id_pk";
+    public static final String FIELD_DEFINITION_ID = "field_definition_id_pk";
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
+    @Autowired
+    private IdGenerator idGenerator;
 
     @Override
-    public ResourceType create(@NotNull ResourceType model, Identifier identifier) {
+    public FieldDefinition create(@NotNull FieldDefinition model, Identifier identifier) {
         return super.create(model, identifier);
     }
 
     @Override
-    public Optional<ResourceType> createV1(ResourceType model, Identifier identifier) {
+    public Optional<FieldDefinition> createV1(FieldDefinition model, Identifier identifier) {
         try {
-            // Generate custom ID if not present: RT-{SerialNumber}
             if (model.getId() == null || model.getId().isEmpty()) {
-                model.setId(generateResourceTypeId());
+                model.setId(idGenerator.generateId());
             }
             String resourceTypeId = insertResourceType(model, identifier);
             return getV1(new Identifier(resourceTypeId));
@@ -56,115 +60,94 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
         throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION);
     }
 
-    /**
-     * Generate resource type ID in format: RT-{SerialNumber}
-     * Example: RT-000001, RT-000002, etc.
-     */
-    private String generateResourceTypeId() {
-        try {
-            Long maxSerial = jdbcTemplate.queryForObject(
-                    getSql("ResourceType.getMaxSerial"),
-                    Long.class
-            );
-            long nextSerial = (maxSerial != null ? maxSerial : 0L) + 1;
-            String resourceTypeId = String.format("RT-%06d", nextSerial);
-            log.info("Generated resource type ID: {}", resourceTypeId);
-            return resourceTypeId;
-        } catch (Exception e) {
-            log.error("Error generating resource type ID", e);
-            throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION,
-                    "Failed to generate resource type ID");
-        }
-    }
-
-    public String insertResourceType(ResourceType model, Identifier identifier) {
+    public String insertResourceType(FieldDefinition model, Identifier identifier) {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    getSql("ResourceType.create")
-            );
+                    getSql("FieldDefinition.create"));
             int idx = 1;
             ps.setObject(idx++, model.getId());
             ps.setObject(idx++, model.getTypeName());
+            ps.setObject(idx++, model.getProvider() != null ? model.getProvider().name() : null);
             ps.setObject(idx++, model.getDescription());
-
-            // ConfigFields as JSON string
             ps.setObject(idx++, toJson(model.getConfigFields()));
-
-            // Display order
             ps.setObject(idx++, model.getDisplayOrder());
-
-            // Status
             ps.setObject(idx++, model.getIsActive());
-
-            // Audit fields
             ps.setObject(idx++, model.getCreatedBy());
             ps.setObject(idx++, DateUtils.getUnixTimestampInUTC());
-
             return ps;
         });
-
         return model.getId();
     }
 
     @Override
-    public Long insert(ResourceType model, Identifier identifier) {
+    public Long insert(FieldDefinition model, Identifier identifier) {
         return 0L;
     }
 
     @Override
-    public ResourceType upsert(ResourceType model, Identifier identifier) {
+    public FieldDefinition upsert(FieldDefinition model, Identifier identifier) {
         return super.upsert(model, identifier);
     }
 
     @Override
-    public ResourceType upsert(ResourceType model, Identifier identifier, String whereClause) {
+    public FieldDefinition upsert(FieldDefinition model, Identifier identifier, String whereClause) {
         return super.upsert(model, identifier, whereClause);
     }
 
     @Override
-    public ResourceType get(@NotNull Identifier identifier) {
+    public FieldDefinition get(@NotNull Identifier identifier) {
         return super.get(identifier);
     }
 
     @Override
-    public Optional<ResourceType> getV1(Identifier identifier) {
+    public Optional<FieldDefinition> getV1(Identifier identifier) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("ResourceType.getById"),
-                    resourceTypeRowMapper,
-                    identifier.getWord()
-            ));
+                    getSql("FieldDefinition.getById"),
+                    fieldDefinitionRowMapper,
+                    identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     @Override
-    public ResourceType get(Identifier identifier, String whereClause) {
+    public FieldDefinition get(Identifier identifier, String whereClause) {
         return super.get(identifier, whereClause);
     }
 
     @Override
-    public Optional<ResourceType> getV1(Identifier identifier, String whereClause) {
+    public Optional<FieldDefinition> getV1(Identifier identifier, String whereClause) {
         return Optional.empty();
     }
 
-    public Optional<ResourceType> getByTypeName(String typeName) {
+    public Optional<FieldDefinition> getByTypeName(String typeName) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("ResourceType.getByTypeName"),
-                    resourceTypeRowMapper,
-                    typeName
-            ));
+                    getSql("FieldDefinition.getByTypeName"),
+                    fieldDefinitionRowMapper,
+                    typeName));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public int updateResourceType(ResourceType resourceType, Identifier identifier) {
+    public Optional<FieldDefinition> getByTypeNameAndProvider(String typeName, Provider provider) {
         try {
-            return jdbcTemplate.update(getSql("ResourceType.updateById"),
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    getSql("FieldDefinition.getByTypeNameAndProvider"),
+                    fieldDefinitionRowMapper,
+                    typeName, provider != null ? provider.name() : null));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public int updateResourceType(FieldDefinition resourceType, Identifier identifier) {
+        try {
+            return jdbcTemplate.update(getSql("FieldDefinition.updateById"),
                     resourceType.getTypeName(),
+                    resourceType.getProvider() != null ? resourceType.getProvider().name() : null,
                     resourceType.getDescription(),
                     toJson(resourceType.getConfigFields()),
                     resourceType.getDisplayOrder(),
@@ -179,7 +162,7 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
 
     public int updateDisplayOrder(String resourceTypeId, long displayOrder) {
         try {
-            return jdbcTemplate.update(getSql("ResourceType.updateDisplayOrder"),
+            return jdbcTemplate.update(getSql("FieldDefinition.updateDisplayOrder"),
                     displayOrder,
                     "admin",
                     DateUtils.getUnixTimestampInUTC(),
@@ -191,7 +174,7 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
 
     public int updateResourceTypeStatus(String resourceTypeId, Boolean isActive) {
         try {
-            return jdbcTemplate.update(getSql("ResourceType.updateStatus"),
+            return jdbcTemplate.update(getSql("FieldDefinition.updateStatus"),
                     isActive,
                     "admin",
                     DateUtils.getUnixTimestampInUTC(),
@@ -202,30 +185,36 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     }
 
     @Override
-    public List<ResourceType> list(Identifier identifier) {
+    public List<FieldDefinition> list(Identifier identifier) {
         try {
-            return jdbcTemplate.query(getSql("ResourceType.getAll"), resourceTypeRowMapper);
+            return jdbcTemplate.query(getSql("FieldDefinition.getAll"), fieldDefinitionRowMapper);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
     }
 
-    public List<ResourceType> listActive() {
+    public List<FieldDefinition> listActive() {
         try {
-            return jdbcTemplate.query(getSql("ResourceType.getAllActive"), resourceTypeRowMapper);
+            return jdbcTemplate.query(getSql("FieldDefinition.getAllActive"), fieldDefinitionRowMapper);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
     }
 
-
-
-    public List<ResourceType> listSortedByOrder(Identifier identifier) {
+    public List<FieldDefinition> listSortedByOrder(Identifier identifier) {
         try {
             return jdbcTemplate.query(
-                    getSql("ResourceType.getAllSortedByOrder"),
-                    resourceTypeRowMapper
-            );
+                    getSql("FieldDefinition.getAllSortedByOrder"),
+                    fieldDefinitionRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+    }
+
+    public List<FieldDefinition> getByProvider(Provider provider) {
+        try {
+            return jdbcTemplate.query(getSql("FieldDefinition.getByProvider"), fieldDefinitionRowMapper,
+                    provider.name());
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -234,9 +223,8 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     public long getMaxDisplayOrder() {
         try {
             Long maxOrder = jdbcTemplate.queryForObject(
-                    getSql("ResourceType.getMaxDisplayOrder"),
-                    Long.class
-            );
+                    getSql("FieldDefinition.getMaxDisplayOrder"),
+                    Long.class);
             return maxOrder != null ? maxOrder : 0L;
         } catch (Exception e) {
             log.warn("Error getting max display order, returning 0", e);
@@ -245,7 +233,7 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     }
 
     @Override
-    public List<ResourceType> list(Identifier identifier, String whereClause) {
+    public List<FieldDefinition> list(Identifier identifier, String whereClause) {
         return List.of();
     }
 
@@ -255,24 +243,25 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     }
 
     @Override
-    public ResourceType update(ResourceType transientObject, Identifier identifier) {
+    public FieldDefinition update(FieldDefinition transientObject, Identifier identifier) {
         return super.update(transientObject, identifier);
     }
 
     @Override
-    public Optional<ResourceType> updateV1(ResourceType transientObject, Identifier identifier) {
+    public Optional<FieldDefinition> updateV1(FieldDefinition transientObject, Identifier identifier) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<ResourceType> hotUpdate(ResourceType transientObject, Identifier identifier, String whereClause) {
+    public Optional<FieldDefinition> hotUpdate(FieldDefinition transientObject, Identifier identifier,
+            String whereClause) {
         return Optional.empty();
     }
 
     @Override
-    public int delete(ResourceType resourceType) {
+    public int delete(FieldDefinition resourceType) {
         try {
-            return jdbcTemplate.update(getSql("ResourceType.deleteById"),
+            return jdbcTemplate.update(getSql("FieldDefinition.deleteById"),
                     resourceType.getUpdatedBy() != null ? resourceType.getUpdatedBy() : "admin",
                     DateUtils.getUnixTimestampInUTC(),
                     DateUtils.getUnixTimestampInUTC(),
@@ -283,7 +272,7 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     }
 
     @Override
-    public int deleteV1(Optional<ResourceType> persistentObject) {
+    public int deleteV1(Optional<FieldDefinition> persistentObject) {
         return super.deleteV1(persistentObject);
     }
 
@@ -298,7 +287,8 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     }
 
     @Override
-    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues, String... delimitter) {
+    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues,
+            String... delimitter) {
         return super.setInvalues(query, replaceString, inValues, delimitter);
     }
 
@@ -306,8 +296,6 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     public String setInvalues(String query, String replaceString, Set<String> inValues) {
         return super.setInvalues(query, replaceString, inValues);
     }
-
-    // ==================== Helper Methods ====================
 
     private String toJson(List<ConfigField> list) {
         if (list == null) {
@@ -326,7 +314,8 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
             return null;
         }
         try {
-            return objectMapper.readValue(json, new TypeReference<List<ConfigField>>() {});
+            return objectMapper.readValue(json, new TypeReference<List<ConfigField>>() {
+            });
         } catch (JsonProcessingException e) {
             log.error("Error parsing JSON to list", e);
             return null;
@@ -336,9 +325,9 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
     private void handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         String errorMessage = e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage();
         if (errorMessage != null) {
-            if (errorMessage.contains(RESOURCE_TYPE_ID)) {
+            if (errorMessage.contains(FIELD_DEFINITION_ID)) {
                 throw new DataloadersException(ErrorFactory.DUPLICATION,
-                        "A Resource Type with this ID already exists");
+                        "A Field Definition with this ID already exists");
             }
             if (errorMessage.contains("type_name")) {
                 throw new DataloadersException(ErrorFactory.DUPLICATION,
@@ -354,31 +343,40 @@ public class ResourceTypeDao extends GenericDaoImpl<ResourceType, Identifier, St
         throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
     }
 
-    // ==================== Row Mapper ====================
+    RowMapper<FieldDefinition> fieldDefinitionRowMapper = (rs, rowNum) -> {
+        FieldDefinition fieldDefinition = new FieldDefinition();
 
-    RowMapper<ResourceType> resourceTypeRowMapper = (rs, rowNum) -> {
-        ResourceType resourceType = new ResourceType();
+        fieldDefinition.setId(rs.getObject("field_definition_id") != null ? rs.getString("field_definition_id") : null);
+        fieldDefinition.setTypeName(rs.getObject("type_name") != null ? rs.getString("type_name") : null);
 
-        resourceType.setId(rs.getObject("resource_type_id") != null ? rs.getString("resource_type_id") : null);
-        resourceType.setTypeName(rs.getObject("type_name") != null ? rs.getString("type_name") : null);
-        resourceType.setDescription(rs.getObject("description") != null ? rs.getString("description") : null);
+        // Handle provider enum
+        String providerStr = rs.getObject("provider") != null ? rs.getString("provider") : null;
+        if (providerStr != null) {
+            try {
+                fieldDefinition.setProvider(Provider.valueOf(providerStr));
+            } catch (IllegalArgumentException e) {
+                fieldDefinition.setProvider(null);
+            }
+        }
+
+        fieldDefinition.setDescription(rs.getObject("description") != null ? rs.getString("description") : null);
 
         // Parse configFields JSON
         String configFieldsJson = rs.getObject("config_fields") != null ? rs.getString("config_fields") : null;
-        resourceType.setConfigFields(fromJson(configFieldsJson));
+        fieldDefinition.setConfigFields(fromJson(configFieldsJson));
 
         // Display order
-        resourceType.setDisplayOrder(rs.getObject("display_order") != null ? rs.getLong("display_order") : 0L);
+        fieldDefinition.setDisplayOrder(rs.getObject("display_order") != null ? rs.getLong("display_order") : 0L);
 
         // Status
-        resourceType.setIsActive(rs.getObject("is_active") != null ? rs.getBoolean("is_active") : null);
+        fieldDefinition.setIsActive(rs.getObject("is_active") != null ? rs.getBoolean("is_active") : null);
 
         // Audit fields
-        resourceType.setCreatedBy(rs.getObject("created_by") != null ? rs.getString("created_by") : null);
-        resourceType.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
-        resourceType.setUpdatedBy(rs.getObject("updated_by") != null ? rs.getString("updated_by") : null);
-        resourceType.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        fieldDefinition.setCreatedBy(rs.getObject("created_by") != null ? rs.getString("created_by") : null);
+        fieldDefinition.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        fieldDefinition.setUpdatedBy(rs.getObject("updated_by") != null ? rs.getString("updated_by") : null);
+        fieldDefinition.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
 
-        return resourceType;
+        return fieldDefinition;
     };
 }

@@ -33,7 +33,8 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
     public static final String JOB_CONFIG_ID_PK = "job_configs_pkey";
     public static final String UNIQUE_JOB_NAME = "unique_job_name_per_item";
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
@@ -66,8 +67,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
     public String insertJobConfig(JobConfig model, Identifier identifier) {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    getSql("JobConfig.create")
-            );
+                    getSql("JobConfig.create"));
             int idx = 1;
             ps.setObject(idx++, model.getJobId());
             ps.setObject(idx++, model.getParentJobId());
@@ -112,8 +112,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("JobConfig.getById"),
                     jobConfigRowMapper,
-                    identifier.getWord()
-            ));
+                    identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -124,8 +123,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("JobConfig.getLatestByParentId"),
                     jobConfigRowMapper,
-                    identifier.getWord()
-            ));
+                    identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -159,7 +157,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
         }
     }
 
-    public int updateJobConfigParentJobId(JobConfig jobConfig,Identifier identifier) {
+    public int updateJobConfigParentJobId(JobConfig jobConfig, Identifier identifier) {
         try {
             return jdbcTemplate.update(getSql("JobConfig.updateParentJobId"),
                     jobConfig.getParentJobId(),
@@ -291,8 +289,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("JobConfig.getPublishedVersion"),
                     jobConfigRowMapper,
-                    parentJobId, version
-            ));
+                    parentJobId, version));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -303,8 +300,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("JobConfig.getLatestPublishedVersion"),
                     String.class,
-                    parentJobId
-            ));
+                    parentJobId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -315,8 +311,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("JobConfig.getLatestDeployedVersion"),
                     String.class,
-                    parentJobId
-            ));
+                    parentJobId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -325,7 +320,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
     // Row Mapper
     RowMapper<JobConfig> jobConfigRowMapper = (rs, rowNum) -> {
         JobConfig jobConfig = new JobConfig();
-        
+
         jobConfig.setJobId(rs.getString("job_id"));
         jobConfig.setParentJobId(rs.getString("parent_job_id"));
         jobConfig.setJobName(rs.getString("job_name"));
@@ -334,10 +329,10 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
         jobConfig.setJobSeverity(rs.getString("job_severity"));
         jobConfig.setChunkSize(rs.getInt("chunk_size"));
         jobConfig.setMappingId(rs.getString("mapping_id"));
-        
+
         jobConfig.setSourceConfig(fromJsonSourceConfig(rs.getString("source_config")));
         jobConfig.setTargetConfig(fromJsonTargetConfig(rs.getString("target_config")));
-        
+
         jobConfig.setScheduled(rs.getBoolean("scheduled"));
         jobConfig.setSchedule(rs.getString("schedule"));
         jobConfig.setPublished(rs.getBoolean("published"));
@@ -353,7 +348,7 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
         jobConfig.setCreatedAt(rs.getLong("created_at"));
         jobConfig.setUpdatedBy(rs.getString("updated_by"));
         jobConfig.setUpdatedAt(rs.getLong("updated_at"));
-        
+
         return jobConfig;
     };
 
@@ -424,7 +419,8 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
     }
 
     @Override
-    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues, String... delimitter) {
+    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues,
+            String... delimitter) {
         return super.setInvalues(query, replaceString, inValues, delimitter);
     }
 
@@ -436,8 +432,8 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
     public List<java.util.Map<String, Object>> searchByNameOrDescription(String query, Identifier identifier) {
         try {
             String sql = "SELECT job_id, job_name, job_description, status FROM job_configs " +
-                        "WHERE (LOWER(job_name) LIKE LOWER(?) OR LOWER(job_description) LIKE LOWER(?)) " +
-                        "AND deleted_at IS NULL ORDER BY job_name";
+                    "WHERE (LOWER(job_name) LIKE LOWER(?) OR LOWER(job_description) LIKE LOWER(?)) " +
+                    "AND deleted_at IS NULL ORDER BY job_name";
             String searchPattern = "%" + query + "%";
             return jdbcTemplate.queryForList(sql, searchPattern, searchPattern);
         } catch (Exception e) {
