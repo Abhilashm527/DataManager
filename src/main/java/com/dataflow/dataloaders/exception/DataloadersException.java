@@ -15,10 +15,14 @@ public class DataloadersException extends RuntimeException {
 
     public DataloadersException(String message) {
         super(message);
+        this.errorDefinition = ErrorFactory.INTERNAL_SERVER_ERROR;
+        this.errorDefinition.setMessage(message);
     }
 
     public DataloadersException(Throwable cause) {
         super(cause);
+        this.errorDefinition = ErrorFactory.INTERNAL_SERVER_ERROR;
+        this.errorDefinition.setMessage(cause.getMessage());
     }
 
     public DataloadersException(ErrorDefinition errorDefinition, String message) {
@@ -30,7 +34,8 @@ public class DataloadersException extends RuntimeException {
         super(message, cause);
     }
 
-    public DataloadersException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DataloadersException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

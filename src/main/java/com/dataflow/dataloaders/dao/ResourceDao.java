@@ -30,7 +30,8 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
     public static final String RESOURCE_ID_PK = "resources_pkey";
     public static final String UNIQUE_RESOURCE_NAME = "unique_resource_name_per_item";
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
@@ -63,8 +64,7 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
     public String insertResource(Resource model, Identifier identifier) {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    getSql("Resource.create")
-            );
+                    getSql("Resource.create"));
             int idx = 1;
             ps.setObject(idx++, model.getId());
             ps.setObject(idx++, model.getResourceType());
@@ -119,8 +119,7 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
                     getSql("Resource.getById"),
                     resourceRowMapper,
-                    identifier.getWord()
-            ));
+                    identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -200,8 +199,7 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
             return jdbcTemplate.query(
                     getSql("Resource.getByResourceType"),
                     resourceRowMapper,
-                    resourceType
-            );
+                    resourceType);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -211,8 +209,7 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
         try {
             return jdbcTemplate.query(
                     getSql("Resource.getAllSortedByOrder"),
-                    resourceRowMapper
-            );
+                    resourceRowMapper);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -222,8 +219,7 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
         try {
             Long maxOrder = jdbcTemplate.queryForObject(
                     getSql("Resource.getMaxDisplayOrder"),
-                    Long.class
-            );
+                    Long.class);
             return maxOrder != null ? maxOrder : 0L;
         } catch (Exception e) {
             log.warn("Error getting max display order, returning 0", e);
@@ -285,7 +281,8 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
     }
 
     @Override
-    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues, String... delimitter) {
+    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues,
+            String... delimitter) {
         return super.setInvalues(query, replaceString, inValues, delimitter);
     }
 
@@ -313,7 +310,8 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
             return null;
         }
         try {
-            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {});
+            return objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+            });
         } catch (JsonProcessingException e) {
             log.error("Error parsing JSON to map", e);
             return null;
@@ -352,8 +350,8 @@ public class ResourceDao extends GenericDaoImpl<Resource, Identifier, String> {
     public List<java.util.Map<String, Object>> searchByName(String query, Identifier identifier) {
         try {
             String sql = "SELECT resource_id, resource_name, description, resource_type FROM resources " +
-                        "WHERE (LOWER(resource_name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)) " +
-                        "AND deleted_at IS NULL ORDER BY resource_name";
+                    "WHERE (LOWER(resource_name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)) " +
+                    "AND deleted_at IS NULL ORDER BY resource_name";
             String searchPattern = "%" + query + "%";
             return jdbcTemplate.queryForList(sql, searchPattern, searchPattern);
         } catch (Exception e) {

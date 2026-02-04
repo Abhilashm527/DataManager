@@ -20,11 +20,11 @@ public class APIConstants {
     public static final String RESOURCE = "/resource";
     public static final String MAPPINGS = "/mappings";
     public static final String ITEM = "/item";
-    public static final String RESOURCE_TYPE = "/resource-types";
+    public static final String CONFIG_FIELDS = "/configFields";
     public static final String ITEM_BASE_PATH = BASE_PATH + ITEM ;
     public static final String RESOURCE_BASE_PATH = BASE_PATH + RESOURCE;
     public static final String MAPPINGS_BASE_PATH = BASE_PATH + MAPPINGS ;
-    public static final String RESOURCE_TYPE_BASE_PATH = BASE_PATH + RESOURCE_TYPE;
+    public static final String CONFIG_FIELDS_BASE_PATH = BASE_PATH + CONFIG_FIELDS;
     public static final String CUSTOMER_BASE_PATH = BASE_PATH + CUSTOMER_API;
     public static final String GENERIC_BASE_PATH = BASE_PATH + GENERIC;
     public static final String GENERIC_SUB_BASE_PATH = BASE_PATH + GENERIC_SUB;

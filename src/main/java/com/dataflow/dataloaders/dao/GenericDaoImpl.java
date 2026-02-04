@@ -1,6 +1,5 @@
 package com.dataflow.dataloaders.dao;
 
-
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.Identifier;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 
 @Component
 public abstract class GenericDaoImpl<T, I, S> implements GenericDao<T, I, S> {
@@ -35,16 +33,19 @@ public abstract class GenericDaoImpl<T, I, S> implements GenericDao<T, I, S> {
         if (sql != null) {
             return sql;
         } else {
-            throw new DataloadersException("The requested SQL query is not found");
+            throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR,
+                    "The requested SQL query is not found for key: " + key);
         }
     }
 
     protected String getSql(String key, @NotNull Identifier identifier) {
         String baseSql = this.environment.getProperty(key);
         if (baseSql != null && !baseSql.isBlank()) {
-            return StringUtils.isEmpty(identifier.getWord()) ? baseSql + this.paginatedSQL(identifier.getPageable()) : baseSql + identifier.getWord() + this.paginatedSQL(identifier.getPageable());
+            return StringUtils.isEmpty(identifier.getWord()) ? baseSql + this.paginatedSQL(identifier.getPageable())
+                    : baseSql + identifier.getWord() + this.paginatedSQL(identifier.getPageable());
         } else {
-            throw new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND, "The requested SQL query is not found for key: " + key);
+            throw new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND,
+                    "The requested SQL query is not found for key: " + key);
         }
     }
 
@@ -57,7 +58,8 @@ public abstract class GenericDaoImpl<T, I, S> implements GenericDao<T, I, S> {
         StringBuilder orderByClause = new StringBuilder();
         if (sort.isSorted()) {
             orderByClause.append(" ORDER BY ");
-            sort.forEach((order) -> orderByClause.append(toSnakeCase(order.getProperty())).append(" ").append(order.getDirection().name()).append(", "));
+            sort.forEach((order) -> orderByClause.append(toSnakeCase(order.getProperty())).append(" ")
+                    .append(order.getDirection().name()).append(", "));
             orderByClause.setLength(orderByClause.length() - 2);
         }
 
@@ -69,7 +71,8 @@ public abstract class GenericDaoImpl<T, I, S> implements GenericDao<T, I, S> {
     }
 
     protected static String toSnakeCase(String input) {
-        return input != null && !input.isEmpty() ? input.replaceAll("([a-z])([A-Z]+)", "$1_$2").replaceAll("([A-Z])([A-Z][a-z])", "$1_$2").toLowerCase() : input;
+        return input != null && !input.isEmpty()
+                ? input.replaceAll("([a-z])([A-Z]+)", "$1_$2").replaceAll("([A-Z])([A-Z][a-z])", "$1_$2").toLowerCase()
+                : input;
     }
 }
-

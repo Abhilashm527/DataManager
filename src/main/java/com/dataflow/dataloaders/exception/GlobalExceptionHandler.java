@@ -9,6 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,13 +21,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataloadersException.class)
     public ResponseEntity<Response> handleCaseManagementException(DataloadersException exception) {
         Response response = new Response();
-        response.setCode(exception.getErrorDefinition().getHttpStatus().value());
-        response.setMessage(exception.getErrorDefinition().getMessage());
+        ErrorDefinition errorDefinition = exception.getErrorDefinition();
+
+        if (errorDefinition == null) {
+            errorDefinition = ErrorFactory.INTERNAL_SERVER_ERROR;
+            errorDefinition
+                    .setMessage(exception.getMessage() != null ? exception.getMessage() : "Internal Server Error");
+        }
+
+        response.setCode(errorDefinition.getHttpStatus() != null ? errorDefinition.getHttpStatus().value() : 500);
+        response.setMessage(errorDefinition.getMessage());
 
         List<ErrorDefinition> causedBy = new ArrayList<>();
-        causedBy.add(exception.getErrorDefinition());
+        causedBy.add(errorDefinition);
         response.setCausedBy(causedBy);
-        return Response.errorResponse(exception.getErrorDefinition().getHttpStatus(), response);
+
+        HttpStatus status = errorDefinition.getHttpStatus() != null ? errorDefinition.getHttpStatus()
+                : HttpStatus.INTERNAL_SERVER_ERROR;
+        return Response.errorResponse(status, response);
     }
 
     @ExceptionHandler(Exception.class)
@@ -34,8 +46,15 @@ public class GlobalExceptionHandler {
             Exception ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
+        body.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        String message = ex.getMessage();
+        Throwable cause = ex.getCause();
+        while (cause != null) {
+            message += " | Caused by: " + cause.getMessage();
+            cause = cause.getCause();
+        }
+        body.put("message", message);
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }

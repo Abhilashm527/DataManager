@@ -4,6 +4,11 @@ import com.dataflow.dataloaders.entity.Resource;
 import com.dataflow.dataloaders.services.ResourceService;
 import com.dataflow.dataloaders.util.Identifier;
 import com.dataflow.dataloaders.util.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +20,7 @@ import static com.dataflow.dataloaders.config.APIConstants.RESOURCE_BASE_PATH;
 @Slf4j
 @RestController
 @RequestMapping(RESOURCE_BASE_PATH)
+@Tag(name = "Resources", description = "Resource management APIs")
 public class ResourceController {
 
     protected static final String logPrefix = "{} : {}";
@@ -22,12 +28,14 @@ public class ResourceController {
     @Autowired
     private ResourceService resourceService;
 
-    /**
-     * Create a new resource
-     */
+    @Operation(summary = "Create resource", description = "Create a new resource")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Resource created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input")
+    })
     @PostMapping("/{resourceId}")
     public ResponseEntity<Response> create(@RequestBody Resource resource,
-                                           @PathVariable String resourceId,
+                                           @Parameter(description = "Resource ID") @PathVariable String resourceId,
                                            @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).build();
@@ -35,20 +43,23 @@ public class ResourceController {
         return Response.createResponse(resourceService.create(resource, identifier));
     }
 
-    /**
-     * Get a resource by ID
-     */
+    @Operation(summary = "Get resource by ID", description = "Get resource by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resource found"),
+            @ApiResponse(responseCode = "404", description = "Resource not found")
+    })
     @GetMapping("/{resourceId}")
-    public ResponseEntity<Response> get(@PathVariable String resourceId,
+    public ResponseEntity<Response> get(@Parameter(description = "Resource ID") @PathVariable String resourceId,
                                         @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).word(resourceId).build();
         return Response.getResponse(resourceService.getResource(identifier));
     }
 
-    /**
-     * Get all resources
-     */
+    @Operation(summary = "Get all resources", description = "Get all resources")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resources retrieved")
+    })
     @GetMapping
     public ResponseEntity<Response> getAll(@RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -56,33 +67,37 @@ public class ResourceController {
         return Response.getResponse(resourceService.getAllResources(identifier));
     }
 
-    /**
-     * Get resources by resource type
-     */
+    @Operation(summary = "Get resources by type", description = "Get resources by resource type")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resources retrieved")
+    })
     @GetMapping("/type/{resourceType}")
-    public ResponseEntity<Response> getByResourceType(@PathVariable String resourceType,
+    public ResponseEntity<Response> getByResourceType(@Parameter(description = "Resource type") @PathVariable String resourceType,
                                                       @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).word(resourceType).build();
         return Response.getResponse(resourceService.getResourcesByType(identifier));
     }
 
-    /**
-     * Get resources by item_id
-     */
+    @Operation(summary = "Get resources by item", description = "Get resources by item ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resources retrieved")
+    })
     @GetMapping("/item/{itemId}")
-    public ResponseEntity<Response> getByItemId(@PathVariable String itemId,
+    public ResponseEntity<Response> getByItemId(@Parameter(description = "Item ID") @PathVariable String itemId,
                                                       @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).word(itemId).build();
         return Response.getResponse(resourceService.getResourcesByItemId(identifier));
     }
 
-    /**
-     * Update a resource
-     */
+    @Operation(summary = "Update resource", description = "Update an existing resource")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resource updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Resource not found")
+    })
     @PutMapping("/{resourceId}")
-    public ResponseEntity<Response> update(@PathVariable String resourceId,
+    public ResponseEntity<Response> update(@Parameter(description = "Resource ID") @PathVariable String resourceId,
                                            @RequestBody Resource request,
                                            @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -90,31 +105,35 @@ public class ResourceController {
         return Response.updateResponse(resourceService.updateResource(request, identifier));
     }
 
-    /**
-     * Delete a resource
-     */
+    @Operation(summary = "Delete resource", description = "Delete a resource")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resource deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Resource not found")
+    })
     @DeleteMapping("/{resourceId}")
-    public ResponseEntity<Response> delete(@PathVariable String resourceId,
+    public ResponseEntity<Response> delete(@Parameter(description = "Resource ID") @PathVariable String resourceId,
                                            @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).word(resourceId).build();
         return Response.deleteResponse(resourceService.deleteResource(identifier));
     }
 
-    /**
-     * Test a resource connection
-     */
+    @Operation(summary = "Test resource connection", description = "Test connection to an existing resource")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Connection test result")
+    })
     @PostMapping("/{resourceId}/test")
-    public ResponseEntity<Response> testResource(@PathVariable String resourceId,
+    public ResponseEntity<Response> testResource(@Parameter(description = "Resource ID") @PathVariable String resourceId,
                                                  @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).word(resourceId).build();
         return Response.getResponse(resourceService.testResource(identifier));
     }
 
-    /**
-     * Test resource connection before saving (validate resource parameters)
-     */
+    @Operation(summary = "Test new resource", description = "Test connection before saving resource")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Connection test result")
+    })
     @PostMapping("/test")
     public ResponseEntity<Response> testNewResource(@RequestBody Resource resource,
                                                     @RequestHeader HttpHeaders headers) {
@@ -123,9 +142,10 @@ public class ResourceController {
         return Response.getResponse(resourceService.testNewResource(resource, identifier));
     }
 
-    /**
-     * Bulk reorder resources
-     */
+    @Operation(summary = "Bulk reorder resources", description = "Reorder multiple resources")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resources reordered successfully")
+    })
     @PostMapping("/reorder")
     public ResponseEntity<Response> bulkReorderResources(@RequestBody List<Resource> resources,
                                                          @RequestHeader HttpHeaders headers) {
@@ -134,9 +154,10 @@ public class ResourceController {
         return Response.updateResponse(resourceService.bulkReorderResources(resources, identifier));
     }
 
-    /**
-     * Get supported resource types with their configuration fields
-     */
+    @Operation(summary = "Get resource types", description = "Get supported resource types")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Resource types retrieved")
+    })
     @GetMapping("/types")
     public ResponseEntity<Response> getResourceTypes(@RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -144,12 +165,13 @@ public class ResourceController {
         return Response.getResponse(resourceService.getSupportedResourceTypes());
     }
 
-    /**
-     * Activate/Deactivate a resource
-     */
+    @Operation(summary = "Update resource status", description = "Activate or deactivate a resource")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Status updated successfully")
+    })
     @PatchMapping("/{resourceId}/status")
-    public ResponseEntity<Response> updateStatus(@PathVariable String resourceId,
-                                                 @RequestParam Boolean isActive,
+    public ResponseEntity<Response> updateStatus(@Parameter(description = "Resource ID") @PathVariable String resourceId,
+                                                 @Parameter(description = "Active status") @RequestParam Boolean isActive,
                                                  @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName());
         Identifier identifier = Identifier.builder().headers(headers).word(resourceId).build();
