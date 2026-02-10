@@ -26,7 +26,6 @@ public class APIConstants {
     public static final String CONNECTION_TYPES = "/connection-types";
     public static final String PROVIDERS = "/providers";
     public static final String CONNECTIONS = "/connections";
-    public static final String RECENT_CONNECTIONS = "/recent-connections";
     public static final String CONNECTION_ACTIVITY_LOGS = "/connection-activity-logs";
     public static final String CONNECTION_STATS = "/connection-stats";
     public static final String ITEM_BASE_PATH = BASE_PATH + ITEM ;
@@ -38,7 +37,6 @@ public class APIConstants {
     public static final String CONNECTION_TYPES_BASE_PATH = BASE_PATH + CONNECTION_TYPES;
     public static final String PROVIDERS_BASE_PATH = BASE_PATH + PROVIDERS;
     public static final String CONNECTIONS_BASE_PATH = BASE_PATH + CONNECTIONS;
-    public static final String RECENT_CONNECTIONS_BASE_PATH = BASE_PATH + RECENT_CONNECTIONS;
     public static final String CONNECTION_ACTIVITY_LOGS_BASE_PATH = BASE_PATH + CONNECTION_ACTIVITY_LOGS;
     public static final String CONNECTION_STATS_BASE_PATH = BASE_PATH + CONNECTION_STATS;
     public static final String CUSTOMER_BASE_PATH = BASE_PATH + CUSTOMER_API;
