@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: Dataloaders Application API
+  description: Application management APIs for creating and managing workspaces
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@dataloaders.com
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+  - url: https://dev.dataloaders.com/api/v1
+    description: Development server
+  - url: https://api.dataloaders.com/api/v1
+    description: Production server
+
+tags:
+  - name: Applications
+    description: Application/Workspace management operations
+
+paths:
+  /applications:
+    post:
+      tags:
+        - Applications
+      summary: Create application
+      description: Create a new application/workspace
+      operationId: createApplication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationCreateRequest'
+            examples:
+              development:
+                summary: Development Application
+                value:
+                  name: "My Data Workspace"
+                  environment: "DEVELOPMENT"
+                  description: "Development environment for data integration"
+              production:
+                summary: Production Application
+                value:
+                  name: "Production Data Hub"
+                  environment: "PRODUCTION"
+                  description: "Production data integration workspace"
+      responses:
+        '201':
+          description: Application created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponse'
+              examples:
+                success:
+                  summary: Successful creation
+                  value:
+                    status: "success"
+                    message: "Application created successfully"
+                    data:
+                      id: "APP-1707559479123"
+                      name: "My Data Workspace"
+                      environment: "DEVELOPMENT"
+                      description: "Development environment for data integration"
+                      createdBy: "admin"
+                      createdAt: 1707559479
+                      updatedBy: null
+                      updatedAt: null
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidInput:
+                  summary: Invalid environment value
+                  value:
+                    status: "error"
+                    message: "Invalid environment value"
+                    errors:
+                      - field: "environment"
+                        message: "Must be one of: DEVELOPMENT, TESTING, PRODUCTION"
+
+    get:
+      tags:
+        - Applications
+      summary: Get all applications
+      description: Retrieve all applications/workspaces
+      operationId: getAllApplications
+      responses:
+        '200':
+          description: Applications retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationListResponse'
+              examples:
+                success:
+                  summary: List of applications
+                  value:
+                    status: "success"
+                    message: "Applications retrieved successfully"
+                    data:
+                      - id: "APP-1707559479123"
+                        name: "My Data Workspace"
+                        environment: "DEVELOPMENT"
+                        description: "Development environment"
+                        createdBy: "admin"
+                        createdAt: 1707559479
+                        updatedBy: null
+                        updatedAt: null
+                      - id: "APP-1707559480456"
+                        name: "Production Hub"
+                        environment: "PRODUCTION"
+                        description: "Production workspace"
+                        createdBy: "admin"
+                        createdAt: 1707559480
+                        updatedBy: "admin"
+                        updatedAt: 1707559500
+        '404':
+          description: No applications found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /applications/{applicationId}:
+    get:
+      tags:
+        - Applications
+      summary: Get application by ID
+      description: Retrieve a specific application by its ID
+      operationId: getApplicationById
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '200':
+          description: Application found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponse'
+              examples:
+                success:
+                  summary: Application details
+                  value:
+                    status: "success"
+                    message: "Application retrieved successfully"
+                    data:
+                      id: "APP-1707559479123"
+                      name: "My Data Workspace"
+                      environment: "DEVELOPMENT"
+                      description: "Development environment for data integration"
+                      createdBy: "admin"
+                      createdAt: 1707559479
+                      updatedBy: "admin"
+                      updatedAt: 1707559500
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  summary: Application not found
+                  value:
+                    status: "error"
+                    message: "Application not found"
+                    errors: []
+
+    put:
+      tags:
+        - Applications
+      summary: Update application
+      description: Update an existing application
+      operationId: updateApplication
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationUpdateRequest'
+            examples:
+              updateName:
+                summary: Update name only
+                value:
+                  name: "Updated Workspace Name"
+              updateEnvironment:
+                summary: Update environment
+                value:
+                  environment: "PRODUCTION"
+              fullUpdate:
+                summary: Update all fields
+                value:
+                  name: "Updated Workspace"
+                  environment: "PRODUCTION"
+                  description: "Updated description"
+      responses:
+        '200':
+          description: Application updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponse'
+              examples:
+                success:
+                  summary: Successful update
+                  value:
+                    status: "success"
+                    message: "Application updated successfully"
+                    data:
+                      id: "APP-1707559479123"
+                      name: "Updated Workspace"
+                      environment: "PRODUCTION"
+                      description: "Updated description"
+                      createdBy: "admin"
+                      createdAt: 1707559479
+                      updatedBy: "admin"
+                      updatedAt: 1707559600
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Applications
+      summary: Delete application
+      description: Soft delete an application (sets deleted_at timestamp)
+      operationId: deleteApplication
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '200':
+          description: Application deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+              examples:
+                success:
+                  summary: Successful deletion
+                  value:
+                    status: "success"
+                    message: "Application deleted successfully"
+                    data: true
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ApplicationCreateRequest:
+      type: object
+      required:
+        - name
+        - environment
+      properties:
+        name:
+          type: string
+          description: Name of the application/workspace
+          minLength: 1
+          maxLength: 255
+          example: "My Data Workspace"
+        environment:
+          type: string
+          description: Environment type
+          enum:
+            - DEVELOPMENT
+            - TESTING
+            - PRODUCTION
+          example: "DEVELOPMENT"
+        description:
+          type: string
+          description: Optional description of the application
+          maxLength: 1000
+          example: "Development environment for data integration"
+
+    ApplicationUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Updated name of the application
+          minLength: 1
+          maxLength: 255
+          example: "Updated Workspace Name"
+        environment:
+          type: string
+          description: Updated environment type
+          enum:
+            - DEVELOPMENT
+            - TESTING
+            - PRODUCTION
+          example: "PRODUCTION"
+        description:
+          type: string
+          description: Updated description
+          maxLength: 1000
+          example: "Updated description for production environment"
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique application ID
+          example: "APP-1707559479123"
+        name:
+          type: string
+          description: Name of the application
+          example: "My Data Workspace"
+        environment:
+          type: string
+          description: Environment type
+          enum:
+            - DEVELOPMENT
+            - TESTING
+            - PRODUCTION
+          example: "DEVELOPMENT"
+        description:
+          type: string
+          description: Application description
+          example: "Development environment for data integration"
+        createdBy:
+          type: string
+          description: User who created the application
+          example: "admin"
+        createdAt:
+          type: integer
+          format: int64
+          description: Unix timestamp of creation
+          example: 1707559479
+        updatedBy:
+          type: string
+          nullable: true
+          description: User who last updated the application
+          example: "admin"
+        updatedAt:
+          type: integer
+          format: int64
+          nullable: true
+          description: Unix timestamp of last update
+          example: 1707559600
+
+    ApplicationResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - success
+            - error
+          example: "success"
+        message:
+          type: string
+          example: "Application retrieved successfully"
+        data:
+          $ref: '#/components/schemas/Application'
+
+    ApplicationListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - success
+            - error
+          example: "success"
+        message:
+          type: string
+          example: "Applications retrieved successfully"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+
+    DeleteResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - success
+            - error
+          example: "success"
+        message:
+          type: string
+          example: "Application deleted successfully"
+        data:
+          type: boolean
+          example: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - error
+          example: "error"
+        message:
+          type: string
+          example: "Resource not found"
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: "name"
+              message:
+                type: string
+                example: "Field is required"
+
+  parameters:
+    ApplicationId:
+      name: applicationId
+      in: path
+      description: Application ID
+      required: true
+      schema:
+        type: string
+        example: "APP-1707559479123"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authentication
+
+security:
+  - BearerAuth: []
