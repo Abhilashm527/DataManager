@@ -5,6 +5,7 @@ import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,15 @@ public class DFUtil {
         try {
             return objectMapper.readValue(value, new TypeReference<Map<String, Map<String, Object>>>() {
             });
+        } catch (JsonProcessingException e) {
+            throw new DataloadersException(ErrorFactory.JSON_PROCESSING_ERROR);
+        }
+    }
+
+    public JsonNode readValueToJsonNode(String value) {
+        if (value == null || value.isEmpty()) return null;
+        try {
+            return objectMapper.readTree(value);
         } catch (JsonProcessingException e) {
             throw new DataloadersException(ErrorFactory.JSON_PROCESSING_ERROR);
         }
