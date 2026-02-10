@@ -44,10 +44,11 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
             PreparedStatement ps = con.prepareStatement(getSql("Icon.create"), new String[] { "id" });
             ps.setString(1, model.getIconName());
             ps.setString(2, model.getIconUrl());
-            ps.setBytes(3, model.getIconData()); // NEW: Binary data
-            ps.setString(4, model.getContentType()); // NEW: MIME type
-            ps.setObject(5, model.getFileSize()); // NEW: File size
-            ps.setObject(6, DateUtils.getUnixTimestampInUTC());
+            ps.setBytes(3, model.getIconData());
+            ps.setString(4, model.getContentType());
+            ps.setObject(5, model.getFileSize());
+            ps.setObject(6, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(7, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return Objects.requireNonNull(holder.getKey()).longValue();
@@ -86,9 +87,11 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
             return jdbcTemplate.update(getSql("Icon.updateById"),
                     icon.getIconName(),
                     icon.getIconUrl(),
-                    icon.getIconData(), // NEW
-                    icon.getContentType(), // NEW
-                    icon.getFileSize(), // NEW
+                    icon.getIconData(),
+                    icon.getContentType(),
+                    icon.getFileSize(),
+                    icon.getUpdatedBy() != null ? icon.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
                     icon.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -98,7 +101,11 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
     @Override
     public int delete(Icon icon) {
         try {
-            return jdbcTemplate.update(getSql("Icon.deleteById"), icon.getId());
+            return jdbcTemplate.update(getSql("Icon.deleteById"),
+                    icon.getUpdatedBy() != null ? icon.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    DateUtils.getUnixTimestampInUTC(),
+                    icon.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -145,13 +152,19 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
         return super.setInvalues(query, replaceString, inValues);
     }
 
-    RowMapper<Icon> iconRowMapper = (rs, rowNum) -> Icon.builder()
-            .id(rs.getObject("id") != null ? rs.getLong("id") : null)
-            .iconName(rs.getString("icon_name"))
-            .iconUrl(rs.getString("icon_url"))
-            .iconData(rs.getBytes("icon_data")) // NEW
-            .contentType(rs.getString("content_type")) // NEW
-            .fileSize(rs.getObject("file_size") != null ? rs.getLong("file_size") : null) // NEW
-            .createdAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null)
-            .build();
+    RowMapper<Icon> iconRowMapper = (rs, rowNum) -> {
+        Icon icon = new Icon();
+        icon.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
+        icon.setIconName(rs.getString("icon_name"));
+        icon.setIconUrl(rs.getString("icon_url"));
+        icon.setIconData(rs.getBytes("icon_data"));
+        icon.setContentType(rs.getString("content_type"));
+        icon.setFileSize(rs.getObject("file_size") != null ? rs.getLong("file_size") : null);
+        icon.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        icon.setCreatedBy(rs.getString("created_by"));
+        icon.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        icon.setUpdatedBy(rs.getString("updated_by"));
+        icon.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
+        return icon;
+    };
 }

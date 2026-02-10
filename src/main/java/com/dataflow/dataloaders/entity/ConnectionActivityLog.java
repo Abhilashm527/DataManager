@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConnectionActivityLog {
+public class ConnectionActivityLog extends AuditMetaData {
     private Long id;
     private Long connectionId;
     private String activityType;
@@ -18,5 +18,4 @@ public class ConnectionActivityLog {
     private String title;
     private String description;
     private JsonNode metadata;
-    private Long createdAt;
 }

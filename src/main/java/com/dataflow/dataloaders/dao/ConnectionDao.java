@@ -56,9 +56,9 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
             ps.setObject(8, model.getIsActive());
             ps.setString(9, model.getLastTestStatus());
             ps.setObject(10, model.getLastTestedAt());
-            ps.setObject(11, DateUtils.getUnixTimestampInUTC());
-            ps.setObject(12, DateUtils.getUnixTimestampInUTC());
-            ps.setObject(13, model.getLastUsedAt());
+            ps.setObject(11, model.getLastUsedAt());
+            ps.setObject(12, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(13, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return Objects.requireNonNull(holder.getKey()).longValue();
@@ -110,8 +110,9 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
                     connection.getIsActive(),
                     connection.getLastTestStatus(),
                     connection.getLastTestedAt(),
-                    DateUtils.getUnixTimestampInUTC(),
                     connection.getLastUsedAt(),
+                    connection.getUpdatedBy() != null ? connection.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
                     connection.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -121,7 +122,11 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     @Override
     public int delete(Connection connection) {
         try {
-            return jdbcTemplate.update(getSql("Connection.deleteById"), connection.getId());
+            return jdbcTemplate.update(getSql("Connection.deleteById"),
+                    connection.getUpdatedBy() != null ? connection.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    DateUtils.getUnixTimestampInUTC(),
+                    connection.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -190,7 +195,10 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         connection.setLastTestStatus(rs.getString("last_test_status"));
         connection.setLastTestedAt(rs.getObject("last_tested_at") != null ? rs.getLong("last_tested_at") : null);
         connection.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        connection.setCreatedBy(rs.getString("created_by"));
         connection.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        connection.setUpdatedBy(rs.getString("updated_by"));
+        connection.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
         connection.setLastUsedAt(rs.getObject("last_used_at") != null ? rs.getLong("last_used_at") : null);
         return connection;
     };

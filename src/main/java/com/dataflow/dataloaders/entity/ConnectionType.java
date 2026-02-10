@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConnectionType {
+public class ConnectionType extends AuditMetaData {
     private Long id;
     private String typeKey;
     private String displayName;
     private Long iconId;
     private Integer displayOrder;
-    private Long createdAt;
 }

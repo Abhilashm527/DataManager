@@ -14,7 +14,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobConfig extends AuditMetadata {
+public class JobConfig extends AuditMetaData {
 
     private String jobId;
     private String parentJobId;

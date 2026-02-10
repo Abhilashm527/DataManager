@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Connection {
+public class Connection extends AuditMetaData {
     private Long id;
     private Long userId;
     private Long providerId;
@@ -22,7 +22,5 @@ public class Connection {
     private Boolean isActive;
     private String lastTestStatus;
     private Long lastTestedAt;
-    private Long createdAt;
-    private Long updatedAt;
     private Long lastUsedAt;
 }

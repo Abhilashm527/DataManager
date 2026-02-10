@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Provider {
+public class Provider extends AuditMetaData {
     private Long id;
     private Long connectionTypeId;
     private String providerKey;
@@ -19,5 +19,4 @@ public class Provider {
     private Integer defaultPort;
     private JsonNode configSchema;
     private Integer displayOrder;
-    private Long createdAt;
 }

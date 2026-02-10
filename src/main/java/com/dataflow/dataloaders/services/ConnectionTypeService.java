@@ -5,6 +5,7 @@ import com.dataflow.dataloaders.dto.ConnectionTypeRequest;
 import com.dataflow.dataloaders.entity.ConnectionType;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
+import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,9 @@ public class ConnectionTypeService {
         if (connectionType.getDisplayOrder() != null)
             existing.setDisplayOrder(connectionType.getDisplayOrder());
 
+        existing.setUpdatedBy("admin");
+        existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
+
         connectionTypeDao.update(existing);
         return connectionTypeDao.getV1(identifier).orElse(existing);
     }
@@ -87,6 +91,7 @@ public class ConnectionTypeService {
         log.info("Deleting connection type: {}", identifier.getId());
         ConnectionType connectionType = connectionTypeDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
+        connectionType.setUpdatedBy("admin");
         return connectionTypeDao.delete(connectionType) > 0;
     }
 }

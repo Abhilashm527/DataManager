@@ -52,7 +52,8 @@ public class ConnectionActivityLogDao extends GenericDaoImpl<ConnectionActivityL
             ps.setString(4, model.getTitle());
             ps.setString(5, model.getDescription());
             ps.setObject(6, dfUtil.writeValueAsString(model.getMetadata()), java.sql.Types.OTHER);
-            ps.setObject(7, DateUtils.getUnixTimestampInUTC());
+            ps.setObject(7, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(8, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return Objects.requireNonNull(holder.getKey()).longValue();
@@ -96,7 +97,11 @@ public class ConnectionActivityLogDao extends GenericDaoImpl<ConnectionActivityL
     @Override
     public int delete(ConnectionActivityLog activityLog) {
         try {
-            return jdbcTemplate.update(getSql("ConnectionActivityLog.deleteById"), activityLog.getId());
+            return jdbcTemplate.update(getSql("ConnectionActivityLog.deleteById"),
+                    activityLog.getUpdatedBy() != null ? activityLog.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    DateUtils.getUnixTimestampInUTC(),
+                    activityLog.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -157,6 +162,10 @@ public class ConnectionActivityLogDao extends GenericDaoImpl<ConnectionActivityL
         }
         
         log.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        log.setCreatedBy(rs.getString("created_by"));
+        log.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        log.setUpdatedBy(rs.getString("updated_by"));
+        log.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
         return log;
     };
 }

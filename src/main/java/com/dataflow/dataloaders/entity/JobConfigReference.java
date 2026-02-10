@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobConfigReference extends AuditMetadata {
+public class JobConfigReference extends AuditMetaData {
     
     private String id;
     private String itemId;

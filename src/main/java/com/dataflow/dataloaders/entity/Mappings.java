@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Mappings extends AuditMetadata{
+public class Mappings extends AuditMetaData{
     public String id;
     public String mappingName;
     public List<InputField> mappings;

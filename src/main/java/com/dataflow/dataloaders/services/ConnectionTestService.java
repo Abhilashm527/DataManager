@@ -655,7 +655,6 @@ public class ConnectionTestService {
                     .title(title)
                     .description(description)
                     .metadata(metadata)
-                    .createdAt(DateUtils.getUnixTimestampInUTC())
                     .build();
 
             activityLogDao.create(activityLog, Identifier.builder().build());

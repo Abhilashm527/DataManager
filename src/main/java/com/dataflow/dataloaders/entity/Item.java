@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item extends AuditMetadata{
+public class Item extends AuditMetaData{
     private String id;
     private String parentId;
     private String parentFolderId;

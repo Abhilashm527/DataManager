@@ -19,22 +19,14 @@ public class ConnectionService {
     private ConnectionDao connectionDao;
 
     @Autowired
-    private RecentConnectionService recentConnectionService;
-
-    @Autowired
     private ConnectionActivityLogService activityLogService;
 
     public Connection create(Connection connection, Identifier identifier) {
         log.info("Creating connection: {}", connection.getConnectionName());
-        connection.setCreatedAt(DateUtils.getUnixTimestampInUTC());
-        connection.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
         Connection created = connectionDao.create(connection, identifier);
 
-        // Track newly created connection as recently used
-        if (created.getUserId() != null && created.getId() != null) {
-            recentConnectionService.trackConnection(created.getUserId(), created.getId());
-
-            // Log activity
+        // Log activity
+        if (created.getId() != null) {
             activityLogService.logActivity(
                     created.getId(),
                     "CONNECTION_CREATED",
@@ -48,15 +40,8 @@ public class ConnectionService {
 
     public Connection getConnection(Identifier identifier) {
         log.info("Getting connection by id: {}", identifier.getId());
-        Connection connection = connectionDao.getV1(identifier)
+        return connectionDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
-
-        // Track this connection as recently accessed
-        if (connection.getUserId() != null) {
-            recentConnectionService.trackConnection(connection.getUserId(), connection.getId());
-        }
-
-        return connection;
     }
 
     public List<Connection> getAllConnections(Identifier identifier) {
@@ -115,24 +100,20 @@ public class ConnectionService {
             existing.setLastUsedAt(connection.getLastUsedAt());
 
         existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
+        existing.setUpdatedBy("admin");
         connectionDao.update(existing);
 
-        // Track this connection as recently used
-        if (existing.getUserId() != null) {
-            recentConnectionService.trackConnection(existing.getUserId(), existing.getId());
-
-            // Log detailed activity
-            String description = changes.length() > 0 ? 
-                String.format("Connection '%s' updated: %s", existing.getConnectionName(), changes.toString()) :
-                String.format("Connection '%s' configuration was updated", existing.getConnectionName());
-                
-            activityLogService.logActivity(
-                    existing.getId(),
-                    "CONNECTION_UPDATED",
-                    "SUCCESS",
-                    "Connection settings updated",
-                    description);
-        }
+        // Log detailed activity
+        String description = changes.length() > 0 ? 
+            String.format("Connection '%s' updated: %s", existing.getConnectionName(), changes.toString()) :
+            String.format("Connection '%s' configuration was updated", existing.getConnectionName());
+            
+        activityLogService.logActivity(
+                existing.getId(),
+                "CONNECTION_UPDATED",
+                "SUCCESS",
+                "Connection settings updated",
+                description);
 
         return connectionDao.getV1(identifier).orElse(existing);
     }
@@ -150,6 +131,7 @@ public class ConnectionService {
                 "Connection deleted",
                 String.format("Connection '%s' was deleted", connection.getConnectionName()));
 
+        connection.setUpdatedBy("admin");
         return connectionDao.delete(connection) > 0;
     }
 }

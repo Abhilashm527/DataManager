@@ -4,6 +4,7 @@ import com.dataflow.dataloaders.dao.IconDao;
 import com.dataflow.dataloaders.entity.Icon;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
+import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +116,15 @@ public class IconService {
             existing.setIconName(icon.getIconName());
         if (icon.getIconUrl() != null)
             existing.setIconUrl(icon.getIconUrl());
+        if (icon.getIconData() != null)
+            existing.setIconData(icon.getIconData());
+        if (icon.getContentType() != null)
+            existing.setContentType(icon.getContentType());
+        if (icon.getFileSize() != null)
+            existing.setFileSize(icon.getFileSize());
+
+        existing.setUpdatedBy("admin");
+        existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
 
         iconDao.update(existing);
         return iconDao.getV1(identifier).orElse(existing);
@@ -124,6 +134,7 @@ public class IconService {
         log.info("Deleting icon: {}", identifier.getId());
         Icon icon = iconDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
+        icon.setUpdatedBy("admin");
         return iconDao.delete(icon) > 0;
     }
 }

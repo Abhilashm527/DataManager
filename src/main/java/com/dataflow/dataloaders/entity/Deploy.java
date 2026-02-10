@@ -3,7 +3,7 @@ package com.dataflow.dataloaders.entity;
 import lombok.Data;
 
 @Data
-public class Deploy extends AuditMetadata {
+public class Deploy extends AuditMetaData {
     private String deployId;
     private String parentJobId;
     private String jobId;

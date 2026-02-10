@@ -53,7 +53,8 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
             ps.setObject(5, model.getDefaultPort());
             ps.setObject(6, dfUtil.writeValueAsString(model.getConfigSchema()), java.sql.Types.OTHER);
             ps.setObject(7, model.getDisplayOrder());
-            ps.setObject(8, DateUtils.getUnixTimestampInUTC());
+            ps.setObject(8, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(9, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return Objects.requireNonNull(holder.getKey()).longValue();
@@ -103,6 +104,8 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
                     provider.getDefaultPort(),
                     dfUtil.writeValueAsString(provider.getConfigSchema()),
                     provider.getDisplayOrder(),
+                    provider.getUpdatedBy() != null ? provider.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
                     provider.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -112,7 +115,11 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
     @Override
     public int delete(Provider provider) {
         try {
-            return jdbcTemplate.update(getSql("Provider.deleteById"), provider.getId());
+            return jdbcTemplate.update(getSql("Provider.deleteById"),
+                    provider.getUpdatedBy() != null ? provider.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    DateUtils.getUnixTimestampInUTC(),
+                    provider.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -174,6 +181,10 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
         
         provider.setDisplayOrder(rs.getObject("display_order") != null ? rs.getInt("display_order") : null);
         provider.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        provider.setCreatedBy(rs.getString("created_by"));
+        provider.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        provider.setUpdatedBy(rs.getString("updated_by"));
+        provider.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
         return provider;
     };
 }

@@ -46,7 +46,8 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
             ps.setString(2, model.getDisplayName());
             ps.setObject(3, model.getIconId());
             ps.setObject(4, model.getDisplayOrder());
-            ps.setObject(5, DateUtils.getUnixTimestampInUTC());
+            ps.setObject(5, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(6, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return Objects.requireNonNull(holder.getKey()).longValue();
@@ -86,6 +87,8 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
                     connectionType.getDisplayName(),
                     connectionType.getIconId(),
                     connectionType.getDisplayOrder(),
+                    connectionType.getUpdatedBy() != null ? connectionType.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
                     connectionType.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -95,7 +98,11 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
     @Override
     public int delete(ConnectionType connectionType) {
         try {
-            return jdbcTemplate.update(getSql("ConnectionType.deleteById"), connectionType.getId());
+            return jdbcTemplate.update(getSql("ConnectionType.deleteById"),
+                    connectionType.getUpdatedBy() != null ? connectionType.getUpdatedBy() : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    DateUtils.getUnixTimestampInUTC(),
+                    connectionType.getId());
         } catch (Exception e) {
             throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -141,12 +148,18 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
         return super.setInvalues(query, replaceString, inValues);
     }
 
-    RowMapper<ConnectionType> connectionTypeRowMapper = (rs, rowNum) -> ConnectionType.builder()
-            .id(rs.getObject("id") != null ? rs.getLong("id") : null)
-            .typeKey(rs.getString("type_key"))
-            .displayName(rs.getString("display_name"))
-            .iconId(rs.getObject("icon_id") != null ? rs.getLong("icon_id") : null)
-            .displayOrder(rs.getObject("display_order") != null ? rs.getInt("display_order") : null)
-            .createdAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null)
-            .build();
+    RowMapper<ConnectionType> connectionTypeRowMapper = (rs, rowNum) -> {
+        ConnectionType connectionType = new ConnectionType();
+        connectionType.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
+        connectionType.setTypeKey(rs.getString("type_key"));
+        connectionType.setDisplayName(rs.getString("display_name"));
+        connectionType.setIconId(rs.getObject("icon_id") != null ? rs.getLong("icon_id") : null);
+        connectionType.setDisplayOrder(rs.getObject("display_order") != null ? rs.getInt("display_order") : null);
+        connectionType.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        connectionType.setCreatedBy(rs.getString("created_by"));
+        connectionType.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        connectionType.setUpdatedBy(rs.getString("updated_by"));
+        connectionType.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
+        return connectionType;
+    };
 }

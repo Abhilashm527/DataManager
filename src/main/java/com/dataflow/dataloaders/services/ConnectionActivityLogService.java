@@ -71,6 +71,7 @@ public class ConnectionActivityLogService {
         log.info("Deleting activity log: {}", identifier.getId());
         ConnectionActivityLog activityLog = activityLogDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
+        activityLog.setUpdatedBy("admin");
         return activityLogDao.delete(activityLog) > 0;
     }
 }

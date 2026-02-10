@@ -5,6 +5,7 @@ import com.dataflow.dataloaders.dto.ProviderRequest;
 import com.dataflow.dataloaders.entity.Provider;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
+import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,6 @@ public class ProviderService {
                 .build();
 
         log.info("Creating provider: {} with icon ID: {}", request.getProviderKey(), iconId);
-        return create(provider, identifier);
-    }
-
-    public Provider create(Provider provider, Identifier identifier) {
-
-        log.info("Creating provider: {}", provider.getProviderKey());
         return providerDao.create(provider, identifier);
     }
 
@@ -89,6 +84,9 @@ public class ProviderService {
         if (provider.getDisplayOrder() != null)
             existing.setDisplayOrder(provider.getDisplayOrder());
 
+        existing.setUpdatedBy("admin");
+        existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
+
         providerDao.update(existing);
         return providerDao.getV1(identifier).orElse(existing);
     }
@@ -97,6 +95,7 @@ public class ProviderService {
         log.info("Deleting provider: {}", identifier.getId());
         Provider provider = providerDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
+        provider.setUpdatedBy("admin");
         return providerDao.delete(provider) > 0;
     }
 }
