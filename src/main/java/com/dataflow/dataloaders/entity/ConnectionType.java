@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobConfigReference extends AuditMetaData {
-    
-    private String id;
-    private String itemId;
-    private String jobId;
+public class ConnectionType extends AuditMetaData {
+    private Long id;
+    private String typeKey;
+    private String displayName;
+    private Long iconId;
+    private Integer displayOrder;
 }
