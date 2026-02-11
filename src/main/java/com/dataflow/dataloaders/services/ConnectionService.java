@@ -26,7 +26,7 @@ public class ConnectionService {
     }
 
     public Connection getConnection(Identifier identifier) {
-        log.info("Getting connection by id: {}", identifier.getId());
+        log.info("Getting connection by id: {}", identifier.getWord());
         return connectionDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
     }
@@ -36,18 +36,18 @@ public class ConnectionService {
         return connectionDao.list(identifier);
     }
 
-    public List<Connection> getConnectionsByApplicationId(Long userId) {
-        log.info("Getting connections by user id: {}", userId);
-        return connectionDao.listByUserId(userId);
+    public List<Connection> getConnectionsByApplicationId(String applicationId) {
+        log.info("Getting connections by application id: {}", applicationId);
+        return connectionDao.listByUserId(applicationId);
     }
 
-    public List<Connection> getConnectionsByProvider(Long providerId) {
+    public List<Connection> getConnectionsByProvider(String providerId) {
         log.info("Getting connections by provider: {}", providerId);
         return connectionDao.listByProvider(providerId);
     }
 
     public Connection updateConnection(Connection connection, Identifier identifier) {
-        log.info("Updating connection: {}", identifier.getId());
+        log.info("Updating connection: {}", identifier.getWord());
         Connection existing = connectionDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
 
@@ -93,7 +93,7 @@ public class ConnectionService {
     }
 
     public boolean deleteConnection(Identifier identifier) {
-        log.info("Deleting connection: {}", identifier.getId());
+        log.info("Deleting connection: {}", identifier.getWord());
         Connection connection = connectionDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
         connection.setUpdatedBy("admin");

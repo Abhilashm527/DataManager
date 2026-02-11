@@ -66,7 +66,7 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
     public Optional<ConnectionType> getV1(Identifier identifier) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("ConnectionType.getById"), connectionTypeRowMapper, identifier.getId()));
+                    getSql("ConnectionType.getById"), connectionTypeRowMapper, identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

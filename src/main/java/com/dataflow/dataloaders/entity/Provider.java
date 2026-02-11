@@ -14,6 +14,7 @@ public class Provider extends AuditMetaData {
     private String id;
     private String connectionTypeId;
     private String providerName;
+    private String description;
     private String iconId;
     private Integer defaultPort;
     private JsonNode configSchema;

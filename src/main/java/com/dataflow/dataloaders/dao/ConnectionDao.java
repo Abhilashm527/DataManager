@@ -80,13 +80,13 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     public Optional<Connection> getV1(Identifier identifier) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("Connection.getById"), connectionRowMapper, identifier.getId()));
+                    getSql("Connection.getById"), connectionRowMapper, identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public List<Connection> listByUserId(Long userId) {
+    public List<Connection> listByUserId(String userId) {
         try {
             return jdbcTemplate.query(getSql("Connection.getByUserId"), connectionRowMapper, userId);
         } catch (EmptyResultDataAccessException e) {
@@ -94,7 +94,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         }
     }
 
-    public List<Connection> listByProvider(Long providerId) {
+    public List<Connection> listByProvider(String providerId) {
         try {
             return jdbcTemplate.query(getSql("Connection.getByProvider"), connectionRowMapper, providerId);
         } catch (EmptyResultDataAccessException e) {

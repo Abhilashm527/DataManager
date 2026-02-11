@@ -1,6 +1,5 @@
 package com.dataflow.dataloaders.controller;
 
-import com.dataflow.dataloaders.dto.ProviderRequest;
 import com.dataflow.dataloaders.entity.Provider;
 import com.dataflow.dataloaders.services.ProviderService;
 import com.dataflow.dataloaders.util.Identifier;
@@ -40,10 +39,10 @@ public class ProviderController {
 
     @Operation(summary = "Get provider by ID")
     @GetMapping("/{providerId}")
-    public ResponseEntity<Response> get(@Parameter(description = "Provider ID") @PathVariable Long providerId,
+    public ResponseEntity<Response> get(@Parameter(description = "Provider ID") @PathVariable String providerId,
             @RequestHeader HttpHeaders headers) {
         log.info("Getting provider: {}", providerId);
-        Identifier identifier = Identifier.builder().headers(headers).id(providerId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(providerId).build();
         return Response.getResponse(providerService.getProvider(identifier));
     }
 
@@ -66,20 +65,20 @@ public class ProviderController {
 
     @Operation(summary = "Update provider")
     @PutMapping("/{providerId}")
-    public ResponseEntity<Response> update(@Parameter(description = "Provider ID") @PathVariable Long providerId,
+    public ResponseEntity<Response> update(@Parameter(description = "Provider ID") @PathVariable String providerId,
             @RequestBody Provider provider,
             @RequestHeader HttpHeaders headers) {
         log.info("Updating provider: {}", providerId);
-        Identifier identifier = Identifier.builder().headers(headers).id(providerId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(providerId).build();
         return Response.updateResponse(providerService.updateProvider(provider, identifier));
     }
 
     @Operation(summary = "Delete provider")
     @DeleteMapping("/{providerId}")
-    public ResponseEntity<Response> delete(@Parameter(description = "Provider ID") @PathVariable Long providerId,
+    public ResponseEntity<Response> delete(@Parameter(description = "Provider ID") @PathVariable String providerId,
             @RequestHeader HttpHeaders headers) {
         log.info("Deleting provider: {}", providerId);
-        Identifier identifier = Identifier.builder().headers(headers).id(providerId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(providerId).build();
         return Response.deleteResponse(providerService.deleteProvider(identifier));
     }
 }

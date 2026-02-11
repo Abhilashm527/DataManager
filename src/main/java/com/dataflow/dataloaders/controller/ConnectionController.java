@@ -45,19 +45,19 @@ public class ConnectionController {
 
     @Operation(summary = "Test existing connection")
     @PostMapping("/{connectionId}/test")
-    public ResponseEntity<Response> testExistingConnection(@Parameter(description = "Connection ID") @PathVariable Long connectionId,
+    public ResponseEntity<Response> testExistingConnection(@Parameter(description = "Connection ID") @PathVariable String connectionId,
                                                            @RequestHeader HttpHeaders headers) {
         log.info("Testing existing connection: {}", connectionId);
-        Identifier identifier = Identifier.builder().headers(headers).id(connectionId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.getResponse(connectionTestService.testExistingConnection(connectionId, identifier));
     }
 
     @Operation(summary = "Get connection by ID")
     @GetMapping("/{connectionId}")
-    public ResponseEntity<Response> get(@Parameter(description = "Connection ID") @PathVariable Long connectionId,
+    public ResponseEntity<Response> get(@Parameter(description = "Connection ID") @PathVariable String connectionId,
                                         @RequestHeader HttpHeaders headers) {
         log.info("Getting connection: {}", connectionId);
-        Identifier identifier = Identifier.builder().headers(headers).id(connectionId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.getResponse(connectionService.getConnection(identifier));
     }
 
@@ -69,17 +69,17 @@ public class ConnectionController {
         return Response.getResponse(connectionService.getAllConnections(identifier));
     }
 
-    @Operation(summary = "Get connections by user ID")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Response> getByUserId(@Parameter(description = "User ID") @PathVariable Long userId,
+    @Operation(summary = "Get connections by application ID")
+    @GetMapping("/application/{applicationId}")
+    public ResponseEntity<Response> getByApplicationId(@Parameter(description = "Application ID") @PathVariable String applicationId,
                                                 @RequestHeader HttpHeaders headers) {
-        log.info("Getting connections by user: {}", userId);
-        return Response.getResponse(connectionService.getConnectionsByApplicationId(userId));
+        log.info("Getting connections by application: {}", applicationId);
+        return Response.getResponse(connectionService.getConnectionsByApplicationId(applicationId));
     }
 
     @Operation(summary = "Get connections by provider")
     @GetMapping("/provider/{providerId}")
-    public ResponseEntity<Response> getByProvider(@Parameter(description = "Provider ID") @PathVariable Long providerId,
+    public ResponseEntity<Response> getByProvider(@Parameter(description = "Provider ID") @PathVariable String providerId,
                                                   @RequestHeader HttpHeaders headers) {
         log.info("Getting connections by provider: {}", providerId);
         return Response.getResponse(connectionService.getConnectionsByProvider(providerId));
@@ -87,20 +87,20 @@ public class ConnectionController {
 
     @Operation(summary = "Update connection")
     @PutMapping("/{connectionId}")
-    public ResponseEntity<Response> update(@Parameter(description = "Connection ID") @PathVariable Long connectionId,
+    public ResponseEntity<Response> update(@Parameter(description = "Connection ID") @PathVariable String connectionId,
                                            @RequestBody Connection connection,
                                            @RequestHeader HttpHeaders headers) {
         log.info("Updating connection: {}", connectionId);
-        Identifier identifier = Identifier.builder().headers(headers).id(connectionId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.updateResponse(connectionService.updateConnection(connection, identifier));
     }
 
     @Operation(summary = "Delete connection")
     @DeleteMapping("/{connectionId}")
-    public ResponseEntity<Response> delete(@Parameter(description = "Connection ID") @PathVariable Long connectionId,
+    public ResponseEntity<Response> delete(@Parameter(description = "Connection ID") @PathVariable String connectionId,
                                            @RequestHeader HttpHeaders headers) {
         log.info("Deleting connection: {}", connectionId);
-        Identifier identifier = Identifier.builder().headers(headers).id(connectionId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.deleteResponse(connectionService.deleteConnection(identifier));
     }
 }

@@ -1,7 +1,6 @@
 package com.dataflow.dataloaders.services;
 
 import com.dataflow.dataloaders.dao.ProviderDao;
-import com.dataflow.dataloaders.dto.ProviderRequest;
 import com.dataflow.dataloaders.entity.Provider;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
@@ -24,23 +23,22 @@ public class ProviderService {
     private IconService iconService;
 
     public Provider create(Provider request, Identifier identifier) {
-        Long iconId = null;
-
         Provider provider = Provider.builder()
                 .connectionTypeId(request.getConnectionTypeId())
                 .providerName(request.getProviderName())
+                .description(request.getDescription())
                 .iconId(request.getIconId())
                 .defaultPort(request.getDefaultPort())
                 .configSchema(request.getConfigSchema())
                 .displayOrder(request.getDisplayOrder())
                 .build();
 
-        log.info("Creating provider: {} with icon ID: {}", request.getProviderName(), iconId);
+        log.info("Creating provider: {}", request.getProviderName());
         return providerDao.create(provider, identifier);
     }
 
     public Provider getProvider(Identifier identifier) {
-        log.info("Getting provider by id: {}", identifier.getId());
+        log.info("Getting provider by id: {}", identifier.getWord());
         return providerDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
     }
@@ -56,10 +54,12 @@ public class ProviderService {
     }
 
     public Provider updateProvider(Provider provider, Identifier identifier) {
-        log.info("Updating provider: {}", identifier.getId());
+        log.info("Updating provider: {}", identifier.getWord());
         Provider existing = providerDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
 
+        if (provider.getDescription() != null)
+            existing.setDescription(provider.getDescription());
         if (provider.getIconId() != null)
             existing.setIconId(provider.getIconId());
         if (provider.getDefaultPort() != null)
@@ -77,7 +77,7 @@ public class ProviderService {
     }
 
     public boolean deleteProvider(Identifier identifier) {
-        log.info("Deleting provider: {}", identifier.getId());
+        log.info("Deleting provider: {}", identifier.getWord());
         Provider provider = providerDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
         provider.setUpdatedBy("admin");
