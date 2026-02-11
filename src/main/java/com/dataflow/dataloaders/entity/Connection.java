@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Connection extends AuditMetaData {
-    private Long id;
-    private Long userId;
-    private Long providerId;
+    private String id;
+    private String applicationId;
+    private String providerId;
     private String connectionName;
     private JsonNode config;
     private JsonNode secrets;

@@ -1,12 +1,10 @@
 package com.dataflow.dataloaders.services;
 
-import com.dataflow.dataloaders.dao.ConnectionActivityLogDao;
 import com.dataflow.dataloaders.dao.ConnectionDao;
 import com.dataflow.dataloaders.dao.ProviderDao;
 import com.dataflow.dataloaders.dto.TestConnectionRequest;
 import com.dataflow.dataloaders.dto.TestConnectionResponse;
 import com.dataflow.dataloaders.entity.Connection;
-import com.dataflow.dataloaders.entity.ConnectionActivityLog;
 import com.dataflow.dataloaders.entity.Provider;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
@@ -42,9 +40,6 @@ public class ConnectionTestService {
 
     @Autowired
     private ProviderDao providerDao;
-
-    @Autowired
-    private ConnectionActivityLogDao activityLogDao;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -92,7 +87,7 @@ public class ConnectionTestService {
                             () -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND, "Connection not found"));
 
             // Get provider
-            Provider provider = providerDao.getV1(Identifier.builder().id(connection.getProviderId()).build())
+            Provider provider = providerDao.getV1(Identifier.builder().word(connection.getProviderId()).build())
                     .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND, "Provider not found"));
 
             // Decrypt secrets
@@ -113,17 +108,6 @@ public class ConnectionTestService {
             connection.setLastTestedAt(DateUtils.getUnixTimestampInUTC());
             connection.setLastUsedAt(DateUtils.getUnixTimestampInUTC());
             connectionDao.update(connection);
-
-            // Log activity
-            String activityTitle = response.getSuccess() ? "Connection test successful" : "Connection test failed";
-            String activityDescription = response.getSuccess()
-                    ? String.format("Connection '%s' tested successfully in %dms", connection.getConnectionName(),
-                            response.getResponseTimeMs())
-                    : String.format("Connection '%s' test failed: %s", connection.getConnectionName(),
-                            response.getErrorMessage());
-
-            logActivity(connectionId, "CONNECTION_TEST", response.getSuccess() ? "SUCCESS" : "FAILED",
-                    activityTitle, activityDescription, response.getResponseTimeMs());
 
             return response;
 
@@ -637,28 +621,5 @@ public class ConnectionTestService {
                         "Contact support for assistance",
                         "Supported providers: PostgreSQL, MySQL, MongoDB, Redis, Oracle, MSSQL, MariaDB"))
                 .build();
-    }
-
-    private void logActivity(Long connectionId, String activityType, String status,
-            String title, String description, Integer responseTimeMs) {
-        try {
-            ObjectNode metadata = objectMapper.createObjectNode();
-            if (responseTimeMs != null) {
-                metadata.put("responseTimeMs", responseTimeMs);
-            }
-
-            ConnectionActivityLog activityLog = ConnectionActivityLog.builder()
-                    .connectionId(connectionId)
-                    .activityType(activityType)
-                    .status(status)
-                    .title(title)
-                    .description(description)
-                    .metadata(metadata)
-                    .build();
-
-            activityLogDao.create(activityLog, Identifier.builder().build());
-        } catch (Exception e) {
-            log.error("Failed to log activity: {}", e.getMessage());
-        }
     }
 }

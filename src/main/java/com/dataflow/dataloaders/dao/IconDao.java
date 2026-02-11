@@ -67,7 +67,7 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
     public Optional<Icon> getV1(Identifier identifier) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("Icon.getById"), iconRowMapper, identifier.getId()));
+                    getSql("Icon.getById"), iconRowMapper, identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -82,6 +82,13 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
         }
     }
 
+    public List<Icon> listByModule(Identifier identifier) {
+        try {
+            return jdbcTemplate.query(getSql("Icon.getByModule"), iconRowMapper, identifier.getWord());
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+    }
     @Override
     public List<Icon> list(Identifier identifier) {
         try {
@@ -163,8 +170,8 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
         Icon icon = new Icon();
         icon.setId(rs.getString("id"));
         icon.setIconName(rs.getString("icon_name"));
-        icon.setModule(rs.getString("icon_url"));
-        icon.setIcon(rs.getString("icon_data"));
+        icon.setModule(rs.getString("module"));
+        icon.setIcon(rs.getString("icon"));
         icon.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
         icon.setCreatedBy(rs.getString("created_by"));
         icon.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);

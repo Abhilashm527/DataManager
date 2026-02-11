@@ -34,37 +34,41 @@ public class IconController {
 
     @Operation(summary = "Get icon by ID")
     @GetMapping("/{iconId}")
-    public ResponseEntity<Response> get(@Parameter(description = "Icon ID") @PathVariable Long iconId,
+    public ResponseEntity<Response> get(@Parameter(description = "Icon ID") @PathVariable String iconId,
             @RequestHeader HttpHeaders headers) {
         log.info("Getting icon: {}", iconId);
-        Identifier identifier = Identifier.builder().headers(headers).id(iconId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(iconId).build();
         return Response.getResponse(iconService.getIcon(identifier));
     }
 
     @Operation(summary = "Get all icons")
     @GetMapping
-    public ResponseEntity<Response> getAll(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<Response> getAll(@RequestParam(required = false) String module, @RequestHeader HttpHeaders headers) {
         log.info("Getting all icons");
         Identifier identifier = Identifier.builder().headers(headers).build();
+        if(module != null){
+            identifier.setWord(module);
+            return Response.getResponse(iconService.getAllByModule(identifier));
+        }
         return Response.getResponse(iconService.getAllIcons(identifier));
     }
 
     @Operation(summary = "Update icon")
     @PutMapping("/{iconId}")
-    public ResponseEntity<Response> update(@Parameter(description = "Icon ID") @PathVariable Long iconId,
+    public ResponseEntity<Response> update(@Parameter(description = "Icon ID") @PathVariable String iconId,
             @RequestBody Icon icon,
             @RequestHeader HttpHeaders headers) {
         log.info("Updating icon: {}", iconId);
-        Identifier identifier = Identifier.builder().headers(headers).id(iconId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(iconId).build();
         return Response.updateResponse(iconService.updateIcon(icon, identifier));
     }
 
     @Operation(summary = "Delete icon")
     @DeleteMapping("/{iconId}")
-    public ResponseEntity<Response> delete(@Parameter(description = "Icon ID") @PathVariable Long iconId,
+    public ResponseEntity<Response> delete(@Parameter(description = "Icon ID") @PathVariable String iconId,
             @RequestHeader HttpHeaders headers) {
         log.info("Deleting icon: {}", iconId);
-        Identifier identifier = Identifier.builder().headers(headers).id(iconId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(iconId).build();
         return Response.deleteResponse(iconService.deleteIcon(identifier));
     }
 

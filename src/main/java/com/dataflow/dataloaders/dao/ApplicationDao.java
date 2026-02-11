@@ -63,7 +63,7 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
             ps.setObject(3, model.getEnvironment());
             ps.setObject(4, model.getDescription());
             ps.setObject(5, model.getIconId());
-            ps.setObject(6, model.getVisibility());
+            ps.setObject(6, model.getVisibility().name());
             ps.setObject(7, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
             ps.setObject(8, DateUtils.getUnixTimestampInUTC());
             return ps;
@@ -170,8 +170,8 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         application.setName(rs.getString("name"));
         application.setEnvironment(rs.getString("environment"));
         application.setDescription(rs.getString("description"));
-        application.setDescription(rs.getString("icon_id"));
-        application.setVisibility((Visibility) rs.getObject("visibility"));
+        application.setIconId(rs.getString("icon_id"));
+        application.setVisibility(Visibility.valueOf(rs.getString("visibility")));
         application.setCreatedBy(rs.getString("created_by"));
         application.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
         application.setUpdatedBy(rs.getString("updated_by"));

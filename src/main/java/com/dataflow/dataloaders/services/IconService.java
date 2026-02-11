@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter;
 
 import java.io.IOException;
 
@@ -22,6 +23,8 @@ public class IconService {
 
     @Autowired
     private IconDao iconDao;
+    @Autowired
+    private AbstractHandlerMethodAdapter abstractHandlerMethodAdapter;
 
     public Icon create(Icon icon, Identifier identifier) {
         log.info("Creating icon: {}", icon.getIconName());
@@ -37,7 +40,20 @@ public class IconService {
 
     public List<Icon> getAllIcons(Identifier identifier) {
         log.info("Getting all icons");
-        return iconDao.list(identifier);
+        List<Icon> iconList = iconDao.list(identifier);
+        if(iconList.isEmpty()){
+            throw new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND);
+        }
+        return iconList;
+    }
+
+    public List<Icon> getAllByModule(Identifier identifier) {
+        log.info("Getting all icons");
+        List<Icon> iconList = iconDao.listByModule(identifier);
+        if(iconList.isEmpty()){
+            throw new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND);
+        }
+        return iconList;
     }
 
     public Icon updateIcon(Icon icon, Identifier identifier) {

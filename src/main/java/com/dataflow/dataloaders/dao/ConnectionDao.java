@@ -5,6 +5,7 @@ import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.DFUtil;
+import com.dataflow.dataloaders.util.IdGenerator;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,17 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     @Autowired
     private DFUtil dfUtil;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     @Override
     public Optional<Connection> createV1(Connection model, Identifier identifier) {
         try {
-            Long id = insert(model, identifier);
-            return getV1(Identifier.builder().id(id).build());
+            if (model.getId() == null || model.getId().isEmpty()) {
+                model.setId(idGenerator.generateId());
+            }
+            String id = insertConnection(model, identifier);
+            return getV1(Identifier.builder().word(id).build());
         } catch (Exception e) {
             log.error("Error creating connection: {}", e.getMessage());
             throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
@@ -43,25 +50,30 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
 
     @Override
     public Long insert(Connection model, Identifier identifier) {
+        return 0L;
+    }
+
+    public String insertConnection(Connection model, Identifier identifier) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(getSql("Connection.create"), new String[]{"id"});
-            ps.setObject(1, model.getUserId());
-            ps.setObject(2, model.getProviderId());
-            ps.setString(3, model.getConnectionName());
-            ps.setObject(4, dfUtil.writeValueAsString(model.getConfig()), java.sql.Types.OTHER);
-            ps.setObject(5, dfUtil.writeValueAsString(model.getSecrets()), java.sql.Types.OTHER);
-            ps.setObject(6, model.getUseSsl());
-            ps.setObject(7, model.getConnectionTimeout());
-            ps.setObject(8, model.getIsActive());
-            ps.setString(9, model.getLastTestStatus());
-            ps.setObject(10, model.getLastTestedAt());
-            ps.setObject(11, model.getLastUsedAt());
-            ps.setObject(12, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(13, DateUtils.getUnixTimestampInUTC());
+            ps.setString(1, model.getId());
+            ps.setObject(2, model.getApplicationId());
+            ps.setObject(3, model.getProviderId());
+            ps.setString(4, model.getConnectionName());
+            ps.setObject(5, dfUtil.writeValueAsString(model.getConfig()), java.sql.Types.OTHER);
+            ps.setObject(6, dfUtil.writeValueAsString(model.getSecrets()), java.sql.Types.OTHER);
+            ps.setObject(7, model.getUseSsl());
+            ps.setObject(8, model.getConnectionTimeout());
+            ps.setObject(9, model.getIsActive());
+            ps.setString(10, model.getLastTestStatus());
+            ps.setObject(11, model.getLastTestedAt());
+            ps.setObject(12, model.getLastUsedAt());
+            ps.setObject(13, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(14, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
-        return Objects.requireNonNull(holder.getKey()).longValue();
+        return model.getId();
     }
 
     @Override
@@ -174,9 +186,9 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
 
     RowMapper<Connection> connectionRowMapper = (rs, rowNum) -> {
         Connection connection = new Connection();
-        connection.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
-        connection.setUserId(rs.getObject("user_id") != null ? rs.getLong("user_id") : null);
-        connection.setProviderId(rs.getObject("provider_id") != null ? rs.getLong("provider_id") : null);
+        connection.setId(rs.getObject("id") != null ? rs.getString("id") : null);
+        connection.setApplicationId(rs.getObject("application_id") != null ? rs.getString("application_id") : null);
+        connection.setProviderId(rs.getObject("provider_id") != null ? rs.getString("provider_id") : null);
         connection.setConnectionName(rs.getString("connection_name"));
         
         String configJson = rs.getString("config");
