@@ -18,23 +18,10 @@ public class ConnectionService {
     @Autowired
     private ConnectionDao connectionDao;
 
-    @Autowired
-    private ConnectionActivityLogService activityLogService;
 
     public Connection create(Connection connection, Identifier identifier) {
         log.info("Creating connection: {}", connection.getConnectionName());
         Connection created = connectionDao.create(connection, identifier);
-
-        // Log activity
-        if (created.getId() != null) {
-            activityLogService.logActivity(
-                    created.getId(),
-                    "CONNECTION_CREATED",
-                    "SUCCESS",
-                    "Connection created",
-                    String.format("Connection '%s' was created", created.getConnectionName()));
-        }
-
         return created;
     }
 
@@ -49,7 +36,7 @@ public class ConnectionService {
         return connectionDao.list(identifier);
     }
 
-    public List<Connection> getConnectionsByUserId(Long userId) {
+    public List<Connection> getConnectionsByApplicationId(Long userId) {
         log.info("Getting connections by user id: {}", userId);
         return connectionDao.listByUserId(userId);
     }
@@ -102,19 +89,6 @@ public class ConnectionService {
         existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
         existing.setUpdatedBy("admin");
         connectionDao.update(existing);
-
-        // Log detailed activity
-        String description = changes.length() > 0 ? 
-            String.format("Connection '%s' updated: %s", existing.getConnectionName(), changes.toString()) :
-            String.format("Connection '%s' configuration was updated", existing.getConnectionName());
-            
-        activityLogService.logActivity(
-                existing.getId(),
-                "CONNECTION_UPDATED",
-                "SUCCESS",
-                "Connection settings updated",
-                description);
-
         return connectionDao.getV1(identifier).orElse(existing);
     }
 
@@ -122,15 +96,6 @@ public class ConnectionService {
         log.info("Deleting connection: {}", identifier.getId());
         Connection connection = connectionDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
-
-        // Log activity before deletion
-        activityLogService.logActivity(
-                connection.getId(),
-                "CONNECTION_DELETED",
-                "SUCCESS",
-                "Connection deleted",
-                String.format("Connection '%s' was deleted", connection.getConnectionName()));
-
         connection.setUpdatedBy("admin");
         return connectionDao.delete(connection) > 0;
     }

@@ -1,7 +1,6 @@
 package com.dataflow.dataloaders.services;
 
 import com.dataflow.dataloaders.dao.ConnectionTypeDao;
-import com.dataflow.dataloaders.dto.ConnectionTypeRequest;
 import com.dataflow.dataloaders.entity.ConnectionType;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
@@ -10,7 +9,6 @@ import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,32 +26,18 @@ public class ConnectionTypeService {
      * Create ConnectionType with multipart icon file upload
      * 
      * @param request    ConnectionTypeRequest DTO
-     * @param iconFile   Optional icon file upload
      * @param identifier Request context
      * @return Created ConnectionType
      */
-    public ConnectionType create(ConnectionTypeRequest request, MultipartFile iconFile, Identifier identifier) {
+    public ConnectionType create(ConnectionType request, Identifier identifier) {
         Long iconId = null;
-
-        // Handle icon if provided
-        if (iconFile != null && !iconFile.isEmpty()) {
-            if (request.getIconName() == null || request.getIconName().trim().isEmpty()) {
-                throw new DataloadersException(ErrorFactory.BAD_REQUEST,
-                        "iconName is required when uploading an icon file");
-            }
-            iconService.validateIconFile(iconFile);
-            var icon = iconService.findOrCreateIconFromFile(request.getIconName(), iconFile, identifier);
-            iconId = icon.getId();
-        }
-
         ConnectionType connectionType = ConnectionType.builder()
-                .typeKey(request.getTypeKey())
-                .displayName(request.getDisplayName())
-                .iconId(iconId)
+                .connectionType(request.getConnectionType())
+                .iconId(request.getIconId())
                 .displayOrder(request.getDisplayOrder())
                 .build();
 
-        log.info("Creating connection type: {} with icon ID: {}", request.getTypeKey(), iconId);
+        log.info("Creating connection type: {} with icon ID: {}", request.getConnectionType(), iconId);
         return connectionTypeDao.create(connectionType, identifier);
     }
 
@@ -73,8 +57,6 @@ public class ConnectionTypeService {
         ConnectionType existing = connectionTypeDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
 
-        if (connectionType.getDisplayName() != null)
-            existing.setDisplayName(connectionType.getDisplayName());
         if (connectionType.getIconId() != null)
             existing.setIconId(connectionType.getIconId());
         if (connectionType.getDisplayOrder() != null)

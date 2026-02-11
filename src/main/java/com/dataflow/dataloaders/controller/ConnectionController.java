@@ -74,7 +74,7 @@ public class ConnectionController {
     public ResponseEntity<Response> getByUserId(@Parameter(description = "User ID") @PathVariable Long userId,
                                                 @RequestHeader HttpHeaders headers) {
         log.info("Getting connections by user: {}", userId);
-        return Response.getResponse(connectionService.getConnectionsByUserId(userId));
+        return Response.getResponse(connectionService.getConnectionsByApplicationId(userId));
     }
 
     @Operation(summary = "Get connections by provider")

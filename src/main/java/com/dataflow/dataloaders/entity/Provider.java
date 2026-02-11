@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Provider extends AuditMetaData {
-    private Long id;
-    private Long connectionTypeId;
-    private String providerKey;
-    private String displayName;
-    private Long iconId;
+    private String id;
+    private String connectionTypeId;
+    private String providerName;
+    private String iconId;
     private Integer defaultPort;
     private JsonNode configSchema;
     private Integer displayOrder;

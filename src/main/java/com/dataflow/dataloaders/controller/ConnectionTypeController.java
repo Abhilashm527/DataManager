@@ -1,6 +1,5 @@
 package com.dataflow.dataloaders.controller;
 
-import com.dataflow.dataloaders.dto.ConnectionTypeRequest;
 import com.dataflow.dataloaders.entity.ConnectionType;
 import com.dataflow.dataloaders.services.ConnectionTypeService;
 import com.dataflow.dataloaders.util.Identifier;
@@ -15,8 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import static com.dataflow.dataloaders.config.APIConstants.CONNECTION_TYPES_BASE_PATH;
 
 @Slf4j
@@ -29,14 +26,13 @@ public class ConnectionTypeController {
     private ConnectionTypeService connectionTypeService;
 
     @Operation(summary = "Create connection type with optional icon upload")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping()
     public ResponseEntity<Response> create(
-            @RequestPart("data") ConnectionTypeRequest request,
-            @RequestPart(value = "icon", required = false) MultipartFile iconFile,
+            @RequestBody ConnectionType connectionType,
             @RequestHeader HttpHeaders headers) {
-        log.info("Creating connection type: {} with icon: {}", request.getTypeKey(), iconFile != null);
+        log.info("Creating connection type: {}", connectionType.getConnectionType());
         Identifier identifier = Identifier.builder().headers(headers).build();
-        return Response.createResponse(connectionTypeService.create(request, iconFile, identifier));
+        return Response.createResponse(connectionTypeService.create(connectionType, identifier));
     }
 
     @Operation(summary = "Get connection type by ID")

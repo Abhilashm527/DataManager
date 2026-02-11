@@ -10,7 +10,6 @@ import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,31 +23,19 @@ public class ProviderService {
     @Autowired
     private IconService iconService;
 
-    public Provider create(ProviderRequest request, MultipartFile iconFile, Identifier identifier) {
+    public Provider create(Provider request, Identifier identifier) {
         Long iconId = null;
-
-        // Handle icon if provided
-        if (iconFile != null && !iconFile.isEmpty()) {
-            if (request.getIconName() == null || request.getIconName().trim().isEmpty()) {
-                throw new DataloadersException(ErrorFactory.BAD_REQUEST,
-                        "iconName is required when uploading an icon file");
-            }
-            iconService.validateIconFile(iconFile);
-            var icon = iconService.findOrCreateIconFromFile(request.getIconName(), iconFile, identifier);
-            iconId = icon.getId();
-        }
 
         Provider provider = Provider.builder()
                 .connectionTypeId(request.getConnectionTypeId())
-                .providerKey(request.getProviderKey())
-                .displayName(request.getDisplayName())
-                .iconId(iconId)
+                .providerName(request.getProviderName())
+                .iconId(request.getIconId())
                 .defaultPort(request.getDefaultPort())
                 .configSchema(request.getConfigSchema())
                 .displayOrder(request.getDisplayOrder())
                 .build();
 
-        log.info("Creating provider: {} with icon ID: {}", request.getProviderKey(), iconId);
+        log.info("Creating provider: {} with icon ID: {}", request.getProviderName(), iconId);
         return providerDao.create(provider, identifier);
     }
 
@@ -63,7 +50,7 @@ public class ProviderService {
         return providerDao.list(identifier);
     }
 
-    public List<Provider> getProvidersByConnectionType(Long connectionTypeId) {
+    public List<Provider> getProvidersByConnectionType(String connectionTypeId) {
         log.info("Getting providers by connection type: {}", connectionTypeId);
         return providerDao.listByConnectionType(connectionTypeId);
     }
@@ -73,8 +60,6 @@ public class ProviderService {
         Provider existing = providerDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
 
-        if (provider.getDisplayName() != null)
-            existing.setDisplayName(provider.getDisplayName());
         if (provider.getIconId() != null)
             existing.setIconId(provider.getIconId());
         if (provider.getDefaultPort() != null)

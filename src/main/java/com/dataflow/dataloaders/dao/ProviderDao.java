@@ -5,6 +5,7 @@ import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.DFUtil;
+import com.dataflow.dataloaders.util.IdGenerator;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,17 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
 
     @Autowired
     private DFUtil dfUtil;
+    @Autowired
+    private IdGenerator idGenerator;
 
     @Override
     public Optional<Provider> createV1(Provider model, Identifier identifier) {
         try {
-            Long id = insert(model, identifier);
-            return getV1(Identifier.builder().id(id).build());
+            if (model.getId() == null || model.getId().isEmpty()) {
+                model.setId(idGenerator.generateId());
+            }
+            String id = insertProvider(model, identifier);
+            return getV1(Identifier.builder().word(id).build());
         } catch (Exception e) {
             log.error("Error creating provider: {}", e.getMessage());
             throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
@@ -43,12 +49,16 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
 
     @Override
     public Long insert(Provider model, Identifier identifier) {
+        return 0L;
+    }
+
+    public String insertProvider(Provider model, Identifier identifier) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(getSql("Provider.create"), new String[]{"id"});
-            ps.setObject(1, model.getConnectionTypeId());
-            ps.setString(2, model.getProviderKey());
-            ps.setString(3, model.getDisplayName());
+            ps.setObject(1, model.getId());
+            ps.setObject(2, model.getConnectionTypeId());
+            ps.setString(3, model.getProviderName());
             ps.setObject(4, model.getIconId());
             ps.setObject(5, model.getDefaultPort());
             ps.setObject(6, dfUtil.writeValueAsString(model.getConfigSchema()), java.sql.Types.OTHER);
@@ -57,7 +67,7 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
             ps.setObject(9, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
-        return Objects.requireNonNull(holder.getKey()).longValue();
+        return model.getId();
     }
 
     @Override
@@ -73,13 +83,13 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
     public Optional<Provider> getByProviderKey(String providerKey) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("Provider.getByProviderKey"), providerRowMapper, providerKey));
+                    getSql("Provider.getByProviderName"), providerRowMapper, providerKey));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public List<Provider> listByConnectionType(Long connectionTypeId) {
+    public List<Provider> listByConnectionType(String connectionTypeId) {
         try {
             return jdbcTemplate.query(getSql("Provider.getByConnectionType"), providerRowMapper, connectionTypeId);
         } catch (EmptyResultDataAccessException e) {
@@ -99,7 +109,6 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
     public int update(Provider provider) {
         try {
             return jdbcTemplate.update(getSql("Provider.updateById"),
-                    provider.getDisplayName(),
                     provider.getIconId(),
                     provider.getDefaultPort(),
                     dfUtil.writeValueAsString(provider.getConfigSchema()),
@@ -167,18 +176,15 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
 
     RowMapper<Provider> providerRowMapper = (rs, rowNum) -> {
         Provider provider = new Provider();
-        provider.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
-        provider.setConnectionTypeId(rs.getObject("connection_type_id") != null ? rs.getLong("connection_type_id") : null);
-        provider.setProviderKey(rs.getString("provider_key"));
-        provider.setDisplayName(rs.getString("display_name"));
-        provider.setIconId(rs.getObject("icon_id") != null ? rs.getLong("icon_id") : null);
+        provider.setId(rs.getString("id"));
+        provider.setConnectionTypeId(rs.getString("connection_type_id"));
+        provider.setProviderName(rs.getString("provider_name"));
+        provider.setIconId(rs.getString("icon_id") != null ? rs.getString("icon_id") : null);
         provider.setDefaultPort(rs.getObject("default_port") != null ? rs.getInt("default_port") : null);
-        
         String configSchemaJson = rs.getString("config_schema");
         if (configSchemaJson != null) {
             provider.setConfigSchema(dfUtil.readValueToJsonNode(configSchemaJson));
         }
-        
         provider.setDisplayOrder(rs.getObject("display_order") != null ? rs.getInt("display_order") : null);
         provider.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
         provider.setCreatedBy(rs.getString("created_by"));

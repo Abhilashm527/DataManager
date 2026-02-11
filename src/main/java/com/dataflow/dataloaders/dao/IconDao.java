@@ -4,6 +4,7 @@ import com.dataflow.dataloaders.entity.Icon;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
+import com.dataflow.dataloaders.util.IdGenerator;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,17 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
+    @Autowired
+    private IdGenerator idGenerator;
 
     @Override
     public Optional<Icon> createV1(Icon model, Identifier identifier) {
         try {
-            Long id = insert(model, identifier);
-            return getV1(Identifier.builder().id(id).build());
+            if (model.getId() == null || model.getId().isEmpty()) {
+                model.setId(idGenerator.generateId());
+            }
+            String id = insertIcon(model, identifier);
+            return getV1(Identifier.builder().word(id).build());
         } catch (Exception e) {
             log.error("Error creating icon: {}", e.getMessage());
             throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
@@ -39,26 +45,29 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
 
     @Override
     public Long insert(Icon model, Identifier identifier) {
+        return 0L;
+    }
+
+    public String insertIcon(Icon model, Identifier identifier) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(getSql("Icon.create"), new String[] { "id" });
-            ps.setString(1, model.getIconName());
-            ps.setString(2, model.getIconUrl());
-            ps.setBytes(3, model.getIconData());
-            ps.setString(4, model.getContentType());
-            ps.setObject(5, model.getFileSize());
-            ps.setObject(6, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(7, DateUtils.getUnixTimestampInUTC());
+            ps.setString(1, model.getId());
+            ps.setString(2, model.getIconName());
+            ps.setString(3, model.getModule());
+            ps.setString(4, model.getIcon());
+            ps.setObject(5, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(6, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
-        return Objects.requireNonNull(holder.getKey()).longValue();
+        return model.getId();
     }
 
     @Override
     public Optional<Icon> getV1(Identifier identifier) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("Icon.getById"), iconRowMapper, identifier.getId()));
+                    getSql("Icon.getById"), iconRowMapper, identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -73,6 +82,13 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
         }
     }
 
+    public List<Icon> listByModule(Identifier identifier) {
+        try {
+            return jdbcTemplate.query(getSql("Icon.getByModule"), iconRowMapper, identifier.getWord());
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+    }
     @Override
     public List<Icon> list(Identifier identifier) {
         try {
@@ -86,10 +102,8 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
         try {
             return jdbcTemplate.update(getSql("Icon.updateById"),
                     icon.getIconName(),
-                    icon.getIconUrl(),
-                    icon.getIconData(),
-                    icon.getContentType(),
-                    icon.getFileSize(),
+                    icon.getModule(),
+                    icon.getIcon(),
                     icon.getUpdatedBy() != null ? icon.getUpdatedBy() : "admin",
                     DateUtils.getUnixTimestampInUTC(),
                     icon.getId());
@@ -154,12 +168,10 @@ public class IconDao extends GenericDaoImpl<Icon, Identifier, String> {
 
     RowMapper<Icon> iconRowMapper = (rs, rowNum) -> {
         Icon icon = new Icon();
-        icon.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
+        icon.setId(rs.getString("id"));
         icon.setIconName(rs.getString("icon_name"));
-        icon.setIconUrl(rs.getString("icon_url"));
-        icon.setIconData(rs.getBytes("icon_data"));
-        icon.setContentType(rs.getString("content_type"));
-        icon.setFileSize(rs.getObject("file_size") != null ? rs.getLong("file_size") : null);
+        icon.setModule(rs.getString("module"));
+        icon.setIcon(rs.getString("icon"));
         icon.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
         icon.setCreatedBy(rs.getString("created_by"));
         icon.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
