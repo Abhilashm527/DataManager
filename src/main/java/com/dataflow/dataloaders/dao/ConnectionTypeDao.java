@@ -4,6 +4,7 @@ import com.dataflow.dataloaders.entity.ConnectionType;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
+import com.dataflow.dataloaders.util.IdGenerator;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,17 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
+    @Autowired
+    private IdGenerator idGenerator;
 
     @Override
     public Optional<ConnectionType> createV1(ConnectionType model, Identifier identifier) {
         try {
-            Long id = insert(model, identifier);
-            return getV1(Identifier.builder().id(id).build());
+            if (model.getId() == null || model.getId().isEmpty()) {
+                model.setId(idGenerator.generateId());
+            }
+            String id = insertConnectionType(model, identifier);
+            return getV1(Identifier.builder().word(id).build());
         } catch (Exception e) {
             log.error("Error creating connection type: {}", e.getMessage());
             throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
@@ -39,18 +45,21 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
 
     @Override
     public Long insert(ConnectionType model, Identifier identifier) {
+        return 0L;
+    }
+    public String insertConnectionType(ConnectionType model, Identifier identifier) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(getSql("ConnectionType.create"), new String[]{"id"});
-            ps.setString(1, model.getTypeKey());
-            ps.setString(2, model.getDisplayName());
+            ps.setString(1, model.getId());
+            ps.setString(2, model.getConnectionType());
             ps.setObject(3, model.getIconId());
             ps.setObject(4, model.getDisplayOrder());
             ps.setObject(5, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
             ps.setObject(6, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
-        return Objects.requireNonNull(holder.getKey()).longValue();
+        return model.getId();
     }
 
     @Override
@@ -84,7 +93,6 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
     public int update(ConnectionType connectionType) {
         try {
             return jdbcTemplate.update(getSql("ConnectionType.updateById"),
-                    connectionType.getDisplayName(),
                     connectionType.getIconId(),
                     connectionType.getDisplayOrder(),
                     connectionType.getUpdatedBy() != null ? connectionType.getUpdatedBy() : "admin",
@@ -150,10 +158,9 @@ public class ConnectionTypeDao extends GenericDaoImpl<ConnectionType, Identifier
 
     RowMapper<ConnectionType> connectionTypeRowMapper = (rs, rowNum) -> {
         ConnectionType connectionType = new ConnectionType();
-        connectionType.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
-        connectionType.setTypeKey(rs.getString("type_key"));
-        connectionType.setDisplayName(rs.getString("display_name"));
-        connectionType.setIconId(rs.getObject("icon_id") != null ? rs.getLong("icon_id") : null);
+        connectionType.setId(rs.getString("id"));
+        connectionType.setConnectionType(rs.getString("connection_type"));
+        connectionType.setIconId(rs.getString("icon_id"));
         connectionType.setDisplayOrder(rs.getObject("display_order") != null ? rs.getInt("display_order") : null);
         connectionType.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
         connectionType.setCreatedBy(rs.getString("created_by"));

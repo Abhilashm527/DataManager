@@ -29,14 +29,13 @@ public class ProviderController {
     private ProviderService providerService;
 
     @Operation(summary = "Create provider with optional icon upload")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping()
     public ResponseEntity<Response> create(
-            @RequestPart("data") ProviderRequest request,
-            @RequestPart(value = "icon", required = false) MultipartFile iconFile,
+            @RequestBody Provider provider,
             @RequestHeader HttpHeaders headers) {
-        log.info("Creating provider: {} with icon: {}", request.getProviderKey(), iconFile != null);
+        log.info("Creating provider: {}}", provider.getProviderName());
         Identifier identifier = Identifier.builder().headers(headers).build();
-        return Response.createResponse(providerService.create(request, iconFile, identifier));
+        return Response.createResponse(providerService.create(provider, identifier));
     }
 
     @Operation(summary = "Get provider by ID")
@@ -59,7 +58,7 @@ public class ProviderController {
     @Operation(summary = "Get providers by connection type")
     @GetMapping("/connection-type/{connectionTypeId}")
     public ResponseEntity<Response> getByConnectionType(
-            @Parameter(description = "Connection Type ID") @PathVariable Long connectionTypeId,
+            @Parameter(description = "Connection Type ID") @PathVariable String connectionTypeId,
             @RequestHeader HttpHeaders headers) {
         log.info("Getting providers by connection type: {}", connectionTypeId);
         return Response.getResponse(providerService.getProvidersByConnectionType(connectionTypeId));

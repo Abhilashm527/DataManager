@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.ConnectionString;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +100,7 @@ public class ConnectionTestService {
 
             // Perform connection test
             TestConnectionResponse response = performConnectionTest(
-                    provider.getProviderKey(),
+                    provider.getProviderName(),
                     connection.getConfig(),
                     decryptedSecrets,
                     connection.getUseSsl(),

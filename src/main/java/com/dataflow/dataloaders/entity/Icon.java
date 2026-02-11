@@ -10,10 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Icon extends AuditMetaData {
-    private Long id;
+    private String id;
     private String iconName;
-    private String iconUrl;
-    private byte[] iconData;
-    private String contentType;
-    private Long fileSize;
+    private String module;
+    private String icon;
 }

@@ -1,6 +1,7 @@
 package com.dataflow.dataloaders.dao;
 
 import com.dataflow.dataloaders.entity.Application;
+import com.dataflow.dataloaders.enums.Visibility;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
@@ -61,8 +62,10 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
             ps.setObject(2, model.getName());
             ps.setObject(3, model.getEnvironment());
             ps.setObject(4, model.getDescription());
-            ps.setObject(5, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(6, DateUtils.getUnixTimestampInUTC());
+            ps.setObject(5, model.getIconId());
+            ps.setObject(6, model.getVisibility());
+            ps.setObject(7, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(8, DateUtils.getUnixTimestampInUTC());
             return ps;
         });
         return model.getId();
@@ -89,6 +92,8 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
                     application.getName(),
                     application.getEnvironment(),
                     application.getDescription(),
+                    application.getIconId(),
+                    application.getVisibility(),
                     application.getUpdatedBy(),
                     DateUtils.getUnixTimestampInUTC(),
                     application.getId());
@@ -165,6 +170,8 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         application.setName(rs.getString("name"));
         application.setEnvironment(rs.getString("environment"));
         application.setDescription(rs.getString("description"));
+        application.setDescription(rs.getString("icon_id"));
+        application.setVisibility((Visibility) rs.getObject("visibility"));
         application.setCreatedBy(rs.getString("created_by"));
         application.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
         application.setUpdatedBy(rs.getString("updated_by"));

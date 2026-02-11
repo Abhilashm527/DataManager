@@ -68,31 +68,4 @@ public class IconController {
         return Response.deleteResponse(iconService.deleteIcon(identifier));
     }
 
-    @Operation(summary = "Get icon image by ID")
-    @GetMapping("/{iconId}/image")
-    public ResponseEntity<byte[]> getIconImage(
-            @Parameter(description = "Icon ID") @PathVariable Long iconId,
-            @RequestHeader HttpHeaders headers) {
-        log.info("Getting icon image: {}", iconId);
-        Identifier identifier = Identifier.builder().headers(headers).id(iconId).build();
-        Icon icon = iconService.getIcon(identifier);
-
-        if (icon.getIconData() == null) {
-            log.warn("Icon {} has no binary data", iconId);
-            return ResponseEntity.notFound().build();
-        }
-
-        MediaType contentType = MediaType.IMAGE_PNG; // default
-        if (icon.getContentType() != null) {
-            try {
-                contentType = MediaType.parseMediaType(icon.getContentType());
-            } catch (Exception e) {
-                log.warn("Invalid content type: {}, using default", icon.getContentType());
-            }
-        }
-
-        return ResponseEntity.ok()
-                .contentType(contentType)
-                .body(icon.getIconData());
-    }
 }
