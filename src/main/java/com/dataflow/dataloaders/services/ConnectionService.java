@@ -35,8 +35,12 @@ public class ConnectionService {
         return connectionDao.list(identifier);
     }
 
-    public List<Connection> getConnectionsByApplicationId(String applicationId, Boolean isFavorite) {
-        log.info("Getting connections by application id: {}, isFavorite: {}", applicationId, isFavorite);
+    public List<Connection> getConnectionsByApplicationId(String applicationId, Boolean isFavorite, String search) {
+        log.info("Getting connections by application id: {}, isFavorite: {}, search: {}", applicationId, isFavorite,
+                search);
+        if (search != null && !search.isEmpty()) {
+            return connectionDao.listByNameInApplication(applicationId, search);
+        }
         return connectionDao.listByUserId(applicationId, isFavorite);
     }
 

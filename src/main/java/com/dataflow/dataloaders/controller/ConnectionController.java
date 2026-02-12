@@ -76,9 +76,11 @@ public class ConnectionController {
     public ResponseEntity<Response> getByApplicationId(
             @Parameter(description = "Application ID") @PathVariable String applicationId,
             @RequestParam(required = false) Boolean isFavorite,
+            @RequestParam(required = false) String search,
             @RequestHeader HttpHeaders headers) {
-        log.info("Getting connections by application: {}, isFavorite: {}", applicationId, isFavorite);
-        return Response.getResponse(connectionService.getConnectionsByApplicationId(applicationId, isFavorite));
+        log.info("Getting connections by application: {}, isFavorite: {}, search: {}", applicationId, isFavorite,
+                search);
+        return Response.getResponse(connectionService.getConnectionsByApplicationId(applicationId, isFavorite, search));
     }
 
     @Operation(summary = "Get connections by provider")

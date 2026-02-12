@@ -98,6 +98,16 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         }
     }
 
+    public List<Connection> listByNameInApplication(String applicationId, String name) {
+        try {
+            return jdbcTemplate.query(getSql("Connection.searchByNameInApplication"), connectionRowMapper,
+                    applicationId,
+                    "%" + name + "%");
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+    }
+
     public List<Connection> listByProvider(String providerId) {
         try {
             return jdbcTemplate.query(getSql("Connection.getByProvider"), connectionRowMapper, providerId);
