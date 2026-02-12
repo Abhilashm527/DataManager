@@ -28,6 +28,9 @@ public class Connection extends AuditMetaData {
     private Long lastUsedAt;
     private Boolean isFavorite;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Long total;
+
     @com.fasterxml.jackson.annotation.JsonProperty("lastTestedAtDisplay")
     public String getLastTestedAtDisplay() {
         return (lastTestedAt != null) ? com.dataflow.dataloaders.util.DateUtils.getFormattedDate(lastTestedAt) : null;

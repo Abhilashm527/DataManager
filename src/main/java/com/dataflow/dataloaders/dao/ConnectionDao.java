@@ -119,7 +119,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     @Override
     public List<Connection> list(Identifier identifier) {
         try {
-            return jdbcTemplate.query(getSql("Connection.getAll"), connectionRowMapper);
+            return jdbcTemplate.query(getSql("Connection.list", identifier), connectionRowMapper);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -230,6 +230,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         connection.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
         connection.setLastUsedAt(rs.getObject("last_used_at") != null ? rs.getLong("last_used_at") : null);
         connection.setIsFavorite(rs.getObject("is_favorite") != null ? rs.getBoolean("is_favorite") : null);
+        connection.setTotal(rs.getObject("total") != null ? rs.getLong("total") : null);
         return connection;
     };
 }
