@@ -112,10 +112,17 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         return Optional.empty();
     }
 
-    @Override
     public List<Application> list(Identifier identifier) {
         try {
             return jdbcTemplate.query(getSql("Application.getAll"), applicationRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+    }
+
+    public List<Application> listByName(String name) {
+        try {
+            return jdbcTemplate.query(getSql("Application.searchByName"), applicationRowMapper, "%" + name + "%");
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }

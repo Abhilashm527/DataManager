@@ -38,12 +38,18 @@ public class ApplicationService {
         return application;
     }
 
-    public List<Application> getAllApplications(Identifier identifier) {
-        log.info(logPrefix, this.getClass().getSimpleName(), "getAllApplications - identifier: {}", identifier);
-        List<Application> applications = applicationDao.list(identifier);
+    public List<Application> getAllApplications(Identifier identifier, String search) {
+        log.info(logPrefix, this.getClass().getSimpleName(), "getAllApplications - identifier: {}, search: {}",
+                identifier, search);
+        List<Application> applications;
+        if (search != null && !search.isEmpty()) {
+            applications = applicationDao.listByName(search);
+        } else {
+            applications = applicationDao.list(identifier);
+        }
         if (applications.isEmpty()) {
-            log.warn("No applications found for identifier: {}", identifier);
-            throw new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND);
+            log.warn("No applications found for identifier: {}, search: {}", identifier, search);
+            return applications; // Return empty list instead of throwing exception for search
         }
         log.info("Found {} applications", applications.size());
         return applications;
@@ -58,8 +64,10 @@ public class ApplicationService {
                 });
 
         existing.setName(application.getName() != null ? application.getName() : existing.getName());
-        existing.setEnvironment(application.getEnvironment() != null ? application.getEnvironment() : existing.getEnvironment());
-        existing.setDescription(application.getDescription() != null ? application.getDescription() : existing.getDescription());
+        existing.setEnvironment(
+                application.getEnvironment() != null ? application.getEnvironment() : existing.getEnvironment());
+        existing.setDescription(
+                application.getDescription() != null ? application.getDescription() : existing.getDescription());
         existing.setUpdatedBy("admin");
 
         boolean updated = applicationDao.updateApp(existing, identifier) > 0;
