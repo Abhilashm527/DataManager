@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.controller;
 
+import com.dataflow.dataloaders.dto.SearchPayload;
 import com.dataflow.dataloaders.dto.TestConnectionRequest;
 import com.dataflow.dataloaders.entity.Connection;
 import com.dataflow.dataloaders.services.ConnectionService;
@@ -9,12 +10,20 @@ import com.dataflow.dataloaders.util.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import static com.dataflow.dataloaders.config.APIConstants.CONNECTIONS_BASE_PATH;
+import static com.dataflow.dataloaders.util.QueryUtil.getSearchQuery;
 
 @Slf4j
 @RestController
@@ -63,12 +72,26 @@ public class ConnectionController {
         return Response.getResponse(connectionService.getConnection(identifier));
     }
 
-    @Operation(summary = "Get all connections")
-    @GetMapping
-    public ResponseEntity<Response> getAll(@RequestHeader HttpHeaders headers) {
-        log.info("Getting all connections");
-        Identifier identifier = Identifier.builder().headers(headers).build();
-        return Response.getResponse(connectionService.getAllConnections(identifier));
+    @Operation(summary = "List connections")
+    @PostMapping("/list")
+    public ResponseEntity<Response> list(
+            @Valid @RequestBody(required = false) SearchPayload searchPayload,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "created_at") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") Sort.Direction direction,
+            @RequestHeader HttpHeaders headers) {
+        log.info("Listing connections");
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Identifier identifier = Identifier.builder().headers(headers).pageable(pageable).build();
+        
+        if (!ObjectUtils.isEmpty(searchPayload) && !CollectionUtils.isEmpty(searchPayload.getSearchCriterias())) {
+            String searchQuery = getSearchQuery(searchPayload.getSearchCriterias());
+            identifier.setWord(searchQuery);
+        }
+        
+        Page<Connection> connections = connectionService.list(identifier);
+        return Response.getResponse(connections);
     }
 
     @Operation(summary = "Get connections by application ID")

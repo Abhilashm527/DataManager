@@ -8,6 +8,7 @@ import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -30,9 +31,11 @@ public class ConnectionService {
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
     }
 
-    public List<Connection> getAllConnections(Identifier identifier) {
-        log.info("Getting all connections");
-        return connectionDao.list(identifier);
+    public Page<Connection> list(Identifier identifier) {
+        log.info("Listing connections");
+        List<Connection> connections = connectionDao.list(identifier);
+        long total = connections.isEmpty() ? 0 : connections.get(0).getTotal();
+        return new org.springframework.data.domain.PageImpl<>(connections, identifier.getPageable(), total);
     }
 
     public List<Connection> getConnectionsByApplicationId(String applicationId, Boolean isFavorite, String search) {
