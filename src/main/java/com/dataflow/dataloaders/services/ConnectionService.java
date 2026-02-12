@@ -18,7 +18,6 @@ public class ConnectionService {
     @Autowired
     private ConnectionDao connectionDao;
 
-
     public Connection create(Connection connection, Identifier identifier) {
         log.info("Creating connection: {}", connection.getConnectionName());
         Connection created = connectionDao.create(connection, identifier);
@@ -36,9 +35,9 @@ public class ConnectionService {
         return connectionDao.list(identifier);
     }
 
-    public List<Connection> getConnectionsByApplicationId(String applicationId) {
-        log.info("Getting connections by application id: {}", applicationId);
-        return connectionDao.listByUserId(applicationId);
+    public List<Connection> getConnectionsByApplicationId(String applicationId, Boolean isFavorite) {
+        log.info("Getting connections by application id: {}, isFavorite: {}", applicationId, isFavorite);
+        return connectionDao.listByUserId(applicationId, isFavorite);
     }
 
     public List<Connection> getConnectionsByProvider(String providerId) {
@@ -52,10 +51,10 @@ public class ConnectionService {
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
 
         StringBuilder changes = new StringBuilder();
-        
+
         if (connection.getConnectionName() != null) {
             changes.append("Name changed from '").append(existing.getConnectionName())
-                   .append("' to '").append(connection.getConnectionName()).append("'; ");
+                    .append("' to '").append(connection.getConnectionName()).append("'; ");
             existing.setConnectionName(connection.getConnectionName());
         }
         if (connection.getConfig() != null) {
@@ -85,6 +84,11 @@ public class ConnectionService {
             existing.setLastTestedAt(connection.getLastTestedAt());
         if (connection.getLastUsedAt() != null)
             existing.setLastUsedAt(connection.getLastUsedAt());
+        if (connection.getIsFavorite() != null) {
+            String favAction = connection.getIsFavorite() ? "marked as favorite" : "unmarked from favorites";
+            changes.append("Connection ").append(favAction).append("; ");
+            existing.setIsFavorite(connection.getIsFavorite());
+        }
 
         existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
         existing.setUpdatedBy("admin");

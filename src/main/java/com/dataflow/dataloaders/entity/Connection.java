@@ -23,4 +23,5 @@ public class Connection extends AuditMetaData {
     private String lastTestStatus;
     private Long lastTestedAt;
     private Long lastUsedAt;
+    private Boolean isFavorite;
 }

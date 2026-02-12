@@ -38,15 +38,17 @@ public class ConnectionController {
 
     @Operation(summary = "Test new connection before saving")
     @PostMapping("/test")
-    public ResponseEntity<Response> testNewConnection(@RequestBody TestConnectionRequest request, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<Response> testNewConnection(@RequestBody TestConnectionRequest request,
+            @RequestHeader HttpHeaders headers) {
         log.info("Testing new connection");
         return Response.getResponse(connectionTestService.testNewConnection(request));
     }
 
     @Operation(summary = "Test existing connection")
     @PostMapping("/{connectionId}/test")
-    public ResponseEntity<Response> testExistingConnection(@Parameter(description = "Connection ID") @PathVariable String connectionId,
-                                                           @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<Response> testExistingConnection(
+            @Parameter(description = "Connection ID") @PathVariable String connectionId,
+            @RequestHeader HttpHeaders headers) {
         log.info("Testing existing connection: {}", connectionId);
         Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.getResponse(connectionTestService.testExistingConnection(connectionId, identifier));
@@ -55,7 +57,7 @@ public class ConnectionController {
     @Operation(summary = "Get connection by ID")
     @GetMapping("/{connectionId}")
     public ResponseEntity<Response> get(@Parameter(description = "Connection ID") @PathVariable String connectionId,
-                                        @RequestHeader HttpHeaders headers) {
+            @RequestHeader HttpHeaders headers) {
         log.info("Getting connection: {}", connectionId);
         Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.getResponse(connectionService.getConnection(identifier));
@@ -71,16 +73,19 @@ public class ConnectionController {
 
     @Operation(summary = "Get connections by application ID")
     @GetMapping("/application/{applicationId}")
-    public ResponseEntity<Response> getByApplicationId(@Parameter(description = "Application ID") @PathVariable String applicationId,
-                                                @RequestHeader HttpHeaders headers) {
-        log.info("Getting connections by application: {}", applicationId);
-        return Response.getResponse(connectionService.getConnectionsByApplicationId(applicationId));
+    public ResponseEntity<Response> getByApplicationId(
+            @Parameter(description = "Application ID") @PathVariable String applicationId,
+            @RequestParam(required = false) Boolean isFavorite,
+            @RequestHeader HttpHeaders headers) {
+        log.info("Getting connections by application: {}, isFavorite: {}", applicationId, isFavorite);
+        return Response.getResponse(connectionService.getConnectionsByApplicationId(applicationId, isFavorite));
     }
 
     @Operation(summary = "Get connections by provider")
     @GetMapping("/provider/{providerId}")
-    public ResponseEntity<Response> getByProvider(@Parameter(description = "Provider ID") @PathVariable String providerId,
-                                                  @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<Response> getByProvider(
+            @Parameter(description = "Provider ID") @PathVariable String providerId,
+            @RequestHeader HttpHeaders headers) {
         log.info("Getting connections by provider: {}", providerId);
         return Response.getResponse(connectionService.getConnectionsByProvider(providerId));
     }
@@ -88,8 +93,8 @@ public class ConnectionController {
     @Operation(summary = "Update connection")
     @PutMapping("/{connectionId}")
     public ResponseEntity<Response> update(@Parameter(description = "Connection ID") @PathVariable String connectionId,
-                                           @RequestBody Connection connection,
-                                           @RequestHeader HttpHeaders headers) {
+            @RequestBody Connection connection,
+            @RequestHeader HttpHeaders headers) {
         log.info("Updating connection: {}", connectionId);
         Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.updateResponse(connectionService.updateConnection(connection, identifier));
@@ -98,9 +103,22 @@ public class ConnectionController {
     @Operation(summary = "Delete connection")
     @DeleteMapping("/{connectionId}")
     public ResponseEntity<Response> delete(@Parameter(description = "Connection ID") @PathVariable String connectionId,
-                                           @RequestHeader HttpHeaders headers) {
+            @RequestHeader HttpHeaders headers) {
         log.info("Deleting connection: {}", connectionId);
         Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
         return Response.deleteResponse(connectionService.deleteConnection(identifier));
+    }
+
+    @Operation(summary = "Toggle favorite status")
+    @PatchMapping("/{connectionId}/favorite")
+    public ResponseEntity<Response> toggleFavorite(
+            @Parameter(description = "Connection ID") @PathVariable String connectionId,
+            @RequestParam Boolean isFavorite,
+            @RequestHeader HttpHeaders headers) {
+        log.info("Toggling favorite status for connection: {} to {}", connectionId, isFavorite);
+        Identifier identifier = Identifier.builder().headers(headers).word(connectionId).build();
+        Connection update = new Connection();
+        update.setIsFavorite(isFavorite);
+        return Response.updateResponse(connectionService.updateConnection(update, identifier));
     }
 }
