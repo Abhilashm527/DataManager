@@ -59,12 +59,13 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
             ps.setObject(1, model.getId());
             ps.setObject(2, model.getConnectionTypeId());
             ps.setString(3, model.getProviderName());
-            ps.setObject(4, model.getIconId());
-            ps.setObject(5, model.getDefaultPort());
-            ps.setObject(6, dfUtil.writeValueAsString(model.getConfigSchema()), java.sql.Types.OTHER);
-            ps.setObject(7, model.getDisplayOrder());
-            ps.setObject(8, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(9, DateUtils.getUnixTimestampInUTC());
+            ps.setString(4, model.getDescription());
+            ps.setObject(5, model.getIconId());
+            ps.setObject(6, model.getDefaultPort());
+            ps.setObject(7, dfUtil.writeValueAsString(model.getConfigSchema()), java.sql.Types.OTHER);
+            ps.setObject(8, model.getDisplayOrder());
+            ps.setObject(9, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(10, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return model.getId();
@@ -74,7 +75,7 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
     public Optional<Provider> getV1(Identifier identifier) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    getSql("Provider.getById"), providerRowMapper, identifier.getId()));
+                    getSql("Provider.getById"), providerRowMapper, identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -179,6 +180,7 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
         provider.setId(rs.getString("id"));
         provider.setConnectionTypeId(rs.getString("connection_type_id"));
         provider.setProviderName(rs.getString("provider_name"));
+        provider.setDescription(rs.getString("description"));
         provider.setIconId(rs.getString("icon_id") != null ? rs.getString("icon_id") : null);
         provider.setDefaultPort(rs.getObject("default_port") != null ? rs.getInt("default_port") : null);
         String configSchemaJson = rs.getString("config_schema");

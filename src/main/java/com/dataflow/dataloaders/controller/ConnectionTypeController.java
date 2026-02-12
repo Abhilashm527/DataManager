@@ -37,10 +37,10 @@ public class ConnectionTypeController {
 
     @Operation(summary = "Get connection type by ID")
     @GetMapping("/{typeId}")
-    public ResponseEntity<Response> get(@Parameter(description = "Connection Type ID") @PathVariable Long typeId,
+    public ResponseEntity<Response> get(@Parameter(description = "Connection Type ID") @PathVariable String typeId,
             @RequestHeader HttpHeaders headers) {
         log.info("Getting connection type: {}", typeId);
-        Identifier identifier = Identifier.builder().headers(headers).id(typeId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(typeId).build();
         return Response.getResponse(connectionTypeService.getConnectionType(identifier));
     }
 
@@ -54,20 +54,20 @@ public class ConnectionTypeController {
 
     @Operation(summary = "Update connection type")
     @PutMapping("/{typeId}")
-    public ResponseEntity<Response> update(@Parameter(description = "Connection Type ID") @PathVariable Long typeId,
+    public ResponseEntity<Response> update(@Parameter(description = "Connection Type ID") @PathVariable String typeId,
             @RequestBody ConnectionType connectionType,
             @RequestHeader HttpHeaders headers) {
         log.info("Updating connection type: {}", typeId);
-        Identifier identifier = Identifier.builder().headers(headers).id(typeId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(typeId).build();
         return Response.updateResponse(connectionTypeService.updateConnectionType(connectionType, identifier));
     }
 
     @Operation(summary = "Delete connection type")
     @DeleteMapping("/{typeId}")
-    public ResponseEntity<Response> delete(@Parameter(description = "Connection Type ID") @PathVariable Long typeId,
+    public ResponseEntity<Response> delete(@Parameter(description = "Connection Type ID") @PathVariable String typeId,
             @RequestHeader HttpHeaders headers) {
         log.info("Deleting connection type: {}", typeId);
-        Identifier identifier = Identifier.builder().headers(headers).id(typeId).build();
+        Identifier identifier = Identifier.builder().headers(headers).word(typeId).build();
         return Response.deleteResponse(connectionTypeService.deleteConnectionType(identifier));
     }
 }

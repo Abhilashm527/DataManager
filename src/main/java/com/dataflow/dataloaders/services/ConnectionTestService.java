@@ -76,13 +76,13 @@ public class ConnectionTestService {
     /**
      * Test an existing saved connection
      */
-    public TestConnectionResponse testExistingConnection(Long connectionId, Identifier identifier) {
+    public TestConnectionResponse testExistingConnection(String connectionId, Identifier identifier) {
         log.info("Testing existing connection: {}", connectionId);
         long startTime = System.currentTimeMillis();
 
         try {
             // Get connection
-            Connection connection = connectionDao.getV1(Identifier.builder().id(connectionId).build())
+            Connection connection = connectionDao.getV1(Identifier.builder().word(connectionId).build())
                     .orElseThrow(
                             () -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND, "Connection not found"));
 
@@ -153,7 +153,7 @@ public class ConnectionTestService {
             Boolean useSsl,
             Integer connectionTimeout,
             long startTime,
-            Long connectionId) {
+            String connectionId) {
 
         try {
             JsonNode serverInfo;

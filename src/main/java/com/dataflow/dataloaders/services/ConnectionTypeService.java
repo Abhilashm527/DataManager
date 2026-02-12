@@ -42,7 +42,7 @@ public class ConnectionTypeService {
     }
 
     public ConnectionType getConnectionType(Identifier identifier) {
-        log.info("Getting connection type by id: {}", identifier.getId());
+        log.info("Getting connection type by id: {}", identifier.getWord());
         return connectionTypeDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
     }
@@ -53,7 +53,7 @@ public class ConnectionTypeService {
     }
 
     public ConnectionType updateConnectionType(ConnectionType connectionType, Identifier identifier) {
-        log.info("Updating connection type: {}", identifier.getId());
+        log.info("Updating connection type: {}", identifier.getWord());
         ConnectionType existing = connectionTypeDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
 
@@ -70,7 +70,7 @@ public class ConnectionTypeService {
     }
 
     public boolean deleteConnectionType(Identifier identifier) {
-        log.info("Deleting connection type: {}", identifier.getId());
+        log.info("Deleting connection type: {}", identifier.getWord());
         ConnectionType connectionType = connectionTypeDao.getV1(identifier)
                 .orElseThrow(() -> new DataloadersException(ErrorFactory.RESOURCE_NOT_FOUND));
         connectionType.setUpdatedBy("admin");
