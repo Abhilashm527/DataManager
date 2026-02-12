@@ -17,7 +17,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -56,7 +55,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     public String insertConnection(Connection model, Identifier identifier) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(getSql("Connection.create"), new String[]{"id"});
+            PreparedStatement ps = con.prepareStatement(getSql("Connection.create"), new String[] { "id" });
             ps.setString(1, model.getId());
             ps.setObject(2, model.getApplicationId());
             ps.setObject(3, model.getProviderId());
@@ -69,8 +68,9 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
             ps.setString(10, model.getLastTestStatus());
             ps.setObject(11, model.getLastTestedAt());
             ps.setObject(12, model.getLastUsedAt());
-            ps.setObject(13, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(14, DateUtils.getUnixTimestampInUTC());
+            ps.setObject(13, model.getIsFavorite() != null ? model.getIsFavorite() : false);
+            ps.setObject(14, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(15, DateUtils.getUnixTimestampInUTC());
             return ps;
         }, holder);
         return model.getId();
@@ -86,8 +86,12 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         }
     }
 
-    public List<Connection> listByUserId(String userId) {
+    public List<Connection> listByUserId(String userId, Boolean isFavorite) {
         try {
+            if (isFavorite != null) {
+                return jdbcTemplate.query(getSql("Connection.getByUserIdAndFavorite"), connectionRowMapper, userId,
+                        isFavorite);
+            }
             return jdbcTemplate.query(getSql("Connection.getByUserId"), connectionRowMapper, userId);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
@@ -123,6 +127,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
                     connection.getLastTestStatus(),
                     connection.getLastTestedAt(),
                     connection.getLastUsedAt(),
+                    connection.getIsFavorite(),
                     connection.getUpdatedBy() != null ? connection.getUpdatedBy() : "admin",
                     DateUtils.getUnixTimestampInUTC(),
                     connection.getId());
@@ -175,7 +180,8 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     }
 
     @Override
-    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues, String... delimitter) {
+    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues,
+            String... delimitter) {
         return super.setInvalues(query, replaceString, inValues, delimitter);
     }
 
@@ -190,19 +196,20 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         connection.setApplicationId(rs.getObject("application_id") != null ? rs.getString("application_id") : null);
         connection.setProviderId(rs.getObject("provider_id") != null ? rs.getString("provider_id") : null);
         connection.setConnectionName(rs.getString("connection_name"));
-        
+
         String configJson = rs.getString("config");
         if (configJson != null) {
             connection.setConfig(dfUtil.readValueToJsonNode(configJson));
         }
-        
+
         String secretsJson = rs.getString("secrets");
         if (secretsJson != null) {
             connection.setSecrets(dfUtil.readValueToJsonNode(secretsJson));
         }
-        
+
         connection.setUseSsl(rs.getObject("use_ssl") != null ? rs.getBoolean("use_ssl") : null);
-        connection.setConnectionTimeout(rs.getObject("connection_timeout") != null ? rs.getInt("connection_timeout") : null);
+        connection.setConnectionTimeout(
+                rs.getObject("connection_timeout") != null ? rs.getInt("connection_timeout") : null);
         connection.setIsActive(rs.getObject("is_active") != null ? rs.getBoolean("is_active") : null);
         connection.setLastTestStatus(rs.getString("last_test_status"));
         connection.setLastTestedAt(rs.getObject("last_tested_at") != null ? rs.getLong("last_tested_at") : null);
@@ -212,6 +219,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         connection.setUpdatedBy(rs.getString("updated_by"));
         connection.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
         connection.setLastUsedAt(rs.getObject("last_used_at") != null ? rs.getLong("last_used_at") : null);
+        connection.setIsFavorite(rs.getObject("is_favorite") != null ? rs.getBoolean("is_favorite") : null);
         return connection;
     };
 }

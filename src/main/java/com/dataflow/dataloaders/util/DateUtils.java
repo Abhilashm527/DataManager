@@ -9,9 +9,23 @@ public class DateUtils {
     public static final ZoneId ZONE_ID_IST = ZoneId.of("Asia/Kolkata");
     public static final ZoneId ZONE_ID_UTC = ZoneId.of("UTC");
     public static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static ZoneId primaryZoneId = ZONE_ID_UTC;
+    private static String primaryPattern = "dd-MM-yyyy HH:mm:ss";
+
+    public static void setPrimaryZoneId(ZoneId zoneId) {
+        if (zoneId != null) {
+            primaryZoneId = zoneId;
+        }
+    }
+
+    public static void setPrimaryPattern(String pattern) {
+        if (pattern != null && !pattern.isEmpty()) {
+            primaryPattern = pattern;
+        }
+    }
 
     public static LocalDateTime getLocalDateTime() {
-        return LocalDateTime.now();
+        return LocalDateTime.now(primaryZoneId);
     }
 
     public static LocalDateTime getLocalDateTimeInUTC() {
@@ -19,19 +33,20 @@ public class DateUtils {
     }
 
     public static LocalDateTime getLocalDateTimeInCurrentZone(LocalDateTime localDateTime) {
-        localDateTime = getLocalDateTimeInUTC();
-        ZonedDateTime utcDateTime = localDateTime.atZone(ZONE_ID_UTC).withZoneSameInstant(ZONE_ID_SYS_DEFAULT);
+        if (localDateTime == null)
+            return null;
+        ZonedDateTime utcDateTime = localDateTime.atZone(ZONE_ID_UTC).withZoneSameInstant(primaryZoneId);
         return utcDateTime.toLocalDateTime();
     }
 
-    public static LocalDateTime getLocalDateTimeInISTZone() {
-        LocalDateTime localDateTime = getLocalDateTimeInUTC();
-        ZonedDateTime utcDateTime = localDateTime.atZone(ZONE_ID_UTC).withZoneSameInstant(ZONE_ID_IST);
-        return utcDateTime.toLocalDateTime();
+    public static LocalDateTime getLocalDateTimeInPrimaryZone() {
+        return LocalDateTime.now(primaryZoneId);
     }
 
-    public static LocalDateTime getLocalDateTimeInISTZone(Long unixTimestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(unixTimestamp), ZONE_ID_IST);
+    public static LocalDateTime getLocalDateTimeByEpoch(Long unixTimestamp) {
+        if (unixTimestamp == null)
+            return null;
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(unixTimestamp), primaryZoneId);
     }
 
     public static Long getUnixTimestampInUTC() {
@@ -43,9 +58,11 @@ public class DateUtils {
     }
 
     public static String getFormattedDate(Long epochSecond) {
-        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZONE_ID_UTC);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return dateTime.format(formatter);
+        if (epochSecond == null)
+            return null;
+        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), primaryZoneId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(primaryPattern, java.util.Locale.ENGLISH);
+        return dateTime.format(formatter).toUpperCase();
     }
 
     public static ZonedDateTime getUnixTimestampStartDayInZonedDateTime() {
