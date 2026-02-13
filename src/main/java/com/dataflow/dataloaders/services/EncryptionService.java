@@ -12,13 +12,13 @@ import java.util.Base64;
 @Slf4j
 @Service
 public class EncryptionService {
-    
+
     private static final String ALGORITHM = "AES";
     private static final String KEY = "DataManager2024!"; // Use environment variable in production
-    
+
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     public JsonNode encrypt(JsonNode data) {
         try {
             String jsonString = objectMapper.writeValueAsString(data);
@@ -33,20 +33,42 @@ public class EncryptionService {
             return data;
         }
     }
-    
+
     public JsonNode decrypt(JsonNode encryptedData) {
         try {
             if (encryptedData == null || !encryptedData.isTextual()) {
                 return encryptedData;
             }
-            String encryptedString = encryptedData.asText();
+            String decryptedString = decryptString(encryptedData.asText());
+            return objectMapper.readTree(decryptedString);
+        } catch (Exception e) {
+            log.error("Decryption failed: {}", e.getMessage());
+            return encryptedData;
+        }
+    }
+
+    public String encryptString(String data) {
+        try {
+            SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+            byte[] encrypted = cipher.doFinal(data.getBytes());
+            return Base64.getEncoder().encodeToString(encrypted);
+        } catch (Exception e) {
+            log.error("String encryption failed: {}", e.getMessage());
+            return data;
+        }
+    }
+
+    public String decryptString(String encryptedData) {
+        try {
             SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
-            byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedString));
-            return objectMapper.readTree(new String(decrypted));
+            byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+            return new String(decrypted);
         } catch (Exception e) {
-            log.error("Decryption failed: {}", e.getMessage());
+            log.error("String decryption failed: {}", e.getMessage());
             return encryptedData;
         }
     }

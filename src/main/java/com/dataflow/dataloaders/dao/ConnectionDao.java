@@ -142,7 +142,8 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
                     DateUtils.getUnixTimestampInUTC(),
                     connection.getId());
         } catch (Exception e) {
-            throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
+            handleDatabaseException(e);
+            return 0;
         }
     }
 
@@ -155,7 +156,8 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
                     DateUtils.getUnixTimestampInUTC(),
                     connection.getId());
         } catch (Exception e) {
-            throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
+            handleDatabaseException(e);
+            return 0;
         }
     }
 
@@ -202,9 +204,9 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
 
     RowMapper<Connection> connectionRowMapper = (rs, rowNum) -> {
         Connection connection = new Connection();
-        connection.setId(rs.getObject("id") != null ? rs.getString("id") : null);
-        connection.setApplicationId(rs.getObject("application_id") != null ? rs.getString("application_id") : null);
-        connection.setProviderId(rs.getObject("provider_id") != null ? rs.getString("provider_id") : null);
+        connection.setId(rs.getString("id"));
+        connection.setApplicationId(rs.getString("application_id"));
+        connection.setProviderId(rs.getString("provider_id"));
         connection.setConnectionName(rs.getString("connection_name"));
 
         String configJson = rs.getString("config");
@@ -222,13 +224,13 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
                 rs.getObject("connection_timeout") != null ? rs.getInt("connection_timeout") : null);
         connection.setIsActive(rs.getObject("is_active") != null ? rs.getBoolean("is_active") : null);
         connection.setLastTestStatus(rs.getString("last_test_status"));
-        connection.setLastTestedAt(rs.getObject("last_tested_at") != null ? rs.getLong("last_tested_at") : null);
-        connection.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        connection.setLastTestedAt(rs.getObject("last_tested_at", Long.class));
+        connection.setCreatedAt(rs.getObject("created_at", Long.class));
         connection.setCreatedBy(rs.getString("created_by"));
-        connection.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        connection.setUpdatedAt(rs.getObject("updated_at", Long.class));
         connection.setUpdatedBy(rs.getString("updated_by"));
-        connection.setDeletedAt(rs.getObject("deleted_at") != null ? rs.getLong("deleted_at") : null);
-        connection.setLastUsedAt(rs.getObject("last_used_at") != null ? rs.getLong("last_used_at") : null);
+        connection.setDeletedAt(rs.getObject("deleted_at", Long.class));
+        connection.setLastUsedAt(rs.getObject("last_used_at", Long.class));
         connection.setIsFavorite(rs.getObject("is_favorite") != null ? rs.getBoolean("is_favorite") : null);
         connection.setTotal(rs.getObject("total") != null ? rs.getLong("total") : null);
         return connection;

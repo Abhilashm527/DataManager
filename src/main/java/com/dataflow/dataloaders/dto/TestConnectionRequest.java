@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TestConnectionRequest {
     private String providerKey;
+    private String applicationId;
+    private String environment;
     private JsonNode config;
     private JsonNode secrets;
     private Boolean useSsl;
