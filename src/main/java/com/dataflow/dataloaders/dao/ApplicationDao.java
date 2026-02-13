@@ -61,12 +61,11 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
                 PreparedStatement ps = con.prepareStatement(getSql("Application.create"));
                 ps.setObject(1, model.getId());
                 ps.setObject(2, model.getName());
-                ps.setObject(3, model.getEnvironment());
-                ps.setObject(4, model.getDescription());
-                ps.setObject(5, model.getIconId());
-                ps.setObject(6, model.getVisibility().name());
-                ps.setObject(7, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-                ps.setObject(8, DateUtils.getUnixTimestampInUTC());
+                ps.setObject(3, model.getDescription());
+                ps.setObject(4, model.getIconId());
+                ps.setObject(5, model.getVisibility().name());
+                ps.setObject(6, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+                ps.setObject(7, DateUtils.getUnixTimestampInUTC());
                 return ps;
             });
             return model.getId();
@@ -98,7 +97,6 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         try {
             return jdbcTemplate.update(getSql("Application.updateById"),
                     application.getName(),
-                    application.getEnvironment(),
                     application.getDescription(),
                     application.getIconId(),
                     application.getVisibility(),
@@ -176,14 +174,13 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         Application application = new Application();
         application.setId(rs.getString("id"));
         application.setName(rs.getString("name"));
-        application.setEnvironment(rs.getString("environment"));
         application.setDescription(rs.getString("description"));
         application.setIconId(rs.getString("icon_id"));
         application.setVisibility(Visibility.valueOf(rs.getString("visibility")));
         application.setCreatedBy(rs.getString("created_by"));
-        application.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        application.setCreatedAt(rs.getObject("created_at", Long.class));
         application.setUpdatedBy(rs.getString("updated_by"));
-        application.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        application.setUpdatedAt(rs.getObject("updated_at", Long.class));
         return application;
     };
 }
