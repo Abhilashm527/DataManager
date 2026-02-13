@@ -43,9 +43,9 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
             String applicationId = insertApplication(model, identifier);
             return getV1(new Identifier(applicationId));
         } catch (DataIntegrityViolationException e) {
-            handleDataIntegrityViolationException(e);
+            handleDataIntegrityViolation(e, "Application");
         } catch (Exception e) {
-            handleGenericException(e);
+            handleDatabaseException(e);
         }
         throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION);
     }
@@ -56,19 +56,23 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
     }
 
     public String insertApplication(Application model, Identifier identifier) {
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(getSql("Application.create"));
-            ps.setObject(1, model.getId());
-            ps.setObject(2, model.getName());
-            ps.setObject(3, model.getEnvironment());
-            ps.setObject(4, model.getDescription());
-            ps.setObject(5, model.getIconId());
-            ps.setObject(6, model.getVisibility().name());
-            ps.setObject(7, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(8, DateUtils.getUnixTimestampInUTC());
-            return ps;
-        });
-        return model.getId();
+        try {
+            jdbcTemplate.update(con -> {
+                PreparedStatement ps = con.prepareStatement(getSql("Application.create"));
+                ps.setObject(1, model.getId());
+                ps.setObject(2, model.getName());
+                ps.setObject(3, model.getDescription());
+                ps.setObject(4, model.getIconId());
+                ps.setObject(5, model.getVisibility().name());
+                ps.setObject(6, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+                ps.setObject(7, DateUtils.getUnixTimestampInUTC());
+                return ps;
+            });
+            return model.getId();
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return null;
+        }
     }
 
     @Override
@@ -77,6 +81,9 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
             return Optional.ofNullable(jdbcTemplate.queryForObject(getSql("Application.getById"), applicationRowMapper,
                     identifier.getWord()));
         } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        } catch (Exception e) {
+            handleDatabaseException(e);
             return Optional.empty();
         }
     }
@@ -90,7 +97,6 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         try {
             return jdbcTemplate.update(getSql("Application.updateById"),
                     application.getName(),
-                    application.getEnvironment(),
                     application.getDescription(),
                     application.getIconId(),
                     application.getVisibility(),
@@ -98,7 +104,8 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
                     DateUtils.getUnixTimestampInUTC(),
                     application.getId());
         } catch (Exception e) {
-            throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
+            handleDatabaseException(e);
+            return 0;
         }
     }
 
@@ -117,6 +124,9 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
             return jdbcTemplate.query(getSql("Application.getAll"), applicationRowMapper);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return List.of();
         }
     }
 
@@ -124,6 +134,9 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         try {
             return jdbcTemplate.query(getSql("Application.searchByName"), applicationRowMapper, "%" + name + "%");
         } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        } catch (Exception e) {
+            handleDatabaseException(e);
             return List.of();
         }
     }
@@ -147,7 +160,8 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
                     DateUtils.getUnixTimestampInUTC(),
                     application.getId());
         } catch (Exception e) {
-            throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
+            handleDatabaseException(e);
+            return 0;
         }
     }
 
@@ -156,33 +170,17 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         return 0;
     }
 
-    private void handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        String errorMessage = e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage();
-        if (errorMessage != null) {
-            if (errorMessage.contains(APPLICATION_ID)) {
-                throw new DataloadersException(ErrorFactory.DUPLICATION, "An Application with this ID already exists");
-            }
-        }
-        throw new DataloadersException(ErrorFactory.DUPLICATION, "An Application with this data already exists");
-    }
-
-    private void handleGenericException(Exception e) {
-        logger.error("Exception Occurred: {}", e.getMessage());
-        throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
-    }
-
     RowMapper<Application> applicationRowMapper = (rs, rowNum) -> {
         Application application = new Application();
         application.setId(rs.getString("id"));
         application.setName(rs.getString("name"));
-        application.setEnvironment(rs.getString("environment"));
         application.setDescription(rs.getString("description"));
         application.setIconId(rs.getString("icon_id"));
         application.setVisibility(Visibility.valueOf(rs.getString("visibility")));
         application.setCreatedBy(rs.getString("created_by"));
-        application.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        application.setCreatedAt(rs.getObject("created_at", Long.class));
         application.setUpdatedBy(rs.getString("updated_by"));
-        application.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        application.setUpdatedAt(rs.getObject("updated_at", Long.class));
         return application;
     };
 }

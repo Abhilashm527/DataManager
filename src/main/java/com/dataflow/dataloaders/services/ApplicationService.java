@@ -64,8 +64,6 @@ public class ApplicationService {
                 });
 
         existing.setName(application.getName() != null ? application.getName() : existing.getName());
-        existing.setEnvironment(
-                application.getEnvironment() != null ? application.getEnvironment() : existing.getEnvironment());
         existing.setDescription(
                 application.getDescription() != null ? application.getDescription() : existing.getDescription());
         existing.setUpdatedBy("admin");

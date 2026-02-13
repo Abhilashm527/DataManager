@@ -1,16 +1,11 @@
 package com.dataflow.dataloaders.dao;
 
-import com.dataflow.dataloaders.controller.DatatableController;
 import com.dataflow.dataloaders.entity.Datatable;
-import com.dataflow.dataloaders.entity.Item;
-import com.dataflow.dataloaders.entity.ItemType;
-import com.dataflow.dataloaders.entity.Resource;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
 import com.dataflow.dataloaders.util.IdGenerator;
 import com.dataflow.dataloaders.util.Identifier;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,18 +18,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class DatatableDao  extends GenericDaoImpl<Datatable, Identifier, String>{
+public class DatatableDao extends GenericDaoImpl<Datatable, Identifier, String> {
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
     private IdGenerator idGenerator;
-
-    @Override
-    public Datatable create(@NotNull Datatable model, Identifier identifier) {
-        return super.create(model, identifier);
-    }
 
     @Override
     public Optional<Datatable> createV1(Datatable model, Identifier identifier) {
@@ -46,28 +36,31 @@ public class DatatableDao  extends GenericDaoImpl<Datatable, Identifier, String>
             String resourceId = insertResource(model, identifier);
             return getV1(new Identifier(resourceId));
         } catch (DataIntegrityViolationException e) {
-            handleDataIntegrityViolationException(e);
+            handleDataIntegrityViolation(e, "Datatable");
         } catch (Exception e) {
-            handleGenericException(e);
+            handleDatabaseException(e);
         }
         throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION);
     }
 
     public String insertResource(Datatable datatable, Identifier identifier) {
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(
-                    getSql("Datatable.create")
-            );
-            int idx = 1;
-            ps.setObject(idx++, datatable.getId());
-            ps.setObject(idx++, datatable.getDatatableId());
-            ps.setObject(idx++, datatable.getApplicationId());
-            ps.setObject(idx++, "admin");
-            ps.setObject(idx++, DateUtils.getUnixTimestampInUTC());
-            return ps;
-        });
-
-        return datatable.getId();
+        try {
+            jdbcTemplate.update(con -> {
+                PreparedStatement ps = con.prepareStatement(
+                        getSql("Datatable.create"));
+                int idx = 1;
+                ps.setObject(idx++, datatable.getId());
+                ps.setObject(idx++, datatable.getDatatableId());
+                ps.setObject(idx++, datatable.getApplicationId());
+                ps.setObject(idx++, "admin");
+                ps.setObject(idx++, DateUtils.getUnixTimestampInUTC());
+                return ps;
+            });
+            return datatable.getId();
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return null;
+        }
     }
 
     @Override
@@ -120,32 +113,26 @@ public class DatatableDao  extends GenericDaoImpl<Datatable, Identifier, String>
         return 0;
     }
 
-    private void handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        String errorMessage = e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage();
-        throw new DataloadersException(ErrorFactory.DUPLICATION, "An Item with this data already exists");
-    }
-
-    private void handleGenericException(Exception e) {
-        logger.error("Exception Occurred: {}", e.getMessage());
-        throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
-    }
-
     public List<Datatable> getByApplicationId(Identifier identifier) {
         try {
             return jdbcTemplate.query(getSql("Datatable.getByApplicationId"), datatableMapper, identifier.getWord());
         } catch (EmptyResultDataAccessException e) {
             return List.of();
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return List.of();
         }
     }
+
     RowMapper<Datatable> datatableMapper = (rs, rowNum) -> {
         Datatable datatable = new Datatable();
         datatable.setId(rs.getString("id"));
         datatable.setDatatableId(rs.getString("datatable_id"));
         datatable.setApplicationId(rs.getString("application_id"));
         datatable.setCreatedBy(rs.getString("created_by"));
-        datatable.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
+        datatable.setCreatedAt(rs.getObject("created_at", Long.class));
         datatable.setUpdatedBy(rs.getString("updated_by"));
-        datatable.setUpdatedAt(rs.getObject("updated_at") != null ? rs.getLong("updated_at") : null);
+        datatable.setUpdatedAt(rs.getObject("updated_at", Long.class));
         return datatable;
     };
 
@@ -157,8 +144,8 @@ public class DatatableDao  extends GenericDaoImpl<Datatable, Identifier, String>
                     DateUtils.getUnixTimestampInUTC(),
                     identifier.getWord());
         } catch (Exception e) {
-            throw new DataloadersException(ErrorFactory.INTERNAL_SERVER_ERROR, e.getMessage());
+            handleDatabaseException(e);
+            return 0;
         }
     }
 }
-

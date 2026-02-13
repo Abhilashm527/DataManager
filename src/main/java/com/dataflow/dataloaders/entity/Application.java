@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class Application extends AuditMetaData {
     private String id;
     private String name;
-    private String environment; // DEVELOPMENT, TESTING, PRODUCTION
     private String description;
     private String iconId;
     private Visibility visibility;

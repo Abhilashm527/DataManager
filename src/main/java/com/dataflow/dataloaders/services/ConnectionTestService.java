@@ -47,6 +47,9 @@ public class ConnectionTestService {
     @Autowired
     private EncryptionService encryptionService;
 
+    @Autowired
+    private VariableService variableService;
+
     /**
      * Test a new connection before saving
      */
@@ -55,11 +58,17 @@ public class ConnectionTestService {
         long startTime = System.currentTimeMillis();
 
         try {
+            // Resolve variables if any
+            JsonNode resolvedConfig = variableService.resolveJsonNode(request.getConfig(), request.getApplicationId(),
+                    request.getEnvironment());
+            JsonNode resolvedSecrets = variableService.resolveJsonNode(request.getSecrets(), request.getApplicationId(),
+                    request.getEnvironment());
+
             // Skip provider lookup for new connection tests - test directly
             return performConnectionTest(
                     request.getProviderKey(),
-                    request.getConfig(),
-                    request.getSecrets(),
+                    resolvedConfig,
+                    resolvedSecrets,
                     request.getUseSsl(),
                     request.getConnectionTimeout(),
                     startTime,
@@ -93,11 +102,19 @@ public class ConnectionTestService {
             // Decrypt secrets
             JsonNode decryptedSecrets = encryptionService.decrypt(connection.getSecrets());
 
+            // Resolve variables if any
+            // For existing connections, we use the applicationId from the connection object
+            JsonNode resolvedConfig = variableService.resolveJsonNode(connection.getConfig(),
+                    connection.getApplicationId(),
+                    null); // Context environment could be added to Connection entity later
+            JsonNode resolvedSecrets = variableService.resolveJsonNode(decryptedSecrets, connection.getApplicationId(),
+                    null);
+
             // Perform connection test
             TestConnectionResponse response = performConnectionTest(
                     provider.getProviderName(),
-                    connection.getConfig(),
-                    decryptedSecrets,
+                    resolvedConfig,
+                    resolvedSecrets,
                     connection.getUseSsl(),
                     connection.getConnectionTimeout(),
                     startTime,

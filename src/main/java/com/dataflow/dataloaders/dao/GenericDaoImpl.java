@@ -49,6 +49,18 @@ public abstract class GenericDaoImpl<T, I, S> implements GenericDao<T, I, S> {
         }
     }
 
+    protected void handleDatabaseException(Exception e) {
+        logger.error("Database Exception: {}", e.getMessage(), e);
+        throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, e.getMessage());
+    }
+
+    protected void handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException e,
+            String entityName) {
+        String errorMessage = e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage();
+        logger.error("Data Integrity Violation in {}: {}", entityName, errorMessage);
+        throw new DataloadersException(ErrorFactory.DUPLICATION, "Integrity violation: " + errorMessage);
+    }
+
     protected String formatSearchText(String data) {
         return "%" + data + "%";
     }
