@@ -34,11 +34,11 @@ public class WriterConfig {
     private boolean removeQueryParam = false;
 
     /**
-     Cassandra Writer config Properties
+     * Cassandra Writer config Properties
      */
     private String cassandraKeyspace;
     private String cassandraQuery;
-    private String beforeWriteQuery; //For executing a single query before writes sent
+    private String beforeWriteQuery; // For executing a single query before writes sent
     private boolean isIdempotent = true;
     private String cassandraClusterName;
     private boolean isCassandraCluster;
@@ -53,16 +53,15 @@ public class WriterConfig {
     private boolean enableSSL = false;
     private List<WriterConfig> restCalls;
 
-
     /**
-     Redis Writer config Properties
+     * Redis Writer config Properties
      */
 
-//    private String redisHostName;
-//    private int redisPort;
-//    private String redisPassword;
-//    private int redisDatabase;
-//    private List<RedisOperation> redisOperations;
+    // private String redisHostName;
+    // private int redisPort;
+    // private String redisPassword;
+    // private int redisDatabase;
+    // private List<RedisOperation> redisOperations;
     private boolean isRedisCluster;
     private String redisDelimiter = ":";
     private long redisWriteTimeout = 60000;
@@ -70,22 +69,24 @@ public class WriterConfig {
     private int redisPartitionSize = 500;
 
     /**
-     Flat File config Properties
+     * Flat File config Properties
      */
     private String delimiter = ",";
-    private String rootTag; /**Tag around all data */
-    private String childTag; /** Tag around each row */
+    private String rootTag;
+    /** Tag around all data */
+    private String childTag;
+    /** Tag around each row */
     private List<String> fieldLengths;
     private String fileLocation = "local";
 
     /**
-     Custom fields
+     * Custom fields
      */
     private String dataDate;
     private String resourceName;
 
     /**
-     SFTP config Properties
+     * SFTP config Properties
      */
     private String sftpRemoteDir;
     private String sftpMoveDir;
@@ -94,20 +95,21 @@ public class WriterConfig {
     private String sftpCsvFooterRow;
     private String sftpFileNameDateFormat;
     private int sftpFileNameDaysToSubtract;
-    //delete old files in archive folder aka path of archive = config.getAfterJobConfig().getWriterConfig().getSftpMoveDir()
+    // delete old files in archive folder aka path of archive =
+    // config.getAfterJobConfig().getWriterConfig().getSftpMoveDir()
     private boolean deleteOldFiles = false;
-    //anything over 30 days ie 720 hours will be removed
+    // anything over 30 days ie 720 hours will be removed
     private long fileExpiryInHours = 720;
     private String zoneId = "UTC";
     private char lineSeparator = '\n';
     private boolean writeFooterOnIncompleteJob = false;
 
     /**
-     EndPoint config Properties
+     * EndPoint config Properties
      */
     private String endPointUrl;
     private String requestMethod;
-    private Map<String,Object> headers;
+    private Map<String, Object> headers;
     private List<String> body;
     private long throttleTime;
     private int endPointConnectionTimeout = 120000;
@@ -116,7 +118,7 @@ public class WriterConfig {
     private int concurrencyMaxPerRoute = 100;
     private boolean allowNulls = false;
     /**
-     Elasticsearch config properties
+     * Elasticsearch config properties
      */
 
     private String elasticsearchIndex;
@@ -128,7 +130,7 @@ public class WriterConfig {
     private boolean monthSuffix = true;
 
     /**
-     JMS Writer config properties
+     * JMS Writer config properties
      */
     private String jmsServiceName = "";
     private String queueName;
@@ -142,9 +144,9 @@ public class WriterConfig {
     private Long incrementalTTL;
     private boolean isJmsRespectTTL = true;
     private boolean filterEmptyMessages = true;
-    private int threshold = 10; //default set limit to 10
+    private int threshold = 10; // default set limit to 10
     /**
-     JDBC config Properties
+     * JDBC config Properties
      */
     private Map<String, Object> jdbcParameterValues;
 
@@ -192,11 +194,11 @@ public class WriterConfig {
     private boolean writeFlagToReferenceDb = false;
     private String referenceQuery;
 
-    /*Rest Template writer*/
+    /* Rest Template writer */
     private String lgwUrl;
     /**
-     Azure Event Hub properties
-     These aren't used for now, only the proxyUrl
+     * Azure Event Hub properties
+     * These aren't used for now, only the proxyUrl
      */
     private String sendConnectionString;
     private String listenConnectionString;
@@ -209,7 +211,7 @@ public class WriterConfig {
     private List<String> ignoreFields;
 
     /**
-     AWS S3 config properties
+     * AWS S3 config properties
      */
     private Date transactionCutoff;
 
@@ -226,17 +228,20 @@ public class WriterConfig {
     private boolean ordered = false;
     private boolean upsert = true;
     private boolean mapToDocument = false;
-    private boolean removePrimaryKeys = true; //allow you to keep primary keys within document
-    private boolean idObject = false; //allows a single field _id to be a single-property object
+    private boolean removePrimaryKeys = true; // allow you to keep primary keys within document
+    private boolean idObject = false; // allows a single field _id to be a single-property object
     private MongoOperation mongoOperation = MongoOperation.SET;
+
     public enum MongoOperation {
         SET, PUSH, UPDATE_CHILD_OBJECT
     }
+
     private String arrayPath;
     private String objectPath;
     private String parseDatePattern;
     private boolean processDocument = false;
-    //  private UuidRepresentation uuidRepresentation = UuidRepresentation.JAVA_LEGACY;
+    // private UuidRepresentation uuidRepresentation =
+    // UuidRepresentation.JAVA_LEGACY;
     // Timeout
     private int connectionTimeout;
     private int readTimeout;
@@ -249,7 +254,7 @@ public class WriterConfig {
     private boolean useTlsV3RestTemplate = false;
     private String azureBlobUploadConnectionName = null;
     private String sourceAzureBlobUploadConnectionName = null;
-    private String generatedReportFileName =  null;
+    private String generatedReportFileName = null;
     private String generatedReportFileFormat = "xlsx";
     private boolean uploadReportToBlobStorage = false;
     private String azureContainerName;
@@ -265,27 +270,27 @@ public class WriterConfig {
     private int bulkSobject = 50;
     private String externalId;
 
-    @JsonProperty(value="isCassandraCluster")
+    @JsonProperty(value = "isCassandraCluster")
     public boolean isCassandraCluster() {
         return this.isCassandraCluster;
     }
 
-    @JsonProperty(value="isRedisCluster")
+    @JsonProperty(value = "isRedisCluster")
     public boolean isRedisCluster() {
         return this.isRedisCluster;
     }
 
-    @JsonProperty(value="counterTable")
+    @JsonProperty(value = "counterTable")
     public boolean isCounterTable() {
         return this.counterTable;
     }
 
-    @JsonProperty(value="isJmsRespectTTL")
+    @JsonProperty(value = "isJmsRespectTTL")
     public boolean isJmsRespectTTL() {
         return this.isJmsRespectTTL;
     }
 
-    @JsonProperty(value="enableSSL")
+    @JsonProperty(value = "enableSSL")
     public boolean isEnableSSL() {
         return this.enableSSL;
     }
@@ -293,17 +298,24 @@ public class WriterConfig {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("WriterConfig(");
-        if (writer != null) sb.append("writer=").append(writer).append(", ");
-        if (writerType != null) sb.append("writerType=").append(writerType).append(", ");
-        if (writerBuilder != null) sb.append("writerBuilder=").append(writerBuilder).append(", ");
-        if (tableName != null) sb.append("tableName=").append(tableName).append(", ");
-        if (connectionName != null) sb.append("connectionName=").append(connectionName).append(", ");
-        if (sftpRemoteDir != null) sb.append("sftpRemoteDir=").append(sftpRemoteDir).append(", ");
-        if (sftpFileName != null) sb.append("sftpFileName=").append(sftpFileName).append(", ");
-        if (sb.length() > 13) sb.setLength(sb.length() - 2);
+        if (writer != null)
+            sb.append("writer=").append(writer).append(", ");
+        if (writerType != null)
+            sb.append("writerType=").append(writerType).append(", ");
+        if (writerBuilder != null)
+            sb.append("writerBuilder=").append(writerBuilder).append(", ");
+        if (tableName != null)
+            sb.append("tableName=").append(tableName).append(", ");
+        if (connectionName != null)
+            sb.append("connectionName=").append(connectionName).append(", ");
+        if (sftpRemoteDir != null)
+            sb.append("sftpRemoteDir=").append(sftpRemoteDir).append(", ");
+        if (sftpFileName != null)
+            sb.append("sftpFileName=").append(sftpFileName).append(", ");
+        if (sb.length() > 13)
+            sb.setLength(sb.length() - 2);
         sb.append(")");
         return sb.toString();
     }
 
 }
-

@@ -28,6 +28,7 @@ public class APIConstants {
     public static final String CONNECTIONS = "/connections";
     public static final String CONNECTION_ACTIVITY_LOGS = "/connection-activity-logs";
     public static final String CONNECTION_STATS = "/connection-stats";
+    public static final String DAG_ACTIVITY = "/dag-activity";
     public static final String ITEM_BASE_PATH = BASE_PATH + ITEM ;
     public static final String RESOURCE_BASE_PATH = BASE_PATH + RESOURCE;
     public static final String MAPPINGS_BASE_PATH = BASE_PATH + MAPPINGS ;
@@ -48,5 +49,6 @@ public class APIConstants {
     public static final String ENV_BASE_PATH = BASE_PATH + ENV_API;
     public static final String TESTCASE_BASE_PATH = BASE_PATH + TESTCASE_API;
     public static final String READER_BASE_PATH = BASE_PATH + READER;
+    public static final String DAG_ACTIVITY_PATH = BASE_PATH + DAG_ACTIVITY ;
 
 }

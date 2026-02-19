@@ -54,6 +54,7 @@ public class ErrorFactory {
     public static final ErrorDefinition SEARCH_TIMEOUT;
     public static final ErrorDefinition RESOURCE_CREATION_FAILED;
     public static final ErrorDefinition VALIDATION_ERROR;
+    public static final ErrorDefinition NOT_SUPPORTED;
     final Map<String, HttpStatus> httpStatus;
 
     @Autowired
@@ -130,6 +131,7 @@ public class ErrorFactory {
         NOT_IMPLEMENTED = new ErrorDefinition("NOT_IMPLEMENTED", "501001", ErrorLevel.REQUEST, ErrorSeverity.FATAL, "Not implemented, contact Admin for details", HttpStatus.NOT_IMPLEMENTED, SOURCE_APPLICATION);
         SEARCH_TIMEOUT = new ErrorDefinition("SEARCH_TIMEOUT", "503001", ErrorLevel.REQUEST, ErrorSeverity.FATAL, "Search engine server timeout", HttpStatus.REQUEST_TIMEOUT, SOURCE_APPLICATION);
         RESOURCE_CREATION_FAILED = new ErrorDefinition("RESOURCE_CREATION_FAILED", "42204", ErrorLevel.BUSINESS, ErrorSeverity.FATAL, "Resource failed validation", HttpStatus.PRECONDITION_FAILED, SOURCE_APPLICATION);
+        NOT_SUPPORTED = new ErrorDefinition("Not_Supported","42205",ErrorLevel.REQUEST,ErrorSeverity.NONFATAL, "Operation is not supported ", HttpStatus.HTTP_VERSION_NOT_SUPPORTED, SOURCE_APPLICATION);
     }
 }
 

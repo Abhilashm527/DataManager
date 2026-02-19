@@ -28,22 +28,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Setter
 @Getter
-@Component
+@Component("jobConfigsInternalConfig")
 public class InternalConfig {
     /**
-     * This class is used internally to allow settings to be propagated throughout the job process.
-     * These fields should never be included in the yaml config. They are set internally only.
+     * This class is used internally to allow settings to be propagated throughout
+     * the job process.
+     * These fields should never be included in the yaml config. They are set
+     * internally only.
      */
 
     private byte[] fileContent;
-//    private S3ObjectSummary s3ObjectSummary;
+    // private S3ObjectSummary s3ObjectSummary;
 
-//    private SftpStreamingMessageSource sftpStreamingMessageSource;
-//    private SftpRemoteFileTemplate sftpTemplate;
-//    private CachingSessionFactory<ChannelSftp.LsEntry> cachingSessionFactory;
-//    private SftpSession readerSftpSession;
+    // private SftpStreamingMessageSource sftpStreamingMessageSource;
+    // private SftpRemoteFileTemplate sftpTemplate;
+    // private CachingSessionFactory<ChannelSftp.LsEntry> cachingSessionFactory;
+    // private SftpSession readerSftpSession;
 
-    //  private SmbFileOutputStream smbFileOutputStream;
+    // private SmbFileOutputStream smbFileOutputStream;
 
     /**
      * remote partition
@@ -51,58 +53,58 @@ public class InternalConfig {
     private String stepName = "";
     private int minValue;
     private int maxValue;
- //   private StepExecution stepExecution;
+    // private StepExecution stepExecution;
 
     /**
      * Snowflake connection
      */
 
-
-
     /**
      * database connections
      */
-//    private Session cassandraWriterSession;
-//    private Session cassandraReaderSession;
-//    private Session cassandraProcessorSession;
+    // private Session cassandraWriterSession;
+    // private Session cassandraReaderSession;
+    // private Session cassandraProcessorSession;
     private DriverManagerDataSource jdbcReaderDataSource;
     private DriverManagerDataSource jdbcWriterDataSource;
     private DriverManagerDataSource jdbcRestFlagWriterDataSource;
     private DriverManagerDataSource jdbcProcessorDataSource;
-//    private BlobContainerClient blobContainerClient;
-//    private BlobContainerClient writerDestiationBlobContainerClient;
-//    private BlobContainerClient writerSourceBlobContainerClient;
+    // private BlobContainerClient blobContainerClient;
+    // private BlobContainerClient writerDestiationBlobContainerClient;
+    // private BlobContainerClient writerSourceBlobContainerClient;
 
     // Azure Blob client
-//    private BlobClient azureBlobClient;
-//    // Salesforce Auth Providers for reader, writer, processor
-//    private SalesforceAuthProvider readerSalesforceAuthProvider;
-//    private SalesforceAuthProvider writerSalesforceAuthProvider;
-//    private SalesforceAuthProvider processorSalesforceAuthProvider;
+    // private BlobClient azureBlobClient;
+    // // Salesforce Auth Providers for reader, writer, processor
+    // private SalesforceAuthProvider readerSalesforceAuthProvider;
+    // private SalesforceAuthProvider writerSalesforceAuthProvider;
+    // private SalesforceAuthProvider processorSalesforceAuthProvider;
 
     private RestTemplate sapRestTemplate;
-//    private StatefulRedisConnection redisReaderConnection;
-//    private StatefulRedisConnection redisWriterConnection;
-    //private RedisClient redisReaderClient;
-    //private RedisClient redisWriterClient;
-//    private StatefulRedisClusterConnection redisClusterWriterConnection;
+    // private StatefulRedisConnection redisReaderConnection;
+    // private StatefulRedisConnection redisWriterConnection;
+    // private RedisClient redisReaderClient;
+    // private RedisClient redisWriterClient;
+    // private StatefulRedisClusterConnection redisClusterWriterConnection;
 
-//    private RestHighLevelClient elasticsearchReaderClient;
-//    private RestHighLevelClient elasticsearchWriterClient;
+    // private RestHighLevelClient elasticsearchReaderClient;
+    // private RestHighLevelClient elasticsearchWriterClient;
 
-//    private Connection jmsReaderConnection;
-//    private Connection jmsWriterConnection;
-//    private javax.jms.Session jmsSession;
-//    private MessageProducer jmsMessageProducer;
-//    private MessageConsumer jmsMessageConsumer;
+    // private Connection jmsReaderConnection;
+    // private Connection jmsWriterConnection;
+    // private javax.jms.Session jmsSession;
+    // private MessageProducer jmsMessageProducer;
+    // private MessageConsumer jmsMessageConsumer;
 
-//    private HashMap<String, StatefulRedisConnection> redisReaderConnections = new HashMap<>();
-//    private HashMap<String, StatefulRedisConnection> redisWriterConnections = new HashMap<>();
+    // private HashMap<String, StatefulRedisConnection> redisReaderConnections = new
+    // HashMap<>();
+    // private HashMap<String, StatefulRedisConnection> redisWriterConnections = new
+    // HashMap<>();
 
-//    @JsonIgnore
-//    private AmazonS3Client amazonS3Client;
+    // @JsonIgnore
+    // private AmazonS3Client amazonS3Client;
 
-    //   private MongoClient mongoClient;
+    // private MongoClient mongoClient;
 
     /**
      * Used for job scheduling
@@ -128,7 +130,6 @@ public class InternalConfig {
     private boolean noPermissionFound = false;
     private String permissionDeniedLocation;
 
-
     /**
      * Used for keeping data from a beforeJob to use later in job
      **/
@@ -143,7 +144,7 @@ public class InternalConfig {
      * File writer properties
      */
     private Integer linesWritten = 0;
- //   private LineAggregator lineAggregator;
+    // private LineAggregator lineAggregator;
     private String formattedDate;
 
     public void incrementTotalRecords() {
@@ -161,6 +162,5 @@ public class InternalConfig {
             linesWritten++;
         }
     }
-
 
 }
