@@ -72,38 +72,36 @@ public class ConnectionController {
         return Response.getResponse(connectionService.getConnection(identifier));
     }
 
-    @Operation(summary = "List connections")
-    @PostMapping("/list")
-    public ResponseEntity<Response> list(
+    @Operation(summary = "Get connections by application ID with pagination")
+    @PostMapping("/application/{applicationId}/list")
+    public ResponseEntity<Response> getByApplicationId(
+            @Parameter(description = "Application ID") @PathVariable String applicationId,
             @Valid @RequestBody(required = false) SearchPayload searchPayload,
+            @RequestParam(required = false) Boolean isFavorite,
+            @RequestParam(required = false) String search,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "created_at") String sortBy,
             @RequestParam(required = false, defaultValue = "DESC") Sort.Direction direction,
             @RequestHeader HttpHeaders headers) {
-        log.info("Listing connections");
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Identifier identifier = Identifier.builder().headers(headers).pageable(pageable).build();
-        
-        if (!ObjectUtils.isEmpty(searchPayload) && !CollectionUtils.isEmpty(searchPayload.getSearchCriterias())) {
-            String searchQuery = getSearchQuery(searchPayload.getSearchCriterias());
-            identifier.setWord(searchQuery);
-        }
-        
-        Page<Connection> connections = connectionService.list(identifier);
-        return Response.getResponse(connections);
-    }
-
-    @Operation(summary = "Get connections by application ID")
-    @GetMapping("/application/{applicationId}")
-    public ResponseEntity<Response> getByApplicationId(
-            @Parameter(description = "Application ID") @PathVariable String applicationId,
-            @RequestParam(required = false) Boolean isFavorite,
-            @RequestParam(required = false) String search,
-            @RequestHeader HttpHeaders headers) {
         log.info("Getting connections by application: {}, isFavorite: {}, search: {}", applicationId, isFavorite,
                 search);
-        return Response.getResponse(connectionService.getConnectionsByApplicationId(applicationId, isFavorite, search));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Identifier identifier = Identifier.builder().headers(headers).pageable(pageable).build();
+
+        StringBuilder searchQuery = new StringBuilder(" AND application_id = '" + applicationId + "'");
+        if (isFavorite != null) {
+            searchQuery.append(" AND is_favorite = ").append(isFavorite);
+        }
+        if (search != null && !search.isEmpty()) {
+            searchQuery.append(" AND connection_name ILIKE '%").append(search).append("%'");
+        }
+        if (!ObjectUtils.isEmpty(searchPayload) && !CollectionUtils.isEmpty(searchPayload.getSearchCriterias())) {
+            searchQuery.append(getSearchQuery(searchPayload.getSearchCriterias()));
+        }
+        identifier.setWord(searchQuery.toString());
+
+        return Response.getResponse(connectionService.list(identifier));
     }
 
     @Operation(summary = "Get connections by provider")
