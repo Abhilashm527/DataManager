@@ -1,6 +1,5 @@
 package com.dataflow.dataloaders.entity;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +16,6 @@ public class Provider extends AuditMetaData {
     private String description;
     private String iconId;
     private Integer defaultPort;
-    private JsonNode configSchema;
+    private ConfigSchema configSchema;
     private Integer displayOrder;
 }
