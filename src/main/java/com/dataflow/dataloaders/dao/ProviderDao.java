@@ -1,6 +1,7 @@
 package com.dataflow.dataloaders.dao;
 
 import com.dataflow.dataloaders.entity.Provider;
+import com.dataflow.dataloaders.entity.ConfigSchema;
 import com.dataflow.dataloaders.exception.DataloadersException;
 import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.DateUtils;
@@ -55,7 +56,7 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
     public String insertProvider(Provider model, Identifier identifier) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(getSql("Provider.create"), new String[]{"id"});
+            PreparedStatement ps = con.prepareStatement(getSql("Provider.create"), new String[] { "id" });
             ps.setObject(1, model.getId());
             ps.setObject(2, model.getConnectionTypeId());
             ps.setString(3, model.getProviderName());
@@ -166,7 +167,8 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
     }
 
     @Override
-    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues, String... delimitter) {
+    public <E extends Number> String setInvalues(String query, String replaceString, Set<E> inValues,
+            String... delimitter) {
         return super.setInvalues(query, replaceString, inValues, delimitter);
     }
 
@@ -185,7 +187,7 @@ public class ProviderDao extends GenericDaoImpl<Provider, Identifier, String> {
         provider.setDefaultPort(rs.getObject("default_port") != null ? rs.getInt("default_port") : null);
         String configSchemaJson = rs.getString("config_schema");
         if (configSchemaJson != null) {
-            provider.setConfigSchema(dfUtil.readValueToJsonNode(configSchemaJson));
+            provider.setConfigSchema(dfUtil.readValue(ConfigSchema.class, configSchemaJson));
         }
         provider.setDisplayOrder(rs.getObject("display_order") != null ? rs.getInt("display_order") : null);
         provider.setCreatedAt(rs.getObject("created_at") != null ? rs.getLong("created_at") : null);
