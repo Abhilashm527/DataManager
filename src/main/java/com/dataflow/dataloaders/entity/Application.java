@@ -1,6 +1,7 @@
 package com.dataflow.dataloaders.entity;
 
 import com.dataflow.dataloaders.enums.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,7 @@ public class Application extends AuditMetaData {
     private String iconId;
     private Visibility visibility;
     private Boolean isFavorite;
+
+    @JsonIgnore
+    private Long total;
 }
