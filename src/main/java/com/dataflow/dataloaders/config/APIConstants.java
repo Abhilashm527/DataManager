@@ -15,7 +15,7 @@ public class APIConstants {
     public static final String ENV_API = "/environment";
     public static final String CUSTOMER_API = "/customer";
     public static final String TESTCASE_API = "/testcase";
-    public static final String VARIABLES_API = "variables";
+    public static final String VARIABLES_API = "/variables";
     public static final String CRYPTO = "/crypto";
     public static final String READER = "/reader";
     public static final String RESOURCE = "/resource";
