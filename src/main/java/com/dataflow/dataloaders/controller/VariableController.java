@@ -13,9 +13,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.dataflow.dataloaders.config.APIConstants.VARIABLES_PATH;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/variables")
+@RequestMapping(VARIABLES_PATH)
 @Tag(name = "Variables", description = "Variable and Secret Management")
 public class VariableController {
 

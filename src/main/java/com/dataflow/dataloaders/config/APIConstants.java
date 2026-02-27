@@ -15,6 +15,7 @@ public class APIConstants {
     public static final String ENV_API = "/environment";
     public static final String CUSTOMER_API = "/customer";
     public static final String TESTCASE_API = "/testcase";
+    public static final String VARIABLES_API = "variables";
     public static final String CRYPTO = "/crypto";
     public static final String READER = "/reader";
     public static final String RESOURCE = "/resource";
@@ -50,5 +51,5 @@ public class APIConstants {
     public static final String TESTCASE_BASE_PATH = BASE_PATH + TESTCASE_API;
     public static final String READER_BASE_PATH = BASE_PATH + READER;
     public static final String DAG_ACTIVITY_PATH = BASE_PATH + DAG_ACTIVITY ;
-
+    public static final String VARIABLES_PATH = BASE_PATH + VARIABLES_API;
 }
