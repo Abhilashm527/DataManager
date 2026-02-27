@@ -18,4 +18,5 @@ public class Application extends AuditMetaData {
     private String description;
     private String iconId;
     private Visibility visibility;
+    private Boolean isFavorite;
 }

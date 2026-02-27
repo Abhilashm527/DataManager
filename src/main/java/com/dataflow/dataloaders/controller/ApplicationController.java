@@ -100,4 +100,19 @@ public class ApplicationController {
                 Identifier identifier = Identifier.builder().headers(headers).word(applicationId).build();
                 return Response.deleteResponse(applicationService.deleteApplication(identifier));
         }
+
+        @Operation(summary = "Toggle application favorite", description = "Toggle the favorite status of an application")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Favorite status toggled successfully"),
+                        @ApiResponse(responseCode = "404", description = "Application not found")
+        })
+        @PatchMapping("/{applicationId}/favorite")
+        public ResponseEntity<Response> toggleFavorite(
+                        @Parameter(description = "Application ID") @PathVariable String applicationId,
+                        @RequestHeader HttpHeaders headers) {
+                log.info(logPrefix, this.getClass().getSimpleName(),
+                                Thread.currentThread().getStackTrace()[1].getMethodName());
+                Identifier identifier = Identifier.builder().headers(headers).word(applicationId).build();
+                return Response.updateResponse(applicationService.toggleFavorite(identifier));
+        }
 }

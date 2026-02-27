@@ -67,13 +67,28 @@ public class ApplicationService {
         existing.setDescription(
                 application.getDescription() != null ? application.getDescription() : existing.getDescription());
         existing.setUpdatedBy("admin");
-
+        existing.setIconId(application.getIconId() != null ? application.getIconId() : existing.getIconId());
+        existing.setVisibility(
+                application.getVisibility() != null ? application.getVisibility() : existing.getVisibility());
         boolean updated = applicationDao.updateApp(existing, identifier) > 0;
         if (!updated) {
             log.error("Failed to update application: {}", existing.getId());
             throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, "Not updated");
         }
         log.info("Updated application: {}", existing.getId());
+        return getApplication(identifier);
+    }
+
+    public Application toggleFavorite(Identifier identifier) {
+        log.info("toggleFavorite - identifier: {}", identifier);
+        Application application = getApplication(identifier);
+        boolean newFavoriteState = !Boolean.TRUE.equals(application.getIsFavorite());
+        int updated = applicationDao.toggleFavorite(application.getId(), newFavoriteState);
+        if (updated == 0) {
+            log.error("Failed to toggle favorite for application: {}", application.getId());
+            throw new DataloadersException(ErrorFactory.DATABASE_EXCEPTION, "Favorite not updated");
+        }
+        log.info("Toggled favorite for application: {} -> isFavorite={}", application.getId(), newFavoriteState);
         return getApplication(identifier);
     }
 
