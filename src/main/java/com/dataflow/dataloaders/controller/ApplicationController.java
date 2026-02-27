@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,16 +60,22 @@ public class ApplicationController {
                 return Response.getResponse(applicationService.getApplication(identifier));
         }
 
-        @Operation(summary = "Get all applications", description = "Get all applications")
+        @Operation(summary = "Get all applications with pagination", description = "Get all applications with pagination, sorting, and optional name search")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Applications retrieved")
         })
         @GetMapping()
-        public ResponseEntity<Response> getAll(@RequestParam(required = false) String search,
+        public ResponseEntity<Response> getAll(
+                        @RequestParam(required = false) String search,
+                        @RequestParam(required = false, defaultValue = "0") int page,
+                        @RequestParam(required = false, defaultValue = "10") int size,
+                        @RequestParam(required = false, defaultValue = "name") String sortBy,
+                        @RequestParam(required = false, defaultValue = "ASC") Sort.Direction direction,
                         @RequestHeader HttpHeaders headers) {
                 log.info(logPrefix, this.getClass().getSimpleName(),
                                 Thread.currentThread().getStackTrace()[1].getMethodName());
-                Identifier identifier = Identifier.builder().headers(headers).build();
+                Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+                Identifier identifier = Identifier.builder().headers(headers).pageable(pageable).build();
                 return Response.getResponse(applicationService.getAllApplications(identifier, search));
         }
 

@@ -130,9 +130,32 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         }
     }
 
+    public List<Application> listPaged(Identifier identifier) {
+        try {
+            return jdbcTemplate.query(getSql("Application.listPaged", identifier), applicationRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return List.of();
+        }
+    }
+
     public List<Application> listByName(String name) {
         try {
             return jdbcTemplate.query(getSql("Application.searchByName"), applicationRowMapper, "%" + name + "%");
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return List.of();
+        }
+    }
+
+    public List<Application> listByNamePaged(String name, Identifier identifier) {
+        try {
+            String sql = getSql("Application.searchByName", identifier);
+            return jdbcTemplate.query(sql, applicationRowMapper, "%" + name + "%");
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         } catch (Exception e) {
@@ -195,6 +218,11 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         application.setCreatedAt(rs.getObject("created_at", Long.class));
         application.setUpdatedBy(rs.getString("updated_by"));
         application.setUpdatedAt(rs.getObject("updated_at", Long.class));
+        try {
+            application.setTotal(rs.getObject("total") != null ? rs.getLong("total") : null);
+        } catch (Exception ignored) {
+            // 'total' column only present in paginated queries
+        }
         return application;
     };
 }

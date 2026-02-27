@@ -7,6 +7,8 @@ import com.dataflow.dataloaders.exception.ErrorFactory;
 import com.dataflow.dataloaders.util.Identifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,21 +40,21 @@ public class ApplicationService {
         return application;
     }
 
-    public List<Application> getAllApplications(Identifier identifier, String search) {
-        log.info(logPrefix, this.getClass().getSimpleName(), "getAllApplications - identifier: {}, search: {}",
-                identifier, search);
+    public Page<Application> getAllApplications(Identifier identifier, String search) {
+        log.info(logPrefix, this.getClass().getSimpleName(),
+                "getAllApplications - identifier: {}, search: {}", identifier, search);
+
         List<Application> applications;
         if (search != null && !search.isEmpty()) {
-            applications = applicationDao.listByName(search);
+            applications = applicationDao.listByNamePaged(search, identifier);
         } else {
-            applications = applicationDao.list(identifier);
+            applications = applicationDao.listPaged(identifier);
         }
-        if (applications.isEmpty()) {
-            log.warn("No applications found for identifier: {}, search: {}", identifier, search);
-            return applications; // Return empty list instead of throwing exception for search
-        }
-        log.info("Found {} applications", applications.size());
-        return applications;
+
+        long total = applications.isEmpty() ? 0
+                : (applications.get(0).getTotal() != null ? applications.get(0).getTotal() : 0);
+        log.info("Found {} applications (total={})", applications.size(), total);
+        return new PageImpl<>(applications, identifier.getPageable(), total);
     }
 
     public Application updateApplication(Application application, Identifier identifier) {
