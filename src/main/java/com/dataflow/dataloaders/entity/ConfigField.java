@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
  *
  * Example:
  * {
- *   "name": "jdbcUrl",
- *   "label": "JDBC URL",
- *   "required": true,
- *   "defaultValue": null,
- *   "type": "text",
- *   "placeholder": "jdbc:sqlserver://host:port;databaseName=db",
- *   "helpText": "The JDBC connection URL for the database",
- *   "order": 1
+ * "name": "jdbcUrl",
+ * "label": "JDBC URL",
+ * "required": true,
+ * "defaultValue": null,
+ * "type": "text",
+ * "placeholder": "jdbc:sqlserver://host:port;databaseName=db",
+ * "helpText": "The JDBC connection URL for the database",
+ * "order": 1
  * }
  */
 @Data
@@ -96,4 +96,17 @@ public class ConfigField {
      * Example: "^jdbc:(sqlserver|postgresql|oracle):.*"
      */
     private String pattern;
+
+    /**
+     * Determines which other fields must be filled out before this field is enabled
+     * Example: ["connectionId", "schemaName"]
+     */
+    private java.util.List<String> dependsOn;
+
+    /**
+     * For dynamic fields (e.g., dynamic_select), the API endpoint to fetch data
+     * from
+     * Example: "/api/v1/dag-activity/jdbc/tables?connectionId={{connectionId}}"
+     */
+    private String endpoint;
 }

@@ -99,7 +99,7 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
                     application.getName(),
                     application.getDescription(),
                     application.getIconId(),
-                    application.getVisibility(),
+                    application.getVisibility() != null ? application.getVisibility().name() : null,
                     application.getUpdatedBy(),
                     DateUtils.getUnixTimestampInUTC(),
                     application.getId());
@@ -165,6 +165,19 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         }
     }
 
+    public int toggleFavorite(String applicationId, boolean isFavorite) {
+        try {
+            return jdbcTemplate.update(getSql("Application.toggleFavorite"),
+                    isFavorite,
+                    "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    applicationId);
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return 0;
+        }
+    }
+
     @Override
     public int delete(Identifier identifier, String whereClause) {
         return 0;
@@ -177,6 +190,7 @@ public class ApplicationDao extends GenericDaoImpl<Application, Identifier, Stri
         application.setDescription(rs.getString("description"));
         application.setIconId(rs.getString("icon_id"));
         application.setVisibility(Visibility.valueOf(rs.getString("visibility")));
+        application.setIsFavorite(rs.getObject("is_favorite") != null ? rs.getBoolean("is_favorite") : false);
         application.setCreatedBy(rs.getString("created_by"));
         application.setCreatedAt(rs.getObject("created_at", Long.class));
         application.setUpdatedBy(rs.getString("updated_by"));
