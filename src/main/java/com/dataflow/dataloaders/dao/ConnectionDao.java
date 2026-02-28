@@ -181,7 +181,7 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
     }
 
     RowMapper<Connection> connectionRowMapper = (rs, rowNum) -> {
-        Connection connection = new Connection();
+        com.dataflow.dataloaders.dto.ConnectionDto connection = new com.dataflow.dataloaders.dto.ConnectionDto();
         connection.setId(rs.getString("id"));
         connection.setApplicationId(rs.getString("application_id"));
         connection.setProviderId(rs.getString("provider_id"));
@@ -211,6 +211,25 @@ public class ConnectionDao extends GenericDaoImpl<Connection, Identifier, String
         connection.setLastUsedAt(rs.getObject("last_used_at", Long.class));
         connection.setIsFavorite(rs.getObject("is_favorite") != null ? rs.getBoolean("is_favorite") : null);
         connection.setTotal(rs.getObject("total") != null ? rs.getLong("total") : null);
+
+        try {
+            java.sql.ResultSetMetaData rsmd = rs.getMetaData();
+            int columns = rsmd.getColumnCount();
+            java.util.Set<String> columnNames = new java.util.HashSet<>();
+            for (int i = 1; i <= columns; i++) {
+                columnNames.add(rsmd.getColumnLabel(i).toLowerCase());
+            }
+
+            if (columnNames.contains("provider_name")) {
+                connection.setProviderName(rs.getString("provider_name"));
+            }
+            if (columnNames.contains("icon")) {
+                connection.setIcon(rs.getString("icon"));
+            }
+        } catch (java.sql.SQLException e) {
+            log.warn("Error mapping extra columns for ConnectionDto", e);
+        }
+
         return connection;
     };
 }
