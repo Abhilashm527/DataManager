@@ -28,18 +28,20 @@ public class APIConstants {
     public static final String CONNECTION_TYPES = "/connection-types";
     public static final String PROVIDERS = "/providers";
     public static final String CONNECTIONS = "/connections";
+    public static final String DATAFLOWS = "/dataflows";
     public static final String CONNECTION_ACTIVITY_LOGS = "/connection-activity-logs";
     public static final String CONNECTION_STATS = "/connection-stats";
     public static final String DAG_ACTIVITY = "/dag-activity";
-    public static final String ITEM_BASE_PATH = BASE_PATH + ITEM ;
+    public static final String ITEM_BASE_PATH = BASE_PATH + ITEM;
     public static final String RESOURCE_BASE_PATH = BASE_PATH + RESOURCE;
-    public static final String MAPPINGS_BASE_PATH = BASE_PATH + MAPPINGS ;
+    public static final String MAPPINGS_BASE_PATH = BASE_PATH + MAPPINGS;
     public static final String CONFIG_FIELDS_BASE_PATH = BASE_PATH + CONFIG_FIELDS;
     public static final String APPLICATION_BASE_PATH = BASE_PATH + APPLICATION;
     public static final String ICONS_BASE_PATH = BASE_PATH + ICONS;
     public static final String CONNECTION_TYPES_BASE_PATH = BASE_PATH + CONNECTION_TYPES;
     public static final String PROVIDERS_BASE_PATH = BASE_PATH + PROVIDERS;
     public static final String CONNECTIONS_BASE_PATH = BASE_PATH + CONNECTIONS;
+    public static final String DATAFLOWS_BASE_PATH = BASE_PATH + DATAFLOWS;
     public static final String CONNECTION_ACTIVITY_LOGS_BASE_PATH = BASE_PATH + CONNECTION_ACTIVITY_LOGS;
     public static final String CONNECTION_STATS_BASE_PATH = BASE_PATH + CONNECTION_STATS;
     public static final String CUSTOMER_BASE_PATH = BASE_PATH + CUSTOMER_API;
@@ -51,7 +53,7 @@ public class APIConstants {
     public static final String ENV_BASE_PATH = BASE_PATH + ENV_API;
     public static final String TESTCASE_BASE_PATH = BASE_PATH + TESTCASE_API;
     public static final String READER_BASE_PATH = BASE_PATH + READER;
-    public static final String DAG_ACTIVITY_PATH = BASE_PATH + DAG_ACTIVITY ;
+    public static final String DAG_ACTIVITY_PATH = BASE_PATH + DAG_ACTIVITY;
     public static final String VARIABLES_PATH = BASE_PATH + VARIABLES_API;
     public static final String SETTINGS_PATH = BASE_PATH + SETTINGS_API;
 }
