@@ -17,6 +17,7 @@ public class Dataflow extends AuditMetaData {
     private String description;
     private Boolean isActive;
     private Boolean isFavorite;
+    private com.fasterxml.jackson.databind.JsonNode canvasState;
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Long total;

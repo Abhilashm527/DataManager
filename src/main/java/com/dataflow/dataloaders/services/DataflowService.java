@@ -56,6 +56,8 @@ public class DataflowService {
             existing.setIsActive(dataflow.getIsActive());
         if (dataflow.getIsFavorite() != null)
             existing.setIsFavorite(dataflow.getIsFavorite());
+        if (dataflow.getCanvasState() != null)
+            existing.setCanvasState(dataflow.getCanvasState());
 
         existing.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
         existing.setUpdatedBy("admin");

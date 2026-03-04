@@ -54,8 +54,9 @@ public class DataflowDao extends GenericDaoImpl<Dataflow, Identifier, String> {
             ps.setString(4, model.getDescription());
             ps.setObject(5, model.getIsActive() != null ? model.getIsActive() : true);
             ps.setObject(6, model.getIsFavorite() != null ? model.getIsFavorite() : false);
-            ps.setObject(7, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
-            ps.setObject(8, DateUtils.getUnixTimestampInUTC());
+            ps.setString(7, model.getCanvasState() != null ? model.getCanvasState().toString() : null);
+            ps.setObject(8, model.getCreatedBy() != null ? model.getCreatedBy() : "admin");
+            ps.setObject(9, DateUtils.getUnixTimestampInUTC());
             return ps;
         });
         return model.getId();
@@ -87,6 +88,7 @@ public class DataflowDao extends GenericDaoImpl<Dataflow, Identifier, String> {
                     dataflow.getDescription(),
                     dataflow.getIsActive(),
                     dataflow.getIsFavorite(),
+                    dataflow.getCanvasState() != null ? dataflow.getCanvasState().toString() : null,
                     dataflow.getUpdatedBy() != null ? dataflow.getUpdatedBy() : "admin",
                     DateUtils.getUnixTimestampInUTC(),
                     dataflow.getId());
@@ -118,6 +120,7 @@ public class DataflowDao extends GenericDaoImpl<Dataflow, Identifier, String> {
         dataflow.setDescription(rs.getString("description"));
         dataflow.setIsActive(rs.getObject("is_active") != null ? rs.getBoolean("is_active") : null);
         dataflow.setIsFavorite(rs.getObject("is_favorite") != null ? rs.getBoolean("is_favorite") : null);
+        dataflow.setCanvasState(dfUtil.readValueToJsonNode(rs.getString("canvas_state")));
         dataflow.setCreatedAt(rs.getObject("created_at", Long.class));
         dataflow.setCreatedBy(rs.getString("created_by"));
         dataflow.setUpdatedAt(rs.getObject("updated_at", Long.class));
