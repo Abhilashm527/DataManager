@@ -56,4 +56,13 @@ public class APIConstants {
     public static final String DAG_ACTIVITY_PATH = BASE_PATH + DAG_ACTIVITY;
     public static final String VARIABLES_PATH = BASE_PATH + VARIABLES_API;
     public static final String SETTINGS_PATH = BASE_PATH + SETTINGS_API;
+
+    // DAG Storage Constants
+    public static final String DAG_NODES = "/nodes";
+    public static final String DAG_EDGES = "/edges";
+    public static final String DAG_DEFINITIONS = "/dag-definitions";
+
+    public static final String DAG_NODES_BASE_PATH = BASE_PATH + DAG_NODES;
+    public static final String DAG_EDGES_BASE_PATH = BASE_PATH + DAG_EDGES;
+    public static final String DAG_DEFINITIONS_BASE_PATH = BASE_PATH + DAG_DEFINITIONS;
 }

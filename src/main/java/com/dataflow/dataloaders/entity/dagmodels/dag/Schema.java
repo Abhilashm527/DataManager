@@ -1,7 +1,7 @@
-package com.dataflow.dataloaders.entity.dag;
+package com.dataflow.dataloaders.entity.dagmodels.dag;
 
 import lombok.Data;
-
+import org.springframework.data.annotation.Id;
 import java.time.Instant;
 import java.util.List;
 
@@ -10,8 +10,11 @@ import java.util.List;
  */
 @Data
 public class Schema {
+    @Id
+    private String schemaId;
     private String nodeId; // The ID of the node that produced this schema
     private String name; // Readable name for the schema
+
     private List<FieldDefinition> fields; // List of top-level fields
     private Instant capturedAt; // Timestamp when metadata was last inferred
     private String version; // Optional versioning for schema evolution
