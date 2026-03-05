@@ -1,10 +1,8 @@
-package com.dataflow.dataloaders.entity.dag;
+package com.dataflow.dataloaders.entity.dagmodels.dag;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.dataflow.dataloaders.entity.JobConfig;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import org.springframework.data.annotation.Id;
 import java.util.List;
 import java.util.Map;
 
@@ -13,23 +11,23 @@ import java.util.Map;
  * Represents a single processing unit in the DAG
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Node {
+@lombok.EqualsAndHashCode(callSuper = true)
+public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
+    @Id
     private String nodeId;
+    private String dataflowId;
     private String nodeName;
     private NodeType nodeType;
     private String componentRef;
     private String description;
+
     private Position position;
 
     // Direct Schema access for this node
     private Schema nodeSchema;
 
-    // Specialized configurations instead of generic JobConfig
-    private ReaderConfig readerConfig; // Populated if node is a Reader type
-    private WriterConfig writerConfig; // Populated if node is a Writer type
+    // Node configuration
+    private JobConfig config;
 
     // Ports for data flow
     private List<Port> inputPorts;
@@ -85,6 +83,7 @@ public class Node {
         KAFKA_WRITER,
         API_WRITER,
         MONGODB_WRITER,
+        ERROR_REPLAY_READER,
 
         // Control nodes
         DECISION,
@@ -98,35 +97,6 @@ public class Node {
         SEQUENTIAL,
         WAIT_ALL,
         WAIT_ANY
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ConnectionConfig {
-        private String connectionId; // The ID of the connection from the system
-        private Map<String, Object> connectionOverrides; // Property overrides for this specific node
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ReaderConfig {
-        private ConnectionConfig connection;
-        private String readerType;
-        private Map<String, Object> properties; // e.g., "query", "fetchSize", "collection"
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class WriterConfig {
-        private ConnectionConfig connection;
-        private String writerType;
-        private Map<String, Object> properties; // e.g., "tableName", "upsertKey", "batchSize"
     }
 
     @Data

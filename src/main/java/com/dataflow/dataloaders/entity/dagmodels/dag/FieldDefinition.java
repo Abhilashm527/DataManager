@@ -1,4 +1,4 @@
-package com.dataflow.dataloaders.entity.dag;
+package com.dataflow.dataloaders.entity.dagmodels.dag;
 
 import lombok.Data;
 

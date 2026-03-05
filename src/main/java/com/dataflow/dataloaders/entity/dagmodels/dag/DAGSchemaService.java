@@ -1,4 +1,4 @@
-package com.dataflow.dataloaders.entity.dag;
+package com.dataflow.dataloaders.entity.dagmodels.dag;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

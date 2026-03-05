@@ -1,11 +1,7 @@
-package com.dataflow.dataloaders.entity.dag;
+package com.dataflow.dataloaders.entity.dagmodels.dag;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.Instant;
+import org.springframework.data.annotation.Id;
 import java.util.List;
 import java.util.Map;
 
@@ -14,19 +10,18 @@ import java.util.Map;
  * Represents a complete data processing pipeline as a DAG
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DAGDefinition {
+@lombok.EqualsAndHashCode(callSuper = true)
+public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData {
+    @Id
     private String dagId;
+    private String dataflowId;
     private String dagName;
     private String description;
     private DAGType type;
     private String version;
     private DAGStatus status;
-    private String createdBy;
-    private Instant createdAt;
-    private Instant lastModified;
+    private java.time.Instant lastModified;
+
     private List<String> tags;
 
     // Global configuration
@@ -36,7 +31,9 @@ public class DAGDefinition {
 
     // DAG structure
     private List<Node> nodes;
+    private List<String> nodeIds;
     private List<Edge> edges;
+    private List<String> edgeIds;
 
     // Operational configuration
     private ErrorHandling errorHandling;

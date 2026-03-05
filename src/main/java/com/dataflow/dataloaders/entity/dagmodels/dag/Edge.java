@@ -1,4 +1,4 @@
-package com.dataflow.dataloaders.entity.dag;
+package com.dataflow.dataloaders.entity.dagmodels.dag;
 
 import lombok.Data;
 
@@ -9,8 +9,10 @@ import java.util.List;
  * Represents a connection between two nodes in the DAG
  */
 @Data
-public class Edge {
+@lombok.EqualsAndHashCode(callSuper = true)
+public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     private String edgeId;
+    private String dataflowId;
     private String sourceNodeId;
     private String targetNodeId;
     private String sourcePort;
