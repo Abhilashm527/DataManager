@@ -28,14 +28,14 @@ public class DAGDefinitionController {
     @PostMapping
     public ResponseEntity<Response> create(@RequestBody DAGDefinition dag) {
         log.info("Saving full DAG definition: {}", dag.getDagName());
-        return Response.createResponse(dagDefinitionService.saveFullDAG(dag));
+        return Response.createResponse(dagDefinitionService.saveFullDAG(dag).orElse(null));
     }
 
     @Operation(summary = "Get DAG definition by ID")
     @GetMapping("/{dagId}")
     public ResponseEntity<Response> get(@Parameter(description = "DAG ID") @PathVariable String dagId) {
         log.info("Getting DAG: {}", dagId);
-        return Response.getResponse(dagDefinitionService.getDAGById(dagId));
+        return Response.getResponse(dagDefinitionService.getDAGById(dagId).orElse(null));
     }
 
     @Operation(summary = "Get DAG definitions by dataflow ID")
@@ -53,7 +53,7 @@ public class DAGDefinitionController {
             @RequestBody DAGDefinition dag) {
         log.info("Updating full DAG: {}", dagId);
         dag.setDagId(dagId);
-        return Response.updateResponse(dagDefinitionService.saveFullDAG(dag));
+        return Response.updateResponse(dagDefinitionService.saveFullDAG(dag).orElse(null));
     }
 
     @Operation(summary = "Delete DAG definition")

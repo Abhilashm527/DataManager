@@ -28,14 +28,14 @@ public class NodeController {
     @PostMapping
     public ResponseEntity<Response> create(@RequestBody Node node) {
         log.info("Creating node: {}", node.getNodeName());
-        return Response.createResponse(nodeService.createNode(node));
+        return Response.createResponse(nodeService.createNode(node).orElse(null));
     }
 
     @Operation(summary = "Get node by ID")
     @GetMapping("/{nodeId}")
     public ResponseEntity<Response> get(@Parameter(description = "Node ID") @PathVariable String nodeId) {
         log.info("Getting node: {}", nodeId);
-        return Response.getResponse(nodeService.getNodeById(nodeId));
+        return Response.getResponse(nodeService.getNodeById(nodeId).orElse(null));
     }
 
     @Operation(summary = "Get nodes by dataflow ID")

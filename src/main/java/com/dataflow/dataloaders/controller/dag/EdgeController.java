@@ -28,14 +28,14 @@ public class EdgeController {
     @PostMapping
     public ResponseEntity<Response> create(@RequestBody Edge edge) {
         log.info("Creating edge from {} to {}", edge.getSourceNodeId(), edge.getTargetNodeId());
-        return Response.createResponse(edgeService.createEdge(edge));
+        return Response.createResponse(edgeService.createEdge(edge).orElse(null));
     }
 
     @Operation(summary = "Get edge by ID")
     @GetMapping("/{edgeId}")
     public ResponseEntity<Response> get(@Parameter(description = "Edge ID") @PathVariable String edgeId) {
         log.info("Getting edge: {}", edgeId);
-        return Response.getResponse(edgeService.getEdgeById(edgeId));
+        return Response.getResponse(edgeService.getEdgeById(edgeId).orElse(null));
     }
 
     @Operation(summary = "Get edges by dataflow ID")
