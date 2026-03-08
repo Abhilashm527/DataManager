@@ -28,10 +28,6 @@ public class JobConfig extends AuditMetaData {
     private Integer chunkSize;
 
     private String mappingId;
-
-    private SourceConfig sourceConfig;
-    private TargetConfig targetConfig;
-
     private ReaderConfig readerConfig;
     private WriterConfig writerConfig;
 

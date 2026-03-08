@@ -119,14 +119,7 @@ public class DeployService {
         if (mappings.getMappings() != null && !mappings.getMappings().isEmpty()) {
             config.put("inputFields", mappings.getMappings());
         }
-        if(jobConfig.getSourceConfig().getSourceId() != null){
-            Map<String,Object> readerConfig1 = (Map<String,Object>) config.get("readerConfig");
-            readerConfig1.put("connectionConfig", getresourcebyId(jobConfig.getSourceConfig().getSourceId()));
-        }
-        if(jobConfig.getTargetConfig().getTargetId() != null){
-            Map<String,Object> writerConfig1 = (Map<String,Object>) config.get("writerConfig");
-            writerConfig1.put("connectionConfig", getresourcebyId(jobConfig.getTargetConfig().getTargetId()));
-        }
+
         
         return config;
     }
@@ -219,12 +212,7 @@ public class DeployService {
     private Map<String, Object> buildReaderConfigMap(JobConfig jobConfig) {
         Map<String, Object> readerConfig = new HashMap<>();
         
-        if(jobConfig.getSourceConfig().getConfigFields() != null) {
-            addNonNullFields(readerConfig, jobConfig.getSourceConfig().getConfigFields());
-        }
-        if(jobConfig.getSourceConfig().getPredefinedFields() != null) {
-            addNonNullFields(readerConfig, jobConfig.getSourceConfig().getPredefinedFields());
-        }
+
         
         return readerConfig;
     }
@@ -232,13 +220,7 @@ public class DeployService {
     private Map<String, Object> buildWriterConfigMap(JobConfig jobConfig) {
         Map<String, Object> writerConfig = new HashMap<>();
         
-        if(jobConfig.getTargetConfig().getConfigFields() != null) {
-            addNonNullFields(writerConfig, jobConfig.getTargetConfig().getConfigFields());
-        }
-        if(jobConfig.getTargetConfig().getPredefinedFields() != null) {
-            addNonNullFields(writerConfig, jobConfig.getTargetConfig().getPredefinedFields());
-        }
-        
+
         return writerConfig;
     }
 

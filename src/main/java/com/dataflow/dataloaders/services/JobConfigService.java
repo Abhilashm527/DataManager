@@ -51,14 +51,7 @@ public class JobConfigService {
         if (jobConfig.getItemId() == null ){
             throw new DataloadersException(ErrorFactory.BAD_REQUEST, "ItemId could not be null");
         }
-        if(jobConfig.getSourceConfig().getSourceType().equalsIgnoreCase("DATATABLE")){
-            SourceConfig sourceConfig = setSourceFieldsForDatatables();
-            jobConfig.setSourceConfig(sourceConfig);
-        }
-        if(jobConfig.getTargetConfig().getTargetType().equalsIgnoreCase("DATATABLE")){
-            TargetConfig targetConfig = setTargetFieldsForDatatables();
-            jobConfig.setTargetConfig(targetConfig);
-        }
+
         jobConfig.setStatus("DRAFT");
         jobConfig.setDrafted(true);
         jobConfig.setIsActive(false);
@@ -213,31 +206,12 @@ public class JobConfigService {
         // Set ReaderConfig with all fields from SourceConfig
         com.dataflow.dataloaders.jobconfigs.ReaderConfig readerConfig = new com.dataflow.dataloaders.jobconfigs.ReaderConfig();
         
-        // Set fields from configFields (user-configurable)
-        if(jobConfig.getSourceConfig().getConfigFields() != null) {
-            setReaderConfigFields(readerConfig, jobConfig.getSourceConfig().getConfigFields());
-        }
-        
-        // Set fields from predefinedFields (system-managed)
-        if(jobConfig.getSourceConfig().getPredefinedFields() != null) {
-            setReaderConfigFields(readerConfig, jobConfig.getSourceConfig().getPredefinedFields());
-        }
-        
+
         deployJobConfig.setReaderConfig(readerConfig);
         
         // Set WriterConfig with all fields from TargetConfig
         com.dataflow.dataloaders.jobconfigs.WriterConfig writerConfig = new com.dataflow.dataloaders.jobconfigs.WriterConfig();
-        
-        // Set fields from configFields (user-configurable)
-        if(jobConfig.getTargetConfig().getConfigFields() != null) {
-            setWriterConfigFields(writerConfig, jobConfig.getTargetConfig().getConfigFields());
-        }
-        
-        // Set fields from predefinedFields (system-managed)
-        if(jobConfig.getTargetConfig().getPredefinedFields() != null) {
-            setWriterConfigFields(writerConfig, jobConfig.getTargetConfig().getPredefinedFields());
-        }
-        
+
         deployJobConfig.setWriterConfig(writerConfig);
 
         // Create new deployed record
@@ -359,12 +333,7 @@ public class JobConfigService {
         if (jobConfig.getMappingId() != null) {
             existing.setMappingId(jobConfig.getMappingId());
         }
-        if (jobConfig.getSourceConfig() != null) {
-            existing.setSourceConfig(jobConfig.getSourceConfig());
-        }
-        if (jobConfig.getTargetConfig() != null) {
-            existing.setTargetConfig(jobConfig.getTargetConfig());
-        }
+
         if (jobConfig.getSchedule() != null) {
             existing.setSchedule(jobConfig.getSchedule());
         }
@@ -423,28 +392,7 @@ public class JobConfigService {
                         "Mapping not found: " + jobConfig.getMappingId());
             }
         }
-        
-        // Validate source resource exists
-        if (jobConfig.getSourceConfig() != null && jobConfig.getSourceConfig().getSourceId() != null) {
-            try {
-                var resource = resourceService.getResource(Identifier.builder().word(jobConfig.getSourceConfig().getSourceId()).build());
-                jobConfig.getSourceConfig().setSourceType(resource.getResourceType());
-            } catch (Exception e) {
-                throw new DataloadersException(ErrorFactory.VALIDATION_ERROR, 
-                        "Source resource not found: " + jobConfig.getSourceConfig().getSourceId());
-            }
-        }
-        
-        // Validate target resource exists
-        if (jobConfig.getTargetConfig() != null && jobConfig.getTargetConfig().getTargetId() != null) {
-            try {
-                var resource = resourceService.getResource(Identifier.builder().word(jobConfig.getTargetConfig().getTargetId()).build());
-                jobConfig.getTargetConfig().setTargetType(resource.getResourceType());
-            } catch (Exception e) {
-                throw new DataloadersException(ErrorFactory.VALIDATION_ERROR, 
-                        "Target resource not found: " + jobConfig.getTargetConfig().getTargetId());
-            }
-        }
+
     }
     
     private JobConfig copyJobConfig(JobConfig source) {
@@ -455,8 +403,6 @@ public class JobConfigService {
         copy.setJobSeverity(source.getJobSeverity());
         copy.setChunkSize(source.getChunkSize());
         copy.setMappingId(source.getMappingId());
-        copy.setSourceConfig(source.getSourceConfig());
-        copy.setTargetConfig(source.getTargetConfig());
         copy.setScheduled(source.getScheduled());
         copy.setSchedule(source.getSchedule());
         copy.setItemId(source.getItemId());
@@ -484,54 +430,8 @@ public class JobConfigService {
     }
     
     private void applyDefaultValues(JobConfig jobConfig) {
-        // Apply default predefined fields to source config
-        if (jobConfig.getSourceConfig() != null) {
-            if(jobConfig.getSourceConfig().getSourceType().equalsIgnoreCase("SFTP")){
-                Map<String, Object> predefinedFields = new HashMap<>();
-                predefinedFields.put("reader", "csv");
-                predefinedFields.put("fileLocation", "sftp");
-                jobConfig.getSourceConfig().setPredefinedFields(predefinedFields);
-            } else if (jobConfig.getSourceConfig().getSourceType().equalsIgnoreCase("PostgreSQL")){
-                Map<String, Object> predefinedFields = new HashMap<>();
-                predefinedFields.put("readerType", "db");
-                predefinedFields.put("reader", "jdbc");
-                predefinedFields.put("readerBuilder", "jdbcCursor");
-                predefinedFields.put("readerName", "jdbcCursor");
-                jobConfig.getSourceConfig().setPredefinedFields(predefinedFields);
-            } else {
-                Map<String, Object> predefinedFields = new HashMap<>();
-                predefinedFields.put("readerType", "db");
-                predefinedFields.put("reader", "jdbc");
-                predefinedFields.put("readerBuilder", "JdbcReaderBuilder");
-                jobConfig.getSourceConfig().setPredefinedFields(predefinedFields);
-            }
-        }
-        
-        // Apply default predefined fields to target config
-        if (jobConfig.getTargetConfig() != null) {
-            if(jobConfig.getTargetConfig().getTargetType().equalsIgnoreCase("SFTP")){
-                Map<String, Object> predefinedFields = new HashMap<>();
-                predefinedFields.put("writer", "csv");
-                predefinedFields.put("fileLocation", "sftp");
-                predefinedFields.put("writerBuilder", "sftp");
-                predefinedFields.put("writerName", "sftp");
-                predefinedFields.put("writerType", "db");
-                jobConfig.getTargetConfig().setPredefinedFields(predefinedFields);
-            } else if (jobConfig.getTargetConfig().getTargetType().equalsIgnoreCase("PostgreSQL")){
-                Map<String, Object> predefinedFields = new HashMap<>();
-                predefinedFields.put("writer", "jdbc");
-                predefinedFields.put("writerBuilder", "jdbc");
-                predefinedFields.put("writerName", "jdbc");
-                predefinedFields.put("writerType", "db");
-                jobConfig.getTargetConfig().setPredefinedFields(predefinedFields);
-            } else {
-                Map<String, Object> predefinedFields = new HashMap<>();
-                predefinedFields.put("writerType", "file");
-                predefinedFields.put("writer", "csv");
-                predefinedFields.put("writerBuilder", "CsvWriterBuilder");
-                jobConfig.getTargetConfig().setPredefinedFields(predefinedFields);
-            }
-        }
+
+
     }
 
     public Map<String, Object> getSupportedReaderConfigs() {

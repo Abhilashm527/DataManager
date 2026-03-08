@@ -33,7 +33,7 @@ public class WriterConfig {
     private String hashTag;
     private String keyIdentifier;
     private String tableName;
-    private boolean removeQueryParam = false;
+    private Boolean removeQueryParam ;
 
     /**
      * Cassandra Writer config Properties
@@ -41,18 +41,18 @@ public class WriterConfig {
     private String cassandraKeyspace;
     private String cassandraQuery;
     private String beforeWriteQuery; // For executing a single query before writes sent
-    private boolean isIdempotent = true;
+    private Boolean isIdempotent ;
     private String cassandraClusterName;
-    private boolean isCassandraCluster;
-    private boolean counterTable = false;
-    private int retryCount = 3;
-    private int retryAttempts = 3;
-    private int retryIntervalInMillis = 3000;
-    private String consistencyLevel = "LOCAL_ONE";
+    private Boolean isCassandraCluster;
+    private Boolean counterTable ;
+    private Integer retryCount ;
+    private Integer retryAttempts ;
+    private Integer retryIntervalInMillis ;
+    private String consistencyLevel ;
     private String truncateTable;
-    private boolean removeCurrentDayData = false;
-    private String tableSuffix = "";
-    private boolean enableSSL = false;
+    private Boolean removeCurrentDayData ;
+    private String tableSuffix ;
+    private Boolean enableSSL ;
     private List<WriterConfig> restCalls;
 
     /**
@@ -64,11 +64,11 @@ public class WriterConfig {
     // private String redisPassword;
     // private int redisDatabase;
     // private List<RedisOperation> redisOperations;
-    private boolean isRedisCluster;
-    private String redisDelimiter = ":";
-    private long redisWriteTimeout = 60000;
+    private Boolean isRedisCluster;
+    private String redisDelimiter ;
+    private Long redisWriteTimeout ;
     private String redisMapper;
-    private int redisPartitionSize = 500;
+    private Integer redisPartitionSize ;
 
     /**
      * Flat File config Properties
@@ -79,7 +79,7 @@ public class WriterConfig {
     private String childTag;
     /** Tag around each row */
     private List<String> fieldLengths;
-    private String fileLocation = "local";
+    private String fileLocation ;
 
     /**
      * Custom fields
@@ -96,15 +96,15 @@ public class WriterConfig {
     private String sftpCsvHeaderRow;
     private String sftpCsvFooterRow;
     private String sftpFileNameDateFormat;
-    private int sftpFileNameDaysToSubtract;
+    private Integer sftpFileNameDaysToSubtract;
     // delete old files in archive folder aka path of archive =
     // config.getAfterJobConfig().getWriterConfig().getSftpMoveDir()
-    private boolean deleteOldFiles = false;
+    private Boolean deleteOldFiles ;
     // anything over 30 days ie 720 hours will be removed
-    private long fileExpiryInHours = 720;
-    private String zoneId = "UTC";
-    private char lineSeparator = '\n';
-    private boolean writeFooterOnIncompleteJob = false;
+    private Long fileExpiryInHours ;
+    private String zoneId ;
+    private Character lineSeparator ;
+    private Boolean writeFooterOnIncompleteJob ;
 
     /**
      * EndPoint config Properties
@@ -113,40 +113,40 @@ public class WriterConfig {
     private String requestMethod;
     private Map<String, Object> headers;
     private List<String> body;
-    private long throttleTime;
-    private int endPointConnectionTimeout = 120000;
-    private int endPointSocketTimeout = 20000;
-    private int concurrencyMaxTotal = 200;
-    private int concurrencyMaxPerRoute = 100;
-    private boolean allowNulls = false;
+    private Long throttleTime;
+    private Integer endPointConnectionTimeout ;
+    private Integer endPointSocketTimeout ;
+    private Integer concurrencyMaxTotal ;
+    private Integer concurrencyMaxPerRoute ;
+    private Boolean allowNulls ;
     /**
      * Elasticsearch config properties
      */
 
     private String elasticsearchIndex;
     private List<String> elasticsearchIdColumns;
-    private String elasticsearchIdDelimiter = ":";
-    private String insertScript = "";
-    private String elasticsearchMapper = "";
-    private String elasticsearchListName = "";
-    private boolean monthSuffix = true;
+    private String elasticsearchIdDelimiter ;
+    private String insertScript ;
+    private String elasticsearchMapper ;
+    private String elasticsearchListName ;
+    private Boolean monthSuffix ;
 
     /**
      * JMS Writer config properties
      */
-    private String jmsServiceName = "";
+    private String jmsServiceName ;
     private String queueName;
     private String topicName;
-    private String jmsMapper = null;
-    private String JmsPayloadJsonStringWriterMapper = null;
-    private Map<String, Boolean> jmsMessageProperties = new HashMap<>();
+    private String jmsMapper ;
+    private String JmsPayloadJsonStringWriterMapper ;
+    private Map<String, Boolean> jmsMessageProperties ;
     private Long timeToLive;
     private List<String> groupBy;
     private String groupName;
     private Long incrementalTTL;
-    private boolean isJmsRespectTTL = true;
-    private boolean filterEmptyMessages = true;
-    private int threshold = 10; // default set limit to 10
+    private Boolean isJmsRespectTTL ;
+    private Boolean filterEmptyMessages ;
+    private Integer threshold ; // default set limit to 10
     /**
      * JDBC config Properties
      */
@@ -155,45 +155,45 @@ public class WriterConfig {
     /**
      * DME2 Writer properties
      */
-    private Map<String, String> requestHeaders = new HashMap<>();
-    private Map<String, String> urlParams = new HashMap<>();
-    private Map<String, String> queryParams = new HashMap<>();
+    private Map<String, String> requestHeaders ;
+    private Map<String, String> urlParams ;
+    private Map<String, String> queryParams ;
     private String serviceName;
     private String contentType;
     private String messageId;
-    private Map<String, String> messageIdParams = new HashMap<>();
-    private int maxAttempts = 1;
-    private boolean useRowAsBody;
+    private Map<String, String> messageIdParams ;
+    private Integer maxAttempts ;
+    private Boolean useRowAsBody;
     private String messageTemplate;
     private String messagePrefix;
     private String messageSuffix;
     private String messagePlaceholder;
-    private boolean useSystemLineSeparator = false;
+    private Boolean useSystemLineSeparator;
     private String requestBody;
     private String jdbcQuery;
     private String url;
     private String targetMethod;
-    private boolean failJobOnErrorResponse = true;
+    private Boolean failJobOnErrorResponse ;
     private List<String> allowedErrorCodes = new ArrayList<>();
     private List<WriterConfig> dme2Calls;
-    private boolean writeFlagToCassandra = false;
-    private boolean writeErrorFlagToCassandra = false;
-    private boolean writeResponsesToCassandra = false;
-    private boolean validateResponse = false;
-    private boolean preventAdditionalCallsOnError = false;
+    private Boolean writeFlagToCassandra ;
+    private Boolean writeErrorFlagToCassandra ;
+    private Boolean writeResponsesToCassandra ;
+    private Boolean validateResponse ;
+    private Boolean preventAdditionalCallsOnError ;
     private String validateJsonPath;
     private String expectedResponseValue;
-    private boolean base64 = false;
+    private Boolean base64 ;
     private String base64Prefix;
     private String base64Suffix;
 
-    private boolean writeFlagToPostgres = false;
-    private boolean writeErrorFlagToPostgres = false;
-    private boolean writeResponsesToPostgres = false;
-    private boolean writeConfigNameAndId = false;
+    private Boolean writeFlagToPostgres ;
+    private Boolean writeErrorFlagToPostgres ;
+    private Boolean writeResponsesToPostgres ;
+    private Boolean writeConfigNameAndId ;
     private List<String> finalAdditionalBindVariables;
     private String postgresQuery;
-    private boolean writeFlagToReferenceDb = false;
+    private Boolean writeFlagToReferenceDb ;
     private String referenceQuery;
 
     /* Rest Template writer */
@@ -227,12 +227,12 @@ public class WriterConfig {
      */
     private String mongoDatabase;
     private String mongoCollection;
-    private boolean ordered = false;
-    private boolean upsert = true;
-    private boolean mapToDocument = false;
-    private boolean removePrimaryKeys = true; // allow you to keep primary keys within document
-    private boolean idObject = false; // allows a single field _id to be a single-property object
-    private MongoOperation mongoOperation = MongoOperation.SET;
+    private Boolean ordered ;
+    private Boolean upsert ;
+    private Boolean mapToDocument ;
+    private Boolean removePrimaryKeys ; // allow you to keep primary keys within document
+    private Boolean idObject ; // allows a single field _id to be a single-property object
+    private MongoOperation mongoOperation ;
 
     public enum MongoOperation {
         SET, PUSH, UPDATE_CHILD_OBJECT
@@ -241,35 +241,35 @@ public class WriterConfig {
     private String arrayPath;
     private String objectPath;
     private String parseDatePattern;
-    private boolean processDocument = false;
+    private Boolean processDocument ;
     // private UuidRepresentation uuidRepresentation =
     // UuidRepresentation.JAVA_LEGACY;
     // Timeout
-    private int connectionTimeout;
-    private int readTimeout;
+    private Integer connectionTimeout;
+    private Integer readTimeout;
     private String baseUrl;
-    private int numThreads;
+    private Integer numThreads;
 
     private String salesforceObjectName;
 
     // Rest Templates
-    private boolean useTlsV3RestTemplate = false;
-    private String azureBlobUploadConnectionName = null;
-    private String sourceAzureBlobUploadConnectionName = null;
-    private String generatedReportFileName = null;
-    private String generatedReportFileFormat = "xlsx";
-    private boolean uploadReportToBlobStorage = false;
+    private Boolean useTlsV3RestTemplate ;
+    private String azureBlobUploadConnectionName ;
+    private String sourceAzureBlobUploadConnectionName ;
+    private String generatedReportFileName ;
+    private String generatedReportFileFormat ;
+    private Boolean uploadReportToBlobStorage ;
     private String azureContainerName;
     private String sourceAzureBlobFileName;
     private String sourceAzureContainerName;
-    private String sourceAzureBlobFileFormat = "csv";
+    private String sourceAzureBlobFileFormat ;
     private String azureBlobPrefix;
-    private String fileFormat = "xlsx";
+    private String fileFormat ;
     private String soqlQuery;
     private String soqlEntity;
     private List<String> additionalFields;
     private List<String> removeFields;
-    private int bulkSobject = 50;
+    private Integer bulkSobject ;
     private String externalId;
 
     @JsonProperty(value = "isCassandraCluster")

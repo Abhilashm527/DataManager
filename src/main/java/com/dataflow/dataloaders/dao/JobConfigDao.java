@@ -77,8 +77,8 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
             ps.setObject(idx++, model.getJobSeverity());
             ps.setObject(idx++, model.getChunkSize());
             ps.setObject(idx++, model.getMappingId());
-            ps.setObject(idx++, toJsonSourceConfig(model.getSourceConfig()));
-            ps.setObject(idx++, toJsonTargetConfig(model.getTargetConfig()));
+            ps.setObject(idx++, null);
+            ps.setObject(idx++, null);
             ps.setObject(idx++, model.getScheduled());
             ps.setObject(idx++, model.getSchedule());
             ps.setObject(idx++, model.getPublished());
@@ -139,8 +139,8 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
                     jobConfig.getJobSeverity(),
                     jobConfig.getChunkSize(),
                     jobConfig.getMappingId(),
-                    toJsonSourceConfig(jobConfig.getSourceConfig()),
-                    toJsonTargetConfig(jobConfig.getTargetConfig()),
+                    toJsonSourceConfig(null),
+                    toJsonTargetConfig(null),
                     jobConfig.getScheduled(),
                     jobConfig.getSchedule(),
                     jobConfig.getPublished(),
@@ -329,9 +329,6 @@ public class JobConfigDao extends GenericDaoImpl<JobConfig, Identifier, String> 
         jobConfig.setJobSeverity(rs.getString("job_severity"));
         jobConfig.setChunkSize(rs.getInt("chunk_size"));
         jobConfig.setMappingId(rs.getString("mapping_id"));
-
-        jobConfig.setSourceConfig(fromJsonSourceConfig(rs.getString("source_config")));
-        jobConfig.setTargetConfig(fromJsonTargetConfig(rs.getString("target_config")));
 
         jobConfig.setScheduled(rs.getBoolean("scheduled"));
         jobConfig.setSchedule(rs.getString("schedule"));
