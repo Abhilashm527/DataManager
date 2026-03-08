@@ -107,14 +107,36 @@ public class DAGDefinitionService {
 
     public List<DAGDefinition> getDAGsByDataflowId(String dataflowId) {
         List<DAGDefinition> dags = dagDefinitionDao.getByDataflowId(dataflowId);
-        if (dags.isEmpty()) {
-            return dags;
-        }
-
         List<com.dataflow.dataloaders.entity.dagmodels.dag.Node> allNodes = nodeService
                 .getNodesByDataflowId(dataflowId);
         List<com.dataflow.dataloaders.entity.dagmodels.dag.Edge> allEdges = edgeService
                 .getEdgesByDataflowId(dataflowId);
+
+        if (dags.isEmpty()) {
+            if (!allNodes.isEmpty() || !allEdges.isEmpty()) {
+                DAGDefinition defaultDag = new DAGDefinition();
+                defaultDag.setDagId("default-" + dataflowId);
+                defaultDag.setDataflowId(dataflowId);
+                defaultDag.setDagName("Default DAG");
+                defaultDag.setNodes(allNodes);
+                defaultDag.setEdges(allEdges);
+
+                List<String> nodeIds = new java.util.ArrayList<>();
+                for (com.dataflow.dataloaders.entity.dagmodels.dag.Node n : allNodes) {
+                    nodeIds.add(n.getNodeId());
+                }
+                defaultDag.setNodeIds(nodeIds);
+
+                List<String> edgeIds = new java.util.ArrayList<>();
+                for (com.dataflow.dataloaders.entity.dagmodels.dag.Edge e : allEdges) {
+                    edgeIds.add(e.getEdgeId());
+                }
+                defaultDag.setEdgeIds(edgeIds);
+
+                return java.util.List.of(defaultDag);
+            }
+            return dags;
+        }
 
         for (DAGDefinition dag : dags) {
             List<com.dataflow.dataloaders.entity.dagmodels.dag.Node> dagNodes = new java.util.ArrayList<>();
