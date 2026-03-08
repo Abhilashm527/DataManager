@@ -123,6 +123,20 @@ public class EdgeDao extends GenericDaoImpl<Edge, Identifier, String> {
         }
     }
 
+    public int deleteByNodeId(String nodeId, String updatedBy) {
+        try {
+            return jdbcTemplate.update(getSql("Edge.deleteByNodeId"),
+                    updatedBy != null ? updatedBy : "admin",
+                    DateUtils.getUnixTimestampInUTC(),
+                    DateUtils.getUnixTimestampInUTC(),
+                    nodeId,
+                    nodeId);
+        } catch (Exception e) {
+            handleDatabaseException(e);
+            return 0;
+        }
+    }
+
     private final RowMapper<Edge> edgeRowMapper = (rs, rowNum) -> {
         Edge edge = new Edge();
         edge.setEdgeId(rs.getString("edge_id"));

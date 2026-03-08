@@ -2,6 +2,8 @@ package com.dataflow.dataloaders.entity;
 
 import com.dataflow.dataloaders.dto.SourceConfig;
 import com.dataflow.dataloaders.dto.TargetConfig;
+import com.dataflow.dataloaders.jobconfigs.ReaderConfig;
+import com.dataflow.dataloaders.jobconfigs.WriterConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,23 +26,23 @@ public class JobConfig extends AuditMetaData {
     private String impacts;
     private String jobSeverity;
     private Integer chunkSize;
-    
 
-    
     private String mappingId;
 
     private SourceConfig sourceConfig;
     private TargetConfig targetConfig;
-    
+
+    private ReaderConfig readerConfig;
+    private WriterConfig writerConfig;
+
     private Boolean scheduled;
     private String schedule;
-    
+
     private Boolean published;
     private String publishedVersion;
 
     private String deployedVersion;
     private Boolean deployed;
-
 
     // Additional fields for consistency with Resource pattern
     private String status;

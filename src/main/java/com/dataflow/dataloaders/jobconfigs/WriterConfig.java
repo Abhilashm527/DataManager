@@ -26,6 +26,8 @@ public class WriterConfig {
     private ConnectionConfig restFlagConnectionConfig;
     private String restFlagConnectionName;
     private String connectionName;
+    private String connectionId;
+    private String schemaName;
     private List<String> primaryKeys;
     private List<String> additionalBindVariables;
     private String hashTag;
