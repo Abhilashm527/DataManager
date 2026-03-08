@@ -20,6 +20,8 @@ public class ReaderConfig {
 
     private ConnectionConfig connectionConfig;
     private String connectionName;
+    private String connectionId;
+    private String schemaName;
     private List<String> primaryKeys;
     private String partitioner;
     private String tableName;

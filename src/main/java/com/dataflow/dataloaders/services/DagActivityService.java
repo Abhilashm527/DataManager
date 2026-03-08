@@ -156,7 +156,9 @@ public class DagActivityService {
         Identifier identifier = Identifier.builder().word(connectionId).headers(headers).build();
         Connection connection = connectionService.getConnection(identifier);
 
-        String effectiveSchema = (schemaName == null || "DEFAULT".equalsIgnoreCase(schemaName)) ? null : schemaName;
+        String effectiveSchema = (schemaName == null || schemaName.isEmpty() || "DEFAULT".equalsIgnoreCase(schemaName))
+                ? null
+                : schemaName;
 
         try (java.sql.Connection conn = getJdbcConnection(connection)) {
             DatabaseMetaData metaData = conn.getMetaData();
@@ -171,10 +173,10 @@ public class DagActivityService {
 
             // Get columns
             List<JdbcTableDefinitionResponse.ColumnDefinition> columns = new ArrayList<>();
-            String actualSchema = schemaName;
+            String actualSchema = (schemaName == null || schemaName.isEmpty()) ? "DEFAULT" : schemaName;
             try (ResultSet rs = metaData.getColumns(null, effectiveSchema, tableName, null)) {
                 while (rs.next()) {
-                    if (actualSchema == null || "DEFAULT".equalsIgnoreCase(actualSchema)) {
+                    if ("DEFAULT".equalsIgnoreCase(actualSchema)) {
                         actualSchema = rs.getString("TABLE_SCHEM");
                     }
 
@@ -190,14 +192,14 @@ public class DagActivityService {
                 }
             }
 
-            if (actualSchema == null)
+            if (actualSchema == null || actualSchema.isEmpty())
                 actualSchema = "DEFAULT";
 
             String rawDdl = generateRawDdl(tableName, columns);
 
             return JdbcTableDefinitionResponse.builder()
                     .tableName(tableName)
-                    .schemaName(schemaName)
+                    .schemaName(actualSchema)
                     .columns(columns)
                     .rawDdl(rawDdl)
                     .build();

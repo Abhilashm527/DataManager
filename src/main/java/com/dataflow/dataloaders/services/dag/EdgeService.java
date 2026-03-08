@@ -15,7 +15,14 @@ public class EdgeService {
     @Autowired
     private EdgeDao edgeDao;
 
+    @Autowired
+    private com.dataflow.dataloaders.validator.EdgeValidator edgeValidator;
+
     public Optional<Edge> createEdge(Edge edge) {
+        edgeValidator.validate(edge);
+        if (edge.getCreatedBy() == null) {
+            edge.setCreatedBy("admin");
+        }
         return edgeDao.createV1(edge, Identifier.builder().build());
     }
 
@@ -28,12 +35,17 @@ public class EdgeService {
     }
 
     public int updateEdge(Edge edge) {
+        edgeValidator.validate(edge);
+        if (edge.getUpdatedBy() == null) {
+            edge.setUpdatedBy("admin");
+        }
         return edgeDao.update(edge);
     }
 
     public int deleteEdge(String edgeId) {
         Edge edge = new Edge();
         edge.setEdgeId(edgeId);
+        edge.setUpdatedBy("admin");
         return edgeDao.delete(edge);
     }
 }
