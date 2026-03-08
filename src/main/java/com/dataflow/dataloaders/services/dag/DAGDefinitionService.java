@@ -68,11 +68,80 @@ public class DAGDefinitionService {
     }
 
     public Optional<DAGDefinition> getDAGById(String dagId) {
-        return dagDefinitionDao.getV1(Identifier.builder().word(dagId).build());
+        Optional<DAGDefinition> dagOpt = dagDefinitionDao.getV1(Identifier.builder().word(dagId).build());
+        if (dagOpt.isPresent()) {
+            DAGDefinition dag = dagOpt.get();
+            if (dag.getDataflowId() != null) {
+                List<com.dataflow.dataloaders.entity.dagmodels.dag.Node> allNodes = nodeService
+                        .getNodesByDataflowId(dag.getDataflowId());
+                List<com.dataflow.dataloaders.entity.dagmodels.dag.Edge> allEdges = edgeService
+                        .getEdgesByDataflowId(dag.getDataflowId());
+
+                List<com.dataflow.dataloaders.entity.dagmodels.dag.Node> dagNodes = new java.util.ArrayList<>();
+                if (dag.getNodeIds() != null && !dag.getNodeIds().isEmpty()) {
+                    for (com.dataflow.dataloaders.entity.dagmodels.dag.Node n : allNodes) {
+                        if (dag.getNodeIds().contains(n.getNodeId())) {
+                            dagNodes.add(n);
+                        }
+                    }
+                } else {
+                    dagNodes.addAll(allNodes);
+                }
+                dag.setNodes(dagNodes);
+
+                List<com.dataflow.dataloaders.entity.dagmodels.dag.Edge> dagEdges = new java.util.ArrayList<>();
+                if (dag.getEdgeIds() != null && !dag.getEdgeIds().isEmpty()) {
+                    for (com.dataflow.dataloaders.entity.dagmodels.dag.Edge e : allEdges) {
+                        if (dag.getEdgeIds().contains(e.getEdgeId())) {
+                            dagEdges.add(e);
+                        }
+                    }
+                } else {
+                    dagEdges.addAll(allEdges);
+                }
+                dag.setEdges(dagEdges);
+            }
+        }
+        return dagOpt;
     }
 
     public List<DAGDefinition> getDAGsByDataflowId(String dataflowId) {
-        return dagDefinitionDao.getByDataflowId(dataflowId);
+        List<DAGDefinition> dags = dagDefinitionDao.getByDataflowId(dataflowId);
+        if (dags.isEmpty()) {
+            return dags;
+        }
+
+        List<com.dataflow.dataloaders.entity.dagmodels.dag.Node> allNodes = nodeService
+                .getNodesByDataflowId(dataflowId);
+        List<com.dataflow.dataloaders.entity.dagmodels.dag.Edge> allEdges = edgeService
+                .getEdgesByDataflowId(dataflowId);
+
+        for (DAGDefinition dag : dags) {
+            List<com.dataflow.dataloaders.entity.dagmodels.dag.Node> dagNodes = new java.util.ArrayList<>();
+            if (dag.getNodeIds() != null && !dag.getNodeIds().isEmpty()) {
+                for (com.dataflow.dataloaders.entity.dagmodels.dag.Node n : allNodes) {
+                    if (dag.getNodeIds().contains(n.getNodeId())) {
+                        dagNodes.add(n);
+                    }
+                }
+            } else {
+                dagNodes.addAll(allNodes);
+            }
+            dag.setNodes(dagNodes);
+
+            List<com.dataflow.dataloaders.entity.dagmodels.dag.Edge> dagEdges = new java.util.ArrayList<>();
+            if (dag.getEdgeIds() != null && !dag.getEdgeIds().isEmpty()) {
+                for (com.dataflow.dataloaders.entity.dagmodels.dag.Edge e : allEdges) {
+                    if (dag.getEdgeIds().contains(e.getEdgeId())) {
+                        dagEdges.add(e);
+                    }
+                }
+            } else {
+                dagEdges.addAll(allEdges);
+            }
+            dag.setEdges(dagEdges);
+        }
+        return dags;
     }
 
     public int updateDAG(DAGDefinition dag) {
