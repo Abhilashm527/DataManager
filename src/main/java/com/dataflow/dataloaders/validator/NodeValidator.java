@@ -90,12 +90,8 @@ public class NodeValidator {
                 fields.put("fromClause", rc.getFromClause());
                 return fields;
             }
-            if (node.getConfig().getSourceConfig() == null
-                    || node.getConfig().getSourceConfig().getConfigFields() == null) {
-                throw new DataloadersException(ErrorFactory.BAD_REQUEST,
-                        String.format("JDBC Reader configuration fields are missing for node: %s", node.getNodeName()));
-            }
-            return node.getConfig().getSourceConfig().getConfigFields();
+
+            return null;
         } else {
             if (node.getConfig().getWriterConfig() != null) {
                 Map<String, Object> fields = new HashMap<>();
@@ -106,12 +102,7 @@ public class NodeValidator {
                 fields.put("schemaName", wc.getSchemaName());
                 return fields;
             }
-            if (node.getConfig().getTargetConfig() == null
-                    || node.getConfig().getTargetConfig().getConfigFields() == null) {
-                throw new DataloadersException(ErrorFactory.BAD_REQUEST,
-                        String.format("JDBC Writer configuration fields are missing for node: %s", node.getNodeName()));
-            }
-            return node.getConfig().getTargetConfig().getConfigFields();
+            return null;
         }
     }
 

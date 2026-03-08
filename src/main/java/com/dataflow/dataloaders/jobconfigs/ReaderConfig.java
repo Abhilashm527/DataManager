@@ -68,16 +68,16 @@ public class ReaderConfig {
     private Boolean condenseRows;
     private String condenseRowField;
     private String cassandraQuery;
-    private Boolean isIdempotent = true;
+    private Boolean isIdempotent ;
     private Boolean isBulk;
     private Boolean allowFiltering;
-    private Integer retryAttempts = 5;
-    private String consistencyLevel = "LOCAL_ONE";
+    private Integer retryAttempts ;
+    private String consistencyLevel ;
     // private List<AdditionalQuery> additionalQueries;
     private SPLIT_ROW_OPTION splitRow;
     private LinkedHashMap<String, Object> splitRowParams;
-    private Boolean enableSSL = false;
-    private Integer retryCount = 3;
+    private Boolean enableSSL ;
+    private Integer retryCount ;
 
     public enum SPLIT_ROW_OPTION {
         DUPLICATE_ROW_PER_JSON_ARRAY_ENTRY // used to extract multiple rows based on an array which is stored within a
@@ -94,10 +94,10 @@ public class ReaderConfig {
     private MultiQueryBindType multiQueryBind;
     private Integer numberOfDays;
     private Integer numberOfDaysToAdd;
-    private Boolean monthZeroIndexed = false;
+    private Boolean monthZeroIndexed ;
 
     private TokenBindType tokenBindType;
-    private Integer tokenIntervalCount = 0;
+    private Integer tokenIntervalCount ;
     private Integer tokenRangeIndex;
 
     public enum TokenBindType {
@@ -123,18 +123,18 @@ public class ReaderConfig {
      * https://mkyong.com/java8/java-display-all-zoneid-and-its-utc-offset/
      */
 
-    private String zoneId = "UTC";
+    private String zoneId ;
 
     private String selectClause;
     private String fromClause;
-    private String whereClause = "";
-    private String suffixClause = "";
+    private String whereClause ;
+    private String suffixClause ;
     private String groupClause;
 
     private String foreignKeyQuery;
     private String foreignKeyName;
     private String foreignKeyType;
-    private int foreignKeyChunkSize;
+    private Integer foreignKeyChunkSize;
     private String cassandraMapper;
 
     /**
@@ -143,10 +143,10 @@ public class ReaderConfig {
 
     // private List<RedisOperation> redisOperations;
     private Boolean isRedisCluster;
-    private String redisDelimiter = ":";
-    private Boolean isRedisConsumerStream = false;
-    private long checkPendingMessagesThreshold = 5000;
-    private String redisMapper = "";
+    private String redisDelimiter ;
+    private Boolean isRedisConsumerStream ;
+    private Long checkPendingMessagesThreshold ;
+    private String redisMapper ;
 
     /**
      * JDBC Reader config Properties
@@ -165,18 +165,18 @@ public class ReaderConfig {
     /**
      * File Reader config Properties
      */
-    private String delimiter = ",";
-    private Integer linesToSkip = 0;
-    private String commentIndicator = "//";
-    private String trueValue = "true";
+    private String delimiter ;
+    private Integer linesToSkip ;
+    private String commentIndicator ;
+    private String trueValue ;
     private String dateFormat;
     private String rootElement;
     private List<String> fieldLengths;
-    private String fileLocation = "local";
+    private String fileLocation ;
     private List<Integer> includedFields;
-    private Integer malformedLinesToSkip = 0;
-    private Integer maxItemCount = Integer.MAX_VALUE;
-    private Boolean strict = true;
+    private Integer malformedLinesToSkip ;
+    private Integer maxItemCount ;
+    private Boolean strict ;
     private String expectedHeaderRow;
     // if there is a double quote within the txt file, will throw exception
     // because LinkTokenizer will treat entire row as one column since there isn't
@@ -192,9 +192,9 @@ public class ReaderConfig {
      */
     private String queueName;
     private String topicName;
-    private String jmsMapper = "null";
-    private Boolean isJmsRespectTTL = true;
-    private Boolean isMsgQueueEmpty = false; // should be added in config as true to stop the reader config if msg is
+    private String jmsMapper ;
+    private Boolean isJmsRespectTTL ;
+    private Boolean isMsgQueueEmpty ; // should be added in config as true to stop the reader config if msg is
                                              // empty/null
 
     /**
@@ -209,14 +209,14 @@ public class ReaderConfig {
     private String lgwUrl;
     private Map<String, String> uriQueryParam;
     private String arrayJsonPath;
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> headers ;
     private Integer maxAttempts = 1;
 
     /**
      * DME2 CSV Reader config properties
      */
     private List<Map<String, String>> urlParameters;
-    private Map<String, DateBindType> dateUrlParameters = new HashMap<>();
+    private Map<String, DateBindType> dateUrlParameters ;
 
     /**
      * Azure blob config
@@ -227,9 +227,9 @@ public class ReaderConfig {
      * 
      * ExcelFileReader config properties
      */
-    private Integer sheetNumber = 0;
-    private String sheetName = null;
-    private Integer rowsToSkip = 0;
+    private Integer sheetNumber ;
+    private String sheetName ;
+    private Integer rowsToSkip ;
     private Map<String, String> deleteConditions; // only applies to this reader for now - any rows which match
                                                   // these criteria will become a delete instead of insert
 
@@ -237,7 +237,7 @@ public class ReaderConfig {
      * Event Hub config properties
      */
     private Map<String, String> jsonPaths;
-    private String apiVersion = "1.0.0";
+    private String apiVersion ;
     private String jmsEventKey;
     private String alternativeServiceName;
     private Boolean overrideServiceName = false;
@@ -255,14 +255,14 @@ public class ReaderConfig {
      */
     private String bucket;
     private String s3FileName;
-    private Integer maxKeys = 10000;
-    private Integer lastModifiedDelayHours = 72;
+    private Integer maxKeys ;
+    private Integer lastModifiedDelayHours ;
 
     /**
      * Mongo DB properties
      */
     private List<String> flattenPath;
-    private Boolean useMongoExtendedDate = true;
+    private Boolean useMongoExtendedDate ;
     private String mongoDatabase;
     private String mongoCollection;
     private String mongoQuery;
@@ -270,7 +270,7 @@ public class ReaderConfig {
     // UuidRepresentation.UNSPECIFIED;
 
     // Rest Templates
-    private Boolean useTlsV3RestTemplate = false;
+    private Boolean useTlsV3RestTemplate ;
     private String soqlQuery;
 
     @JsonProperty(value = "isRedisConsumerStream")
