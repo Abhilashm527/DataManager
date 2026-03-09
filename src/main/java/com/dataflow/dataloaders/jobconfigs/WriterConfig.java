@@ -33,7 +33,7 @@ public class WriterConfig {
     private String hashTag;
     private String keyIdentifier;
     private String tableName;
-    private Boolean removeQueryParam ;
+    private Boolean removeQueryParam;
 
     /**
      * Cassandra Writer config Properties
@@ -41,18 +41,18 @@ public class WriterConfig {
     private String cassandraKeyspace;
     private String cassandraQuery;
     private String beforeWriteQuery; // For executing a single query before writes sent
-    private Boolean isIdempotent ;
+    private Boolean isIdempotent;
     private String cassandraClusterName;
     private Boolean isCassandraCluster;
-    private Boolean counterTable ;
-    private Integer retryCount ;
-    private Integer retryAttempts ;
-    private Integer retryIntervalInMillis ;
-    private String consistencyLevel ;
+    private Boolean counterTable;
+    private Integer retryCount;
+    private Integer retryAttempts;
+    private Integer retryIntervalInMillis;
+    private String consistencyLevel;
     private String truncateTable;
-    private Boolean removeCurrentDayData ;
-    private String tableSuffix ;
-    private Boolean enableSSL ;
+    private Boolean removeCurrentDayData;
+    private String tableSuffix;
+    private Boolean enableSSL;
     private List<WriterConfig> restCalls;
 
     /**
@@ -65,10 +65,10 @@ public class WriterConfig {
     // private int redisDatabase;
     // private List<RedisOperation> redisOperations;
     private Boolean isRedisCluster;
-    private String redisDelimiter ;
-    private Long redisWriteTimeout ;
+    private String redisDelimiter;
+    private Long redisWriteTimeout;
     private String redisMapper;
-    private Integer redisPartitionSize ;
+    private Integer redisPartitionSize;
 
     /**
      * Flat File config Properties
@@ -79,7 +79,7 @@ public class WriterConfig {
     private String childTag;
     /** Tag around each row */
     private List<String> fieldLengths;
-    private String fileLocation ;
+    private String fileLocation;
 
     /**
      * Custom fields
@@ -99,12 +99,12 @@ public class WriterConfig {
     private Integer sftpFileNameDaysToSubtract;
     // delete old files in archive folder aka path of archive =
     // config.getAfterJobConfig().getWriterConfig().getSftpMoveDir()
-    private Boolean deleteOldFiles ;
+    private Boolean deleteOldFiles;
     // anything over 30 days ie 720 hours will be removed
-    private Long fileExpiryInHours ;
-    private String zoneId ;
-    private Character lineSeparator ;
-    private Boolean writeFooterOnIncompleteJob ;
+    private Long fileExpiryInHours;
+    private String zoneId;
+    private Character lineSeparator;
+    private Boolean writeFooterOnIncompleteJob;
 
     /**
      * EndPoint config Properties
@@ -114,39 +114,39 @@ public class WriterConfig {
     private Map<String, Object> headers;
     private List<String> body;
     private Long throttleTime;
-    private Integer endPointConnectionTimeout ;
-    private Integer endPointSocketTimeout ;
-    private Integer concurrencyMaxTotal ;
-    private Integer concurrencyMaxPerRoute ;
-    private Boolean allowNulls ;
+    private Integer endPointConnectionTimeout;
+    private Integer endPointSocketTimeout;
+    private Integer concurrencyMaxTotal;
+    private Integer concurrencyMaxPerRoute;
+    private Boolean allowNulls;
     /**
      * Elasticsearch config properties
      */
 
     private String elasticsearchIndex;
     private List<String> elasticsearchIdColumns;
-    private String elasticsearchIdDelimiter ;
-    private String insertScript ;
-    private String elasticsearchMapper ;
-    private String elasticsearchListName ;
-    private Boolean monthSuffix ;
+    private String elasticsearchIdDelimiter;
+    private String insertScript;
+    private String elasticsearchMapper;
+    private String elasticsearchListName;
+    private Boolean monthSuffix;
 
     /**
      * JMS Writer config properties
      */
-    private String jmsServiceName ;
+    private String jmsServiceName;
     private String queueName;
     private String topicName;
-    private String jmsMapper ;
-    private String JmsPayloadJsonStringWriterMapper ;
-    private Map<String, Boolean> jmsMessageProperties ;
+    private String jmsMapper;
+    private String JmsPayloadJsonStringWriterMapper;
+    private Map<String, Boolean> jmsMessageProperties;
     private Long timeToLive;
     private List<String> groupBy;
     private String groupName;
     private Long incrementalTTL;
-    private Boolean isJmsRespectTTL ;
-    private Boolean filterEmptyMessages ;
-    private Integer threshold ; // default set limit to 10
+    private Boolean isJmsRespectTTL;
+    private Boolean filterEmptyMessages;
+    private Integer threshold; // default set limit to 10
     /**
      * JDBC config Properties
      */
@@ -155,14 +155,14 @@ public class WriterConfig {
     /**
      * DME2 Writer properties
      */
-    private Map<String, String> requestHeaders ;
-    private Map<String, String> urlParams ;
-    private Map<String, String> queryParams ;
+    private Map<String, String> requestHeaders;
+    private Map<String, String> urlParams;
+    private Map<String, String> queryParams;
     private String serviceName;
     private String contentType;
     private String messageId;
-    private Map<String, String> messageIdParams ;
-    private Integer maxAttempts ;
+    private Map<String, String> messageIdParams;
+    private Integer maxAttempts;
     private Boolean useRowAsBody;
     private String messageTemplate;
     private String messagePrefix;
@@ -173,27 +173,27 @@ public class WriterConfig {
     private String jdbcQuery;
     private String url;
     private String targetMethod;
-    private Boolean failJobOnErrorResponse ;
+    private Boolean failJobOnErrorResponse;
     private List<String> allowedErrorCodes = new ArrayList<>();
     private List<WriterConfig> dme2Calls;
-    private Boolean writeFlagToCassandra ;
-    private Boolean writeErrorFlagToCassandra ;
-    private Boolean writeResponsesToCassandra ;
-    private Boolean validateResponse ;
-    private Boolean preventAdditionalCallsOnError ;
+    private Boolean writeFlagToCassandra;
+    private Boolean writeErrorFlagToCassandra;
+    private Boolean writeResponsesToCassandra;
+    private Boolean validateResponse;
+    private Boolean preventAdditionalCallsOnError;
     private String validateJsonPath;
     private String expectedResponseValue;
-    private Boolean base64 ;
+    private Boolean base64;
     private String base64Prefix;
     private String base64Suffix;
 
-    private Boolean writeFlagToPostgres ;
-    private Boolean writeErrorFlagToPostgres ;
-    private Boolean writeResponsesToPostgres ;
-    private Boolean writeConfigNameAndId ;
+    private Boolean writeFlagToPostgres;
+    private Boolean writeErrorFlagToPostgres;
+    private Boolean writeResponsesToPostgres;
+    private Boolean writeConfigNameAndId;
     private List<String> finalAdditionalBindVariables;
     private String postgresQuery;
-    private Boolean writeFlagToReferenceDb ;
+    private Boolean writeFlagToReferenceDb;
     private String referenceQuery;
 
     /* Rest Template writer */
@@ -227,12 +227,12 @@ public class WriterConfig {
      */
     private String mongoDatabase;
     private String mongoCollection;
-    private Boolean ordered ;
-    private Boolean upsert ;
-    private Boolean mapToDocument ;
-    private Boolean removePrimaryKeys ; // allow you to keep primary keys within document
-    private Boolean idObject ; // allows a single field _id to be a single-property object
-    private MongoOperation mongoOperation ;
+    private Boolean ordered;
+    private Boolean upsert;
+    private Boolean mapToDocument;
+    private Boolean removePrimaryKeys; // allow you to keep primary keys within document
+    private Boolean idObject; // allows a single field _id to be a single-property object
+    private MongoOperation mongoOperation;
 
     public enum MongoOperation {
         SET, PUSH, UPDATE_CHILD_OBJECT
@@ -241,7 +241,7 @@ public class WriterConfig {
     private String arrayPath;
     private String objectPath;
     private String parseDatePattern;
-    private Boolean processDocument ;
+    private Boolean processDocument;
     // private UuidRepresentation uuidRepresentation =
     // UuidRepresentation.JAVA_LEGACY;
     // Timeout
@@ -253,47 +253,47 @@ public class WriterConfig {
     private String salesforceObjectName;
 
     // Rest Templates
-    private Boolean useTlsV3RestTemplate ;
-    private String azureBlobUploadConnectionName ;
-    private String sourceAzureBlobUploadConnectionName ;
-    private String generatedReportFileName ;
-    private String generatedReportFileFormat ;
-    private Boolean uploadReportToBlobStorage ;
+    private Boolean useTlsV3RestTemplate;
+    private String azureBlobUploadConnectionName;
+    private String sourceAzureBlobUploadConnectionName;
+    private String generatedReportFileName;
+    private String generatedReportFileFormat;
+    private Boolean uploadReportToBlobStorage;
     private String azureContainerName;
     private String sourceAzureBlobFileName;
     private String sourceAzureContainerName;
-    private String sourceAzureBlobFileFormat ;
+    private String sourceAzureBlobFileFormat;
     private String azureBlobPrefix;
-    private String fileFormat ;
+    private String fileFormat;
     private String soqlQuery;
     private String soqlEntity;
     private List<String> additionalFields;
     private List<String> removeFields;
-    private Integer bulkSobject ;
+    private Integer bulkSobject;
     private String externalId;
 
     @JsonProperty(value = "isCassandraCluster")
-    public boolean isCassandraCluster() {
+    public Boolean isCassandraCluster() {
         return this.isCassandraCluster;
     }
 
     @JsonProperty(value = "isRedisCluster")
-    public boolean isRedisCluster() {
+    public Boolean isRedisCluster() {
         return this.isRedisCluster;
     }
 
     @JsonProperty(value = "counterTable")
-    public boolean isCounterTable() {
+    public Boolean isCounterTable() {
         return this.counterTable;
     }
 
     @JsonProperty(value = "isJmsRespectTTL")
-    public boolean isJmsRespectTTL() {
+    public Boolean isJmsRespectTTL() {
         return this.isJmsRespectTTL;
     }
 
     @JsonProperty(value = "enableSSL")
-    public boolean isEnableSSL() {
+    public Boolean isEnableSSL() {
         return this.enableSSL;
     }
 
