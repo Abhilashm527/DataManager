@@ -97,7 +97,6 @@ public class NodeValidator {
                 Map<String, Object> fields = new HashMap<>();
                 WriterConfig wc = node.getConfig().getWriterConfig();
                 fields.put("connectionId", wc.getConnectionId());
-                fields.put("connectionName", wc.getConnectionName());
                 fields.put("tableName", wc.getTableName());
                 fields.put("schemaName", wc.getSchemaName());
                 return fields;
