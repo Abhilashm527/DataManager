@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.controller.dag;
 
+import com.dataflow.dataloaders.dto.DAGExecutionResponse;
 import com.dataflow.dataloaders.entity.dagmodels.dag.DAGDefinition;
 import com.dataflow.dataloaders.services.dag.DAGDefinitionService;
 import com.dataflow.dataloaders.util.Response;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,5 +63,15 @@ public class DAGDefinitionController {
     public ResponseEntity<Response> delete(@Parameter(description = "DAG ID") @PathVariable String dagId) {
         log.info("Deleting DAG: {}", dagId);
         return Response.deleteResponse(dagDefinitionService.deleteDAG(dagId));
+    }
+
+    @Operation(summary = "Execute/Prepare DAG definition")
+    @PostMapping("/execute/{dataflowId}")
+    public ResponseEntity<Response> execute(
+            @PathVariable String dataflowId,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        log.info("Executing/Preparing DAG definition for dataflow: {}", dataflowId);
+        DAGExecutionResponse result = dagDefinitionService.executeDAG(dataflowId, authHeader);
+        return Response.createResponse(result);
     }
 }

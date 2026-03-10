@@ -4,6 +4,7 @@ import com.dataflow.dataloaders.dto.SourceConfig;
 import com.dataflow.dataloaders.dto.TargetConfig;
 import com.dataflow.dataloaders.jobconfigs.ReaderConfig;
 import com.dataflow.dataloaders.jobconfigs.WriterConfig;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class JobConfig extends AuditMetaData {
 
     private String jobId;
