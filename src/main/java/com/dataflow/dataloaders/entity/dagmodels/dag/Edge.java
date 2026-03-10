@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.entity.dagmodels.dag;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  */
 @Data
 @lombok.EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     private String edgeId;
     private String dataflowId;
@@ -40,6 +42,7 @@ public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class EdgeCondition {
         private ConditionType type;
         private String expression;
@@ -54,6 +57,7 @@ public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class EdgeTransformation {
         private TransformationType type;
         private List<FieldMapping> mappings;
@@ -70,6 +74,7 @@ public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class FieldMapping {
         private String sourcePath; // Input path (e.g., "user.billing.address")
         private String targetPath; // Output path (e.g., "transformed.billing_address")
@@ -87,6 +92,7 @@ public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Filter {
         private String field;
         private FilterOperator operator;
@@ -107,6 +113,7 @@ public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class FlowControl {
         private Boolean async;
         private Integer bufferSize;
@@ -122,6 +129,7 @@ public class Edge extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Lineage {
         private Boolean trackChanges;
         private List<String> auditFields;

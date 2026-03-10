@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.jobconfigs;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConnectionConfig {
 
     private List<String> cassandraHosts;

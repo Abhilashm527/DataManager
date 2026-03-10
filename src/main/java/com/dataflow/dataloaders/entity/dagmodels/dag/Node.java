@@ -1,6 +1,7 @@
 package com.dataflow.dataloaders.entity.dagmodels.dag;
 
 import com.dataflow.dataloaders.entity.JobConfig;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
  */
 @Data
 @lombok.EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     @Id
     private String nodeId;
@@ -106,6 +108,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Port {
         private String portId;
         private String portName;
@@ -118,6 +121,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Resources {
         private String cpu;
         private String memory;
@@ -125,6 +129,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NodeErrorHandling {
         private ErrorStrategy strategy;
         private Integer maxRetries;
@@ -145,6 +150,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RetryPolicy {
         private Integer maxAttempts;
         private Integer backoffDelay;
@@ -152,6 +158,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Validation {
         private ValidationType type;
         private List<String> fields;
@@ -167,6 +174,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Checkpoint {
         private Boolean enabled;
         private CheckpointStrategy strategy;
@@ -182,6 +190,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TransformationMetadata {
         private List<String> inputFields;
         private List<String> outputFields;
@@ -189,6 +198,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class FieldMapperConfig {
         private List<MappingEntry> mappings;
 

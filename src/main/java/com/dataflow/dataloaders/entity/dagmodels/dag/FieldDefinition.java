@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.entity.dagmodels.dag;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
  * tracking.
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FieldDefinition {
     private String name; // Current field name or path element (e.g., "userId" or "city")
     private DataType type; // The data type of this field

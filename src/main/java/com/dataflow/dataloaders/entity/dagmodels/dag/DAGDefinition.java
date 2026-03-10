@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.entity.dagmodels.dag;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import java.util.List;
@@ -11,13 +12,14 @@ import java.util.Map;
  */
 @Data
 @lombok.EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData {
     @Id
     private String dagId;
     private String dataflowId;
     private String dagName;
     private String description;
-    private DAGType type;
+    private DAGType type = DAGType.BATCH;
     private String version;
     private DAGStatus status;
     private java.time.Instant lastModified;
@@ -56,6 +58,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class GlobalProperties {
         private String environment;
         private Integer maxConcurrency;
@@ -65,6 +68,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Schedule {
         private ScheduleType type;
         private String cronExpression;
@@ -84,6 +88,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ExecutionPlan {
         private ExecutionType type;
         private ParallelismStrategy parallelismStrategy;
@@ -104,6 +109,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Stage {
         private String stageId;
         private String stageName;
@@ -119,6 +125,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ErrorHandling {
         private ErrorStrategy defaultStrategy;
         private Integer maxRetries;
@@ -135,6 +142,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class OnFailure {
         private String action;
         private List<String> recipients;
@@ -142,6 +150,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DeadLetterQueue {
         private Boolean enabled;
         private String location;
@@ -150,6 +159,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Monitoring {
         private Boolean metricsEnabled;
         private String metricsPrefix;
@@ -158,6 +168,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CustomMetric {
         private String name;
         private MetricType type;
@@ -171,12 +182,14 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Alerting {
         private Boolean enabled;
         private List<AlertRule> rules;
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AlertRule {
         private String condition;
         private String severity;
@@ -184,6 +197,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ResourceManagement {
         private String totalCpu;
         private String totalMemory;
@@ -192,12 +206,14 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NodeResourceLimits {
         private String maxCpuPerNode;
         private String maxMemoryPerNode;
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AutoScaling {
         private Boolean enabled;
         private Integer minNodes;
@@ -207,6 +223,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DAGMetadata {
         private String owner;
         private String department;
@@ -216,6 +233,7 @@ public class DAGDefinition extends com.dataflow.dataloaders.entity.AuditMetaData
     }
 
     @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SLA {
         private Integer maxDuration;
         private Double availability;
