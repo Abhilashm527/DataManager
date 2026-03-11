@@ -61,8 +61,9 @@ public class APIConstants {
     public static final String DAG_NODES = "/nodes";
     public static final String DAG_EDGES = "/edges";
     public static final String DAG_DEFINITIONS = "/dag-definitions";
-
+    public static final String DATATABLE = "/datatable";
     public static final String DAG_NODES_BASE_PATH = BASE_PATH + DAG_NODES;
     public static final String DAG_EDGES_BASE_PATH = BASE_PATH + DAG_EDGES;
     public static final String DAG_DEFINITIONS_BASE_PATH = BASE_PATH + DAG_DEFINITIONS;
+    public static final String DATATABLE_BASE_PATH = BASE_PATH + DATATABLE;
 }

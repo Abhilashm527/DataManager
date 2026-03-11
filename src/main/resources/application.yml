@@ -7,5 +7,9 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+  data:
+    mongodb:
+      uri: mongodb://admin:secret123@localhost:27017/datatable_db?authSource=admin
+      database: datatable_db
 server:
   port: ${PORT:8080}
