@@ -69,6 +69,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
         FILE_READER,
         KAFKA_READER,
         MONGODB_READER,
+        DATATABLE_READER,
 
         // Processors
         ENRICHER,
@@ -86,6 +87,7 @@ public class Node extends com.dataflow.dataloaders.entity.AuditMetaData {
         API_WRITER,
         MONGODB_WRITER,
         ERROR_REPLAY_READER,
+        DATATABLE_WRITER,
 
         // Control nodes
         DECISION,

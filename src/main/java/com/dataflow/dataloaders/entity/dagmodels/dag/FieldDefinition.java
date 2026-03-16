@@ -21,7 +21,7 @@ public class FieldDefinition {
     private Map<String, Object> properties; // Additional metadata (isNullable, precision, DDL type, etc.)
 
     public enum DataType {
-        STRING, INTEGER, LONG, DOUBLE, DECIMAL, BOOLEAN, DATE, TIMESTAMP, OBJECT, ARRAY, BINARY, ANY
+        STRING, INTEGER, LONG, DOUBLE, DECIMAL, BOOLEAN, DATE, TIMESTAMP, OBJECT, ARRAY, BINARY, ANY, JSON
     }
 
     @Data

@@ -26,6 +26,9 @@ public class ReaderConfig {
     private String partitioner;
     private String tableName;
 
+    private String datatable_id;
+    private String datatable_name;
+
     private String reader;
     private String readerType;
     private String inputFile;

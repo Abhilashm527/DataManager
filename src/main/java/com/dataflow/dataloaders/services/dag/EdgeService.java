@@ -34,6 +34,10 @@ public class EdgeService {
         return edgeDao.getByDataflowId(dataflowId);
     }
 
+    public List<Edge> getEdgesByTargetNodeId(String targetNodeId) {
+        return edgeDao.getByTargetNodeId(targetNodeId);
+    }
+
     public int updateEdge(Edge edge) {
         edgeValidator.validate(edge);
         if (edge.getUpdatedBy() == null) {

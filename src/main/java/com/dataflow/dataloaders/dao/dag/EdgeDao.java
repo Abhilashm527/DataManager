@@ -86,6 +86,14 @@ public class EdgeDao extends GenericDaoImpl<Edge, Identifier, String> {
         }
     }
 
+    public List<Edge> getByTargetNodeId(String targetNodeId) {
+        try {
+            return jdbcTemplate.query(getSql("Edge.getByTargetNodeId"), edgeRowMapper, targetNodeId);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+    }
+
     public int update(Edge edge) {
         try {
             return jdbcTemplate.update(getSql("Edge.updateById"),

@@ -2,7 +2,9 @@ package com.dataflow.dataloaders.services.dag;
 
 import com.dataflow.dataloaders.dao.dag.NodeDao;
 import com.dataflow.dataloaders.dao.dag.EdgeDao;
+import com.dataflow.dataloaders.dto.NodeInputPortsResponse;
 import com.dataflow.dataloaders.entity.ReaderWriterConfigType;
+import com.dataflow.dataloaders.entity.dagmodels.dag.Edge;
 import com.dataflow.dataloaders.entity.dagmodels.dag.Node;
 import com.dataflow.dataloaders.services.ReaderWriterConfigService;
 import com.dataflow.dataloaders.util.Identifier;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +83,36 @@ public class NodeService {
             node.setUpdatedBy("admin");
         }
         return nodeDao.update(node);
+    }
+
+    /**
+     * For a given target node, finds all upstream (source) nodes connected via edges
+     * and returns their output ports as available input fields.
+     */
+    public NodeInputPortsResponse getConnectedInputPorts(String targetNodeId) {
+        List<Edge> incomingEdges = edgeDao.getByTargetNodeId(targetNodeId);
+
+        List<NodeInputPortsResponse.SourceNodePorts> connectedSources = new ArrayList<>();
+        for (Edge edge : incomingEdges) {
+            Optional<Node> sourceNodeOpt = getNodeById(edge.getSourceNodeId());
+            if (sourceNodeOpt.isEmpty()) continue;
+
+            Node sourceNode = sourceNodeOpt.get();
+            NodeInputPortsResponse.SourceNodePorts sourcePorts = new NodeInputPortsResponse.SourceNodePorts();
+            sourcePorts.setSourceNodeId(sourceNode.getNodeId());
+            sourcePorts.setSourceNodeName(sourceNode.getNodeName());
+            sourcePorts.setSourceNodeType(sourceNode.getNodeType());
+            sourcePorts.setEdgeId(edge.getEdgeId());
+            sourcePorts.setSourcePort(edge.getSourcePort());
+            sourcePorts.setTargetPort(edge.getTargetPort());
+            sourcePorts.setOutputPorts(sourceNode.getOutputPorts());
+            connectedSources.add(sourcePorts);
+        }
+
+        NodeInputPortsResponse response = new NodeInputPortsResponse();
+        response.setTargetNodeId(targetNodeId);
+        response.setConnectedSources(connectedSources);
+        return response;
     }
 
     @Transactional

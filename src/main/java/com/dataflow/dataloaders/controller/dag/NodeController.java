@@ -1,5 +1,6 @@
 package com.dataflow.dataloaders.controller.dag;
 
+import com.dataflow.dataloaders.dto.NodeInputPortsResponse;
 import com.dataflow.dataloaders.entity.dagmodels.dag.Node;
 import com.dataflow.dataloaders.services.dag.NodeService;
 import com.dataflow.dataloaders.util.Response;
@@ -61,5 +62,16 @@ public class NodeController {
     public ResponseEntity<Response> delete(@Parameter(description = "Node ID") @PathVariable String nodeId) {
         log.info("Deleting node: {}", nodeId);
         return Response.deleteResponse(nodeService.deleteNode(nodeId));
+    }
+
+    @Operation(summary = "Get connected input ports for a node",
+            description = "Returns the output ports of all upstream nodes connected to this node via edges. " +
+                    "These are the fields available as inputs that the user can view and edit.")
+    @GetMapping("/{nodeId}/connected-inputs")
+    public ResponseEntity<Response> getConnectedInputPorts(
+            @Parameter(description = "Target Node ID") @PathVariable String nodeId) {
+        log.info("Getting connected input ports for node: {}", nodeId);
+        NodeInputPortsResponse response = nodeService.getConnectedInputPorts(nodeId);
+        return Response.getResponse(response);
     }
 }

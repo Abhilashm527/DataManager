@@ -17,6 +17,7 @@ public class Identifier implements Serializable {
     private UUID uuid;
     private HttpHeaders headers;
     private Pageable pageable;
+    private String search;
     private Identifier parentIdentifier;
 
     public Identifier(Long attribute, EnumIdentifier enumIdentifier) {
@@ -112,6 +113,11 @@ public class Identifier implements Serializable {
     }
 
     @Generated
+    public String getSearch() {
+        return this.search;
+    }
+
+    @Generated
     public Identifier getParentIdentifier() {
         return this.parentIdentifier;
     }
@@ -149,6 +155,11 @@ public class Identifier implements Serializable {
     @Generated
     public void setPageable(final Pageable pageable) {
         this.pageable = pageable;
+    }
+
+    @Generated
+    public void setSearch(final String search) {
+        this.search = search;
     }
 
     @Generated
@@ -291,7 +302,7 @@ public class Identifier implements Serializable {
     }
 
     @Generated
-    public Identifier(final Long id, final Long foreignKey, final String word, final Long localeCd, final UUID uuid, final HttpHeaders headers, final Pageable pageable, final Identifier parentIdentifier) {
+    public Identifier(final Long id, final Long foreignKey, final String word, final Long localeCd, final UUID uuid, final HttpHeaders headers, final Pageable pageable, final String search, final Identifier parentIdentifier) {
         this.id = id;
         this.foreignKey = foreignKey;
         this.word = word;
@@ -299,6 +310,7 @@ public class Identifier implements Serializable {
         this.uuid = uuid;
         this.headers = headers;
         this.pageable = pageable;
+        this.search = search;
         this.parentIdentifier = parentIdentifier;
     }
 
@@ -318,6 +330,8 @@ public class Identifier implements Serializable {
         private HttpHeaders headers;
         @Generated
         private Pageable pageable;
+        @Generated
+        private String search;
         @Generated
         private Identifier parentIdentifier;
 
@@ -368,6 +382,12 @@ public class Identifier implements Serializable {
         }
 
         @Generated
+        public IdentifierBuilder search(final String search) {
+            this.search = search;
+            return this;
+        }
+
+        @Generated
         public IdentifierBuilder parentIdentifier(final Identifier parentIdentifier) {
             this.parentIdentifier = parentIdentifier;
             return this;
@@ -375,7 +395,7 @@ public class Identifier implements Serializable {
 
         @Generated
         public Identifier build() {
-            return new Identifier(this.id, this.foreignKey, this.word, this.localeCd, this.uuid, this.headers, this.pageable, this.parentIdentifier);
+            return new Identifier(this.id, this.foreignKey, this.word, this.localeCd, this.uuid, this.headers, this.pageable, this.search, this.parentIdentifier);
         }
 
         @Generated

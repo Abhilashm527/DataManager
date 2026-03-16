@@ -87,6 +87,10 @@ public class DatatableService {
         return recordDao.findByTableId(tableId, identifier);
     }
 
+    public DataTableRecord updateRecord(DataTableRecord record, Identifier identifier) {
+        return recordDao.update(record, identifier);
+    }
+
     public void deleteRecord(String recordId) {
         recordDao.deleteById(recordId);
     }

@@ -124,14 +124,36 @@ public class DatatableController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+            @RequestParam(required = false) String search,
             @RequestHeader HttpHeaders headers) {
         log.info(logPrefix, this.getClass().getSimpleName(), "getRecords");
         Identifier identifier = Identifier.builder()
                 .headers(headers)
                 .pageable(PageRequest.of(page, size, Sort.by(direction, sortBy)))
                 .word(tableId)
+                .search(search)
                 .build();
         return Response.getResponse(datatableService.getRecords(tableId, identifier));
+    }
+
+    @Operation(summary = "Update record in table")
+    @PutMapping("/{tableId}/record/{recordId}")
+    public ResponseEntity<Response> updateRecord(@PathVariable String tableId, @PathVariable String recordId,
+            @RequestBody DataTableRecord record, @RequestHeader HttpHeaders headers) {
+        log.info(logPrefix, this.getClass().getSimpleName(), "updateRecord");
+        record.setId(recordId);
+        record.setTableId(tableId);
+        Identifier identifier = Identifier.builder().headers(headers).word(tableId).build();
+        return Response.updateResponse(datatableService.updateRecord(record, identifier));
+    }
+
+    @Operation(summary = "Delete record from table")
+    @DeleteMapping("/{tableId}/record/{recordId}")
+    public ResponseEntity<Response> deleteRecord(@PathVariable String tableId, @PathVariable String recordId,
+            @RequestHeader HttpHeaders headers) {
+        log.info(logPrefix, this.getClass().getSimpleName(), "deleteRecord");
+        datatableService.deleteRecord(recordId);
+        return Response.deleteResponse(true);
     }
 
     @DeleteMapping("/{datatableId}")

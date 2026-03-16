@@ -7,6 +7,7 @@ import com.dataflow.dataloaders.util.Identifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -34,6 +35,7 @@ public class DataTableRecordDao {
             record.setCreatedAt(DateUtils.getUnixTimestampInUTC());
         }
         record.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
+        populateSearchText(record);
         return mongoTemplate.save(record);
     }
 
@@ -45,6 +47,7 @@ public class DataTableRecordDao {
             }
             record.setCreatedAt(now);
             record.setUpdatedAt(now);
+            populateSearchText(record);
         }
         return (List<DataTableRecord>) mongoTemplate.insertAll(records);
     }
@@ -56,6 +59,11 @@ public class DataTableRecordDao {
 
     public Page<DataTableRecord> findByTableId(String tableId, Identifier identifier) {
         Query query = new Query(Criteria.where("tableId").is(tableId));
+        
+        if (identifier.getSearch() != null && !identifier.getSearch().isEmpty()) {
+            query.addCriteria(Criteria.where("searchText").regex(identifier.getSearch(), "i"));
+        }
+
         long total = mongoTemplate.count(query, DataTableRecord.class);
 
         if (identifier.getPageable() != null) {
@@ -63,7 +71,7 @@ public class DataTableRecordDao {
         }
 
         List<DataTableRecord> records = mongoTemplate.find(query, DataTableRecord.class);
-        return new PageImpl<>(records, identifier.getPageable() != null ? identifier.getPageable() : null, total);
+        return new PageImpl<>(records, identifier.getPageable() != null ? identifier.getPageable() : Pageable.unpaged(), total);
     }
 
     public Optional<DataTableRecord> findById(String recordId) {
@@ -72,7 +80,22 @@ public class DataTableRecordDao {
 
     public DataTableRecord update(DataTableRecord record, Identifier identifier) {
         record.setUpdatedAt(DateUtils.getUnixTimestampInUTC());
+        populateSearchText(record);
         return mongoTemplate.save(record);
+    }
+
+    private void populateSearchText(DataTableRecord record) {
+        if (record.getData() == null || record.getData().isEmpty()) {
+            record.setSearchText("");
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Object value : record.getData().values()) {
+            if (value != null) {
+                sb.append(value.toString()).append(" ");
+            }
+        }
+        record.setSearchText(sb.toString().trim());
     }
 
     public void deleteById(String recordId) {

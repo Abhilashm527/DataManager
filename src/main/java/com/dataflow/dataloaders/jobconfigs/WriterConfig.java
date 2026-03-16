@@ -34,6 +34,8 @@ public class WriterConfig {
     private String keyIdentifier;
     private String tableName;
     private Boolean removeQueryParam;
+    private String datatable_id;
+    private String datatable_name;
 
     /**
      * Cassandra Writer config Properties
