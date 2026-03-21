@@ -6,10 +6,6 @@ spring:
 #    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
 #    username: ${DB_USERNAME}
 #    password: ${DB_PASSWORD}
-    url: jdbc:postgresql://dpg-d610nc2li9vc73fl3aog-a.oregon-postgres.render.com:5432/testingdb_irxt
-    username: testingdb_irxt_user
-    password: F2Lq4T4vRAHKkZu2wYPWSdYMiwpS70A3
-    driver-class-name: org.postgresql.Driver
   data:
     mongodb:
       uri: mongodb://admin:secret123@localhost:27017/datatable_db?authSource=admin
