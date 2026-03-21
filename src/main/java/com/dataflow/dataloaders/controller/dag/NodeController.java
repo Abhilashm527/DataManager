@@ -1,7 +1,9 @@
 package com.dataflow.dataloaders.controller.dag;
 
+import com.dataflow.dataloaders.dto.FieldAutoMapRequest;
 import com.dataflow.dataloaders.dto.NodeInputPortsResponse;
 import com.dataflow.dataloaders.entity.dagmodels.dag.Node;
+import com.dataflow.dataloaders.services.GeminiService;
 import com.dataflow.dataloaders.services.dag.NodeService;
 import com.dataflow.dataloaders.util.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +26,9 @@ public class NodeController {
 
     @Autowired
     private NodeService nodeService;
+
+    @Autowired
+    private GeminiService geminiService;
 
     @Operation(summary = "Create node")
     @PostMapping
@@ -62,6 +67,14 @@ public class NodeController {
     public ResponseEntity<Response> delete(@Parameter(description = "Node ID") @PathVariable String nodeId) {
         log.info("Deleting node: {}", nodeId);
         return Response.deleteResponse(nodeService.deleteNode(nodeId));
+    }
+
+    @Operation(summary = "Auto-map source fields to target fields using Gemini AI")
+    @PostMapping("/auto-map")
+    public ResponseEntity<Response> autoMap(@RequestBody FieldAutoMapRequest request) {
+        log.info("Auto-mapping {} source fields to {} target fields",
+                request.getSourceFields().size(), request.getTargetFields().size());
+        return Response.getResponse(geminiService.autoMapFields(request.getSourceFields(), request.getTargetFields()));
     }
 
     @Operation(summary = "Get connected input ports for a node",
