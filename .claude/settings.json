@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find '/Users/abhilashm/Desktop/Dataloaders - new ' -type f -name *.js* -o -name *.ts*)",
+      "Bash(find '/Users/abhilashm/Desktop/Dataloaders - new ' -path */src/* -type f \\\\\\(-name *.js* -o -name *.ts* \\\\\\) ! -path */node_modules/*)"
+    ]
+  }
+}
